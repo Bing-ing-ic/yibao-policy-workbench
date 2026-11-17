@@ -13631,7 +13631,10 @@ function radarGotoLevel(lv){
         }
         if (nExit) {
           var row2 = document.createElement('div');
-          row2.className = 'li';
+          row2.className = 'li wb-exit-open';
+          row2.setAttribute('data-wb-exit-open', '1');
+          row2.style.cursor = 'pointer';
+          row2.title = '点击查看全部退出医保机构';
           row2.innerHTML = '<i style="background:var(--amber)"></i>退出医保机构<b>' + nExit + '</b>';
           legend.appendChild(row2);
         }
@@ -13648,7 +13651,10 @@ function radarGotoLevel(lv){
           }
           if (nExit && !hd.querySelector('.ex-exit-strip-tag')) {
             var tag2 = document.createElement('span');
-            tag2.className = 'tag amber ex-exit-strip-tag';
+            tag2.className = 'tag amber ex-exit-strip-tag wb-exit-open';
+            tag2.setAttribute('data-wb-exit-open', '1');
+            tag2.style.cursor = 'pointer';
+            tag2.title = '点击查看全部退出医保机构';
             tag2.textContent = '退出 ' + nExit + ' 条';
             var sp2 = hd.querySelector('.sp');
             if (sp2) { hd.insertBefore(tag2, sp2); } else { hd.appendChild(tag2); }
@@ -13702,6 +13708,44 @@ function radarGotoLevel(lv){
     } catch (e) { /* 忽略 */ }
   }
 
+  /* 独立可点入口：退出医保机构专列。点击图例或标题栏「退出」标签弹出，
+     按主动/被动与机构类别统计，每条可下钻到政策详情。自包含转义函数，
+     不依赖外层作用域的 esc；仅调用既有 openModal，不新增全局 innerHTML 写入。 */
+  function wbOpenExitList() {
+    var list = wbExitList();
+    if (!list.length) { return; }
+    function eh(s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+    var nActive = 0, nPassive = 0, nMed = 0, nPharma = 0, nOther = 0;
+    list.forEach(function (p) {
+      var info = wbExitInfo(p);
+      if (info.mode === '主动') { nActive++; } else { nPassive++; }
+      if (info.kind === '医疗机构') { nMed++; }
+      else if (info.kind === '医药机构') { nPharma++; }
+      else { nOther++; }
+    });
+    var head = '<div class="small muted" style="margin-bottom:10px">共 <b class="num">' + list.length +
+      '</b> 条。主动 ' + nActive + ' / 被动 ' + nPassive + '；医疗 ' + nMed +
+      ' / 医药 ' + nPharma + ' / 其他 ' + nOther + '。点击任意一条展开详情。</div>';
+    var rows = list.map(function (p, i) {
+      var info = wbExitInfo(p);
+      return '<div class="rec" style="cursor:pointer" data-wb-ex="' + eh(p.id || '') + '">' +
+        '<span class="num" style="color:var(--txt-3);font-size:12px;flex:0 0 26px">' + (i + 1) + '</span>' +
+        '<span class="nm"><b style="font-weight:500;font-size:13px">【' + eh(info.mode) + '·' +
+        eh(info.kind) + '】' + eh(p.title || '') + '</b>' +
+        '<small>' + eh(p.org || '') + (p.date ? ' · ' + eh(p.date) : '') +
+        (p.level ? ' · ' + eh(p.level) : '') + '</small></span></div>';
+    }).join('');
+    openModal({
+      title: '退出医保机构 · 全部 ' + list.length + ' 条',
+      icon: 'logout',
+      body: '<div style="max-height:52vh;overflow-y:auto;margin:0 -6px">' + head + rows + '</div>'
+    });
+  }
+
   function initExposureDesk() {
     /* 导出到全局：外部（QA 脚本、页面自身重渲染）需要能单独触发重画。 */
     window.wbRenderExposure = wbRenderExposure;
@@ -13709,6 +13753,7 @@ function radarGotoLevel(lv){
     window.wbExposureList = wbExposureList;
     window.wbIsExit = wbIsExit;
     window.wbExitList = wbExitList;
+    window.wbOpenExitList = wbOpenExitList;
 
     /* 把曝光台并入「今天要处理」的分类体系 */
     try { wbMergeExposureIntoStrip(); } catch (e) { /* 忽略 */ }
@@ -13728,10 +13773,19 @@ function radarGotoLevel(lv){
       if (window.__wbExDelegated) { return; }
       window.__wbExDelegated = true;
       document.addEventListener('click', function (e) {
+        var opener = e.target && e.target.closest ? e.target.closest('[data-wb-exit-open]') : null;
+        if (opener) {
+          e.preventDefault();
+          e.stopPropagation();
+          wbOpenExitList();
+          return;
+        }
         var el = e.target && e.target.closest ? e.target.closest('[data-wb-ex]') : null;
         if (!el) { return; }
         e.preventDefault();
         e.stopPropagation();
+        var mask = e.target && e.target.closest ? e.target.closest('.mask') : null;
+        if (mask && mask.parentNode) { mask.parentNode.removeChild(mask); }
         wbExposureGoto(el.getAttribute('data-wb-ex'));
       }, true);
     } catch (e3) { /* 忽略 */ }
