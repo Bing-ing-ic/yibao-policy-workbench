@@ -3,16 +3,16 @@
     "schemaVersion": "1.0",
     "sourceTable": "h6rLvnHD0OZ9wyiNwJVAAE",
     "sourceName": "工作台状态与知识库",
-    "generatedAt": "2026-11-17T11:22:01+08:00",
+    "generatedAt": "2026-11-17T11:22:26+08:00",
     "rowCount": 3,
-    "sha256": "7d99a33ac31a88b138ded3df54335b591422ee1fb841fe3c379d24c7b62047b7",
+    "sha256": "95dd68041aa3378c693bf8ff057371264a4e79c9a0d1c9cf74d0f3872bb827b4",
     "pageSizeDefault": 200
   },
   "rows": [
     {
       "_id": "freshness",
       "状态键": "freshness",
-      "内容": "{\"lastCheckedAt\": \"2026-11-17T11:22:01+08:00\", \"nextCheckAt\": \"2026-11-18T08:30:00+08:00\", \"source\": \"registry.jsonl 每日08:30自动化\", \"note\": \"准实时同步，非实时推送\"}"
+      "内容": "{\"lastCheckedAt\": \"2026-11-17T11:22:26+08:00\", \"nextCheckAt\": \"2026-11-18T08:30:00+08:00\", \"source\": \"registry.jsonl 每日08:30自动化\", \"note\": \"准实时同步，非实时推送\"}"
     },
     {
       "_id": "counts",
@@ -22,7 +22,7 @@
     {
       "_id": "syncMeta",
       "状态键": "syncMeta",
-      "内容": "{\"generatedAt\": \"2026-11-17T11:22:01+08:00\", \"sourceRevision\": \"1eb3389352a0\", \"sha256\": \"1eb3389352a0e0b73a2548533d7719a301d401297a22375a09d123ac4f7c42e8\", \"note\": \"由 build_data.py 生成，请勿手工编辑\"}"
+      "内容": "{\"generatedAt\": \"2026-11-17T11:22:26+08:00\", \"sourceRevision\": \"1eb3389352a0\", \"sha256\": \"1eb3389352a0e0b73a2548533d7719a301d401297a22375a09d123ac4f7c42e8\", \"note\": \"由 build_data.py 生成，请勿手工编辑\"}"
     }
   ]
 }
