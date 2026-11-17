@@ -63,6 +63,19 @@
       })
       .then(function (payload) {
         if (!payload || !Array.isArray(payload.rows)) { throw makeError('E_FETCH'); }
+        /* 状态表 freshness 行「内容」是 JSON 字符串，字段名为 lastCheckedAt/nextCheckAt，
+           而页面读的是 lastRun/nextRun。这里补一对别名，避免改动数据文件。 */
+        if (databaseId === 'h6rLvnHD0OZ9wyiNwJVAAE') {
+          payload.rows.forEach(function (row) {
+            if (!row || row['状态键'] !== 'freshness' || typeof row['内容'] !== 'string') { return; }
+            var obj;
+            try { obj = JSON.parse(row['内容']); } catch (e) { return; }
+            if (!obj || typeof obj !== 'object') { return; }
+            if (obj.lastRun === undefined && obj.lastCheckedAt !== undefined) { obj.lastRun = obj.lastCheckedAt; }
+            if (obj.nextRun === undefined && obj.nextCheckAt !== undefined) { obj.nextRun = obj.nextCheckAt; }
+            row['内容'] = JSON.stringify(obj);
+          });
+        }
         return payload;
       })
       .catch(function (err) {
@@ -157,7 +170,7 @@
       for (i = 0; i < payload.rows.length; i++) {
         if (String(payload.rows[i]._id) === String(recordId)) { return payload.rows[i]; }
       }
-      return null;
+      throw makeError('E_RECORD_NOT_FOUND');
     });
   }
 
@@ -186,6 +199,9 @@
     if (!SOURCES[databaseId]) { return rejectWith('E_DB_UNKNOWN'); }
     var groupBy = params.groupBy;
     var count = params.count;
+    /* 契约：groupBy 选填且必须是字符串，count 选填且必须是布尔值；
+       任何不支持的聚合参数组合都按 E_UNSUPPORTED_AGG 拒绝。 */
+    if (count !== undefined && typeof count !== 'boolean') { return rejectWith('E_UNSUPPORTED_AGG'); }
 
     if (groupBy === undefined || groupBy === null || groupBy === '') {
       if (count !== true) { return rejectWith('E_UNSUPPORTED_AGG'); }
@@ -284,8 +300,8 @@
   var filterTries = 0;
   var filterTimer = window.setInterval(function () {
     filterTries = filterTries + 1;
-    if (installStatusFilter() || filterTries > 200) { window.clearInterval(filterTimer); }
-  }, 10);
+    if (installStatusFilter() || filterTries > 600) { window.clearInterval(filterTimer); }
+  }, 5);
   window.addEventListener('DOMContentLoaded', installStatusFilter);
   window.addEventListener('load', installStatusFilter);
 }());

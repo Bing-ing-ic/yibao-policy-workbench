@@ -22,7 +22,7 @@ GitHub Pages 站点为**单页看板**，其余均为同源静态资源文件（
 
 ```
 https://Bing-ing-ic.github.io/yibao-policy-workbench/          # 发布根
-├── /                                  → site/index.html        单页看板（唯一页面）
+├── /                                  → index.html        单页看板（唯一页面）
 ├── /data/policies.json                → 政策监测台账数据（表 DB_POLICY）
 ├── /data/state.json                   → 工作台状态与聚合数据（表 DB_STATE）
 ├── /data/kb.json                      → 医保政策知识库条目（表 KB_DB_ID）
@@ -63,10 +63,10 @@ https://Bing-ing-ic.github.io/yibao-policy-workbench/          # 发布根
 | 零外链 CDN / 纯原生 | `/` | P0 | 全仓库 HTML/JS/CSS 中无 `http(s)://` 开头的 `<script src>` / `<link href>`（政策原文链接数据除外） |
 | 无凭证入库 | 全仓库 | P0 | 全仓库关键词扫描无 `api_key/Authorization/Bearer/token/密钥` 实际值；仅 README 中保留「不得写入凭证」的文字说明 |
 | 合规说明与免责声明 | `/` | P0 | 页脚固定展示：数据来源于公开政策文件与内部整理索引，仅供本中心内部工作参考，不构成对政策效力的认定或对外承诺；如有疑义以发文机关正式文本为准；发现错漏请联系维护人，我们将及时核实修订。**不使用「权威」「保证准确」「最终解释权」等定性词** |
-| 每日 08:30 同步链路（本地触发） | 仓库数据 | P1 | 本地自动化每日 08:30 更新 `registry.jsonl` 后触发 `build_data.py`，三份 JSON 重新生成并提交；`meta.generatedAt` 为当日时间 |
+| 每日 08:30 同步链路（本地触发） | 仓库数据 | P1 | 本地自动化每日 08:30 更新 `registry.jsonl` 后，由第10步独占触发 `scripts/build_pages_data.py`，三份 JSON 重新生成并提交；`meta.generatedAt` 为当日时间 |
 | 同步时间与统计展示 | `/` | P1 | 顶部显示 `freshness.lastCheckedAt`；三级政策数量与 `state.json` 的 `counts` 一致 |
 | 打印页头溯源 | `/` | P1 | 打印时页头带「只读分享版 · 同步自主版工作台 · 不可修改数据」与数据截止日期 |
-| GitHub Actions 自动同步 | 仓库 | P2 | 每日定时 workflow 重新构建并提交 JSON；失败时保留上一版可用数据 |
+| GitHub Actions 只读新鲜度告警 | 仓库 | P2 | workflow 每日**只读**校验数据新鲜度并在异常时告警；**不重建、不提交 JSON**。JSON 重建与提交由本地每日 08:30 自动化第10步独占 |
 | 搜索引擎收录优化 | `/robots.txt` | P2 | `robots.txt` 可访问；README 提供站点用途说明 |
 
 ### 4.1 转化路径与摩擦点
@@ -92,7 +92,7 @@ https://Bing-ing-ic.github.io/yibao-policy-workbench/          # 发布根
 |---|---|---|
 | **首发必做** | P0 全部 8 项 | — |
 | **首发可做** | P1 同步时间展示、打印溯源、本地 08:30 同步链路 | 可砍；站点仍是完整只读看板，只是不显示时效信息、数据靠手工更新 |
-| **上线后迭代** | P2 GitHub Actions、收录优化 | 可砍；不影响上线 |
+| **上线后迭代** | P2 GitHub Actions 只读新鲜度告警、收录优化 | 可砍；不影响上线 |
 
 **预算/时间不足时**：保留 P0，砍 P1 的打印溯源与统计展示（保留数据文件生成），P2 全部延后。此时唯一代价是访客看不到自动同步时间，核心动作不受影响。
 
@@ -118,10 +118,12 @@ https://Bing-ing-ic.github.io/yibao-policy-workbench/          # 发布根
   "sourceName": "政策监测台账 | 工作台状态与知识库 | 医保政策知识库",
   "generatedAt": "2026-11-17T08:30:00+08:00",
   "rowCount": 664,
-  "sha256": "<文件正文 SHA256>",
+  "sha256": "<rows 规范化摘要（不含 meta 与文件末尾换行），非整文件字节 SHA>",
   "pageSizeDefault": 200
 }
 ```
+
+> **`meta.sha256` 口径（R-10）**：取 `rows` 数组按 `ensure_ascii=False, indent=2` 序列化后的 UTF-8 SHA256，**不含 `meta` 自身，也不含文件末尾换行**；它不是整份 JSON 文件的字节 SHA256。发布/校验侧须按同一口径重算比对。注意它与 `state.json` 的 `syncMeta.enrichSha`（富化 CSV 文件正文字节 SHA256，见 §5.4.2）是两个不同字段、两种不同口径，不可混用。
 
 ### 5.2 `window.__SMART_PAGE__.database` 方法契约
 
@@ -193,12 +195,12 @@ https://Bing-ing-ic.github.io/yibao-policy-workbench/          # 发布根
 | `影响等级` | enum `高\|中\|低` | 是 | 第 3887 行 `pickOption(..., IMPACTS, '中')` |
 | `关键词` | string（逗号分隔） | 否 | 第 3872、3888 行 `split(/[,，;；\s]+/)` |
 | `政策摘要` | string | 否 | 第 3889 行 → `summary` |
-| `原文链接` | string URL 或空串 | 否 | 第 3860–3866 行 `pickUrl()` 只接受 `http(s)://` 开头 |
+| `原文链接` | string URL 或空串 | 否 | 第 3860–3866 行 `pickUrl()` 只接受 `http(s)://` 开头；**指向 `www.workbuddy.cn/space/` 时语义为「内部整理索引」，不是发文机关原文**，前端不得标注为官方原文（R-30） |
 | `采集来源` | string | 否 | 第 3891 行 → `source`，缺省「云端台账」 |
 | `已读` | boolean/string | 否 | 第 3892 行 `toBool()`，只认 `true/'true'/'1'/'yes'/'checked'` |
 | `已收藏` | boolean/string | 否 | 同上 |
 | `AI解读` | string | 否 | 第 3896 行 → `ai`；**无数据来源时写空串，不得臆造** |
-| `解读要点` | string | 否 | 第 3897 行 → `points` |
+| `解读要点` | string | 否 | 第 3897 行 → `points`；**可能包含迁移/整理备注，前端按原样展示，不得宣称全部为 AI 解读**（R-31） |
 | `行动建议` | string | 否 | 第 3898 行 → `action` |
 | `对玉溪影响` | string | 否 | 第 3899 行 → `yx` |
 | `乡镇卫生院影响` | string | 否 | 第 3902 行 → `town`；空值页面显示「未评估」 |
@@ -207,6 +209,11 @@ https://Bing-ing-ic.github.io/yibao-policy-workbench/          # 发布根
 | `上次核对` | string `YYYY-MM-DD` | 否 | 第 3905 行 `.slice(0,10)` |
 | `上位依据` | string（JSON 字符串）或空串 | 否 | 第 3907、3914–3922 行 `parseUp()` 要求解析后对象含 `id` |
 | `解读层级角色` | enum ROLES | 否 | 第 3908 行 → `role`，见角色映射 |
+| `退出医保标记` | enum `是\|否` | 否 | **派生字段，非 registry 原值**；由 `政策标题` 经 `derive_exit_info()` 派生，见下方口径 |
+| `退出方式` | enum `主动\|被动\|`（空串） | 否 | **派生字段，非 registry 原值**；仅命中退出时非空，未命中为空串 |
+| `机构类别` | enum `医疗机构\|医药机构\|其他`（空串） | 否 | **派生字段，非 registry 原值**；仅命中退出时非空，未命中为空串 |
+
+> **退出医保派生字段口径（K）**：由 `derive_exit_info(title)` 派生，不修改 registry.jsonl。命中条件为「动作词（解除/终止/中止/暂停/退出）+ 对象词（医保服务协议/医疗保障服务协议/医保定点/医疗保障定点/定点医药/定点医疗/定点零售/零售药店/药店/医院/卫生室/诊所/医药有限公司）+ 体裁词（公告/公示/通报/通告/决定）」三组同时出现，且不含排除词（管理办法/协议范本/签订/通知/规范/指南/自查/专项治理/监测处置/负面清单/印发/备案/评估/考核）。命中时 `退出医保标记='是'`；含「主动/申请/自愿」→`退出方式='主动'`，否则 `'被动'`；含「零售药店/药店/药房/药行/药业/医药有限公司」→`机构类别='医药机构'`，含「医院/诊所/卫生室/卫生院/医疗机构/医疗」→`'医疗机构'`，否则 `'其他'`。未命中时标记为 `'否'`，方式与类别均为空串。
 
 枚举常量实读：第 3317–3319 行 `CATS = ['参保缴费','待遇报销','异地就医','药品目录','耗材管理','DRG/DIP支付','基金监管','长期护理保险','生育保险','门诊共济','集采药品','其他']`；`LEVELS = ['玉溪市','云南省','国家']`；`IMPACTS = ['高','中','低']`。第 3912 行 `ROLES = ['执行·玉溪市医保局政策','参照·省级依据','基线·国家方向']`。
 
@@ -218,7 +225,7 @@ https://Bing-ing-ic.github.io/yibao-policy-workbench/          # 发布根
 |---|---|---|
 | `freshness` | `{lastCheckedAt:string ISO, nextCheckAt:string ISO, source:string, note:string}` | 第 4162–4163 行 `App.data.freshness`，页面顶部时效展示；**必须是对象，不能是字符串** |
 | `counts` | `{policies:number, kb:number, byLevel:{玉溪市:number,云南省:number,国家:number}, byImpact:{高:number,中:number,低:number}}` | 三级政策流数量校验与诊断 |
-| `syncMeta` | `{generatedAt:string ISO, sourceRevision:string, sha256:string, note:string}` | 构建溯源 |
+| `syncMeta` | `{generatedAt:string ISO, sourceRevision:string, sha256:string, enrichSha:string, note:string}` | 构建溯源；`enrichSha` = 所用富化 CSV 的字节正文 sha256（未使用/文件不存在为 `''`），供发布脚本做幂等判据（R-08） |
 
 #### 5.4.3 `data/kb.json` —— 政策知识库（对应 `KB_DB_ID = '6EUj03WV4rV3ItQHH4tcZt'`）
 
@@ -273,6 +280,7 @@ https://Bing-ing-ic.github.io/yibao-policy-workbench/          # 发布根
 | `updated_at` | `上次核对` | `slice(0,10)` |
 | `related`（数组） | `上位依据` | 有值时写 `JSON.stringify({id: related[0]})`，否则空串 |
 | `行政层级`（派生） | `解读层级角色` | `国家`→`基线·国家方向`，`云南省`→`参照·省级依据`，`玉溪市`→`执行·玉溪市医保局政策` |
+| `title`（派生） | `退出医保标记` / `退出方式` / `机构类别` | **派生字段，非 registry 原值**；由 `derive_exit_info(title)` 按 §5.4.1 口径派生，registry.jsonl 本身不写入这三字段 |
 
 **`registry.jsonl` → `KbRow`**：
 
@@ -295,20 +303,20 @@ https://Bing-ing-ic.github.io/yibao-policy-workbench/          # 发布根
 ### 5.6 数据同步链路
 
 ```
-本地自动化（每日 08:30）
+本地自动化（每日 08:30，第10步独占发布）
   └─ 更新 registry.jsonl
-       └─ tools/build_data.py 读取 registry.jsonl（+ 可选 library_export 导出的 CSV 富化）
-            ├─ 生成 site/data/policies.json
-            ├─ 生成 site/data/state.json
-            └─ 生成 site/data/kb.json
-                 └─ git commit + push（main 分支）
-                      └─ GitHub Pages 发布（P2 也可由 GitHub Actions 定时重建）
+       └─ scripts/build_pages_data.py 读取 registry.jsonl（+ 可选 library_export 导出的 CSV 富化）
+            ├─ 生成 data/policies.json
+            ├─ 生成 data/state.json（syncMeta.enrichSha = 所用富化 CSV 字节 sha256，供发布幂等判据）
+            └─ 生成 data/kb.json
+                 └─ git commit + push（main 分支）——仅本地自动化第10步执行
+                      └─ GitHub Pages 发布（Actions 不重建、不提交 JSON，仅只读新鲜度告警）
                            └─ 访客下次刷新页面即读到新数据（准实时）
 ```
 
 - **准实时定义**：数据新鲜度 = 上一次同步时刻，非真正实时。页面顶部必须显式展示 `freshness.lastCheckedAt` 与「每日 08:30 同步」说明，不得暗示实时推送。
-- **可选 GitHub Actions**：仓库内 `.github/workflows/sync.yml`（P2），每日定时检出仓库、重新运行构建脚本并提交 JSON；失败时保留上一版 JSON，不得提交空数据。
-- **接口约束**：`build_data.py` 是唯一允许写三份 JSON 的程序；前端与 Pages 侧只读，不回写。
+- **发布独占（R-14）**：JSON 的重建与提交**仅由本地每日 08:30 自动化第10步执行**。GitHub Actions（P2）只做只读新鲜度告警：仓库内 `.github/workflows/freshness.yml` 每日只读校验新鲜度并在异常时告警，**不检出重建、不运行构建脚本、不提交任何 JSON**，避免两处写同一文件产生冲突。旧版承诺的「Actions 每日重新构建并提交 JSON / `sync.yml`」已废止。
+- **接口约束**：`scripts/build_pages_data.py` 是唯一允许写三份 JSON 的程序（`tools/build_data.py` 仅为兼容转发入口）；前端与 Pages 侧只读，不回写。
 
 ---
 
@@ -317,15 +325,15 @@ https://Bing-ing-ic.github.io/yibao-policy-workbench/          # 发布根
 | 项 | 选择 | 理由 |
 |---|---|---|
 | 框架 | **纯原生 HTML/CSS/JS 单页**，以现有 v41 主版/只读分享版为基线，不引入 React/Vue/构建器 | 源页面一万两千行已实现全部看板、解读、检索逻辑；引入框架等于重写且必然丢功能。零构建步骤也让 Pages 部署只需推文件 |
-| 只读基线 | **以「医保政策监测台(只读分享版).html」为 `site/index.html` 基线**，再叠加 `data-shim.js` | 该版已派生好 `.ro` 皮肤、只读徽标、写类点击守卫、空实现的密钥/诊断渲染函数（第 3011、14058–14279 行）；若用主版则需自行移植这些，工作量大且易漏 |
+| 只读基线 | **以「医保政策监测台(只读分享版).html」为 `index.html` 基线**，再叠加 `data-shim.js` | 该版已派生好 `.ro` 皮肤、只读徽标、写类点击守卫、空实现的密钥/诊断渲染函数（第 3011、14058–14279 行）；若用主版则需自行移植这些，工作量大且易漏 |
 | SDK 适配 | `scripts/data-shim.js`，同步注入 `__SMART_PAGE__.database` 与 `__realImpls__.database` | 源页面逻辑零改动是本项目第一约束；不设置 `__realImpls__` 会被第 12783 行的 RPC 兜底覆盖（见第 5.3 节取证） |
 | 样式方案 | 源页面内联 CSS + 只读皮肤内联样式，不引入外部样式表或 CDN | 零外链 CDN 的硬约束；离线/内网访问也能完整渲染 |
 | 数据层 | **无数据库、无服务端**；三份同源静态 JSON 作为唯一数据源 | 用户已选「只读看板 + 定时同步（准实时）」；GitHub Pages 只服务静态文件，不提供运行时数据写入 |
-| 数据构建 | `tools/build_data.py`（Python 标准库，读写 JSONL/JSON、计算 SHA256） | 只做确定性转换，不依赖第三方包，便于本地定时与 Actions 两处运行 |
+| 数据构建 | `scripts/build_pages_data.py`（唯一真源，Python 标准库，读写 JSONL/JSON、计算 SHA256）；`tools/build_data.py` 仅为兼容转发入口 | 只做确定性转换，不依赖第三方包；构建与发布权收敛到本地自动化一处 |
 | 数据富化 | `library_export`（node_id → CSV）为**可选**输入；导出结果仅覆盖 AI 解读类字段 | 富化数据必须来自真实台账，脚本不得自行生成解读内容 |
-| 托管平台 | **GitHub Pages**，仓库 `Bing-ing-ic/yibao-policy-workbench`，发布源 `gh-pages` 分支（由 Actions 从 `site/` 发布）；P0 阶段也可在 Settings 中直接指定仓库 `docs` 目录 | 用户已明确选择该方案；免费、公开可访问、与代码版本同源，无需额外连接器 |
+| 托管平台 | **GitHub Pages**，仓库 `Bing-ing-ic/yibao-policy-workbench`，发布源为仓库根（本地对应 `github-pages/`，`index.html`/`data/`/`scripts/` 直接在根下，**不存在 `site/` 子目录**）；发布由本地每日 08:30 自动化第10步独占提交，GitHub Actions 只做只读新鲜度告警 | 免费、公开可访问、与代码版本同源；发布权与构建权收敛到本地自动化一处，避免两处提交互相覆盖 |
 | 域名与 HTTPS | 使用 GitHub 提供的 `*.github.io` 默认域名，HTTPS 由 GitHub 自动提供并强制跳转；**不配置自定义域名** | 自定义域名需额外 DNS 与证书维护，对内部工作看板无收益 |
-| 换行约定 | **`site/index.html` 强制 CRLF（`0D 0A`）**，不得出现孤立 `0A`；JSON/JS/MD 用 UTF-8 + LF | 用户既有技术约定；提交前须校验（`python -c "d=open('site/index.html','rb').read(); assert b'\\n' not in d.replace(b'\\r\\n',b'')"`） |
+| 换行约定 | **`index.html` 强制 CRLF（`0D 0A`）**，不得出现孤立 `0A`；JSON/JS/MD 用 UTF-8 + LF | 用户既有技术约定；提交前须校验（`python -c "d=open('index.html','rb').read(); assert b'\\n' not in d.replace(b'\\r\\n',b'')"`） |
 | 安全 | 仓库内不得出现任何 API Key、Token、Bearer 值、平台鉴权 Cookie 或私有文件绝对路径 | 仓库为公开；凭证只保留在 WorkBuddy 平台侧与本地环境变量中，绝不入库 |
 
 **公开与私有边界**：
@@ -333,8 +341,11 @@ https://Bing-ing-ic.github.io/yibao-policy-workbench/          # 发布根
 | 类别 | 具体项 | 是否可入公开仓库 |
 |---|---|---|
 | 公开 | 三份 JSON 中的政策标题、发布日期、发布机构、摘要、文号、政策类别、来源 URL、三级归属、状态统计 | 是 |
-| 私有/禁止入库 | API Key、Access Token、Bearer/Authorization 头值、ima/资料库鉴权信息、`inject.js` 平台脚本副本、本地绝对路径（如 `D:/WorkBuddy/...`）、含个人信息的附件原文 | 否 |
+| 公开 | `采集来源` 字段中的来源标注，如 `WorkBuddy 个人空间·医保文件工作区`、`ima知识库「医保相关」`、`官网采集` | 是（仅为非敏感来源标识，**不是本地绝对路径、不是凭证**） |
+| 私有/禁止入库 | 鉴权信息、真实密钥、API Key、Access Token、Bearer/Authorization 头值、`inject.js` 平台脚本副本、私有附件正文、本地绝对路径（如 `D:/WorkBuddy/...`） | 否 |
 | 本地私有 | `registry.jsonl` 与每日自动化运行环境 | 否（仅作为构建输入，产物入库） |
+
+> **边界澄清（R-18）**：`采集来源` 字段中的「`WorkBuddy 个人空间·医保文件工作区`」等来源标注属于**允许公开的非敏感来源标识**，不算本地绝对路径、不算凭证。禁止入库的是：鉴权信息、真实密钥/Token/Bearer、私有附件正文，以及 `D:/WorkBuddy/...` 这类本地绝对路径；来源标注文本本身可以公开。
 
 **合规口径**：页面所有数据标注来源与同步时间，声明「仅供内部工作参考，以发文机关正式文本为准」；发现错漏由维护人核实修订。不使用定性词、不作效力认定、不作对外承诺。
 
@@ -343,32 +354,34 @@ https://Bing-ing-ic.github.io/yibao-policy-workbench/          # 发布根
 ## 7. 目录结构约定
 
 ```
-yibao-policy-workbench/                 # Git 仓库根
+yibao-policy-workbench/                 # Git 仓库根 = GitHub Pages 发布根（本地对应 github-pages/）
 ├── .github/
 │   └── workflows/
-│       └── sync.yml                    # P2：每日定时重建并发布（可选）
-├── site/                               # GitHub Pages 发布内容根
-│   ├── index.html                      # 单页看板（CRLF 强制，UTF-8）
-│   ├── robots.txt                      # 抓取策略
-│   ├── data/
-│   │   ├── policies.json               # DB_POLICY 镜像
-│   │   ├── state.json                  # DB_STATE 镜像
-│   │   └── kb.json                     # KB_DB_ID 镜像
-│   ├── scripts/
-│   │   ├── data-shim.js                # SDK 垫片（同步加载）
-│   │   └── ro-guard.js                 # 只读守卫（如已内联则不发布）
-│   └── README.md                       # 站点说明 + 数据口径 + 免责声明
-└── tools/
-    ├── build_data.py                   # 唯一 JSON 生成器
-    └── README.md                       # 构建命令与校验步骤
+│       └── freshness.yml               # P2：只读新鲜度告警；不重建、不提交 JSON
+├── index.html                          # 单页看板（CRLF 强制，UTF-8）
+├── robots.txt                          # 抓取策略
+├── data/                               # 发布数据：唯一写入方 scripts/build_pages_data.py（位于仓库外上一级 scripts/）
+│   ├── policies.json                   # DB_POLICY 镜像
+│   ├── state.json                      # DB_STATE 镜像
+│   └── kb.json                         # KB_DB_ID 镜像
+├── scripts/
+│   ├── data-shim.js                    # SDK 垫片（同步加载）
+│   └── ro-guard.js                     # 只读守卫（如已内联则不发布）
+├── tools/
+│   └── build_data.py                   # 兼容入口：转发到 ../scripts/build_pages_data.py（唯一真源）
+├── docs/
+│   └── site-spec.md                    # 本文件：全队唯一施工依据
+└── README.md                           # 仓库说明 + 数据口径 + 免责声明
 ```
+
+> **勘误：发布根为仓库根，不存在 `site/` 子目录。** 本文历史版本曾出现 `site/` 目录写法，现已全文更正为仓库根实际结构：`index.html`、`data/`、`scripts/` 均直接位于 Git 仓库根（本地 `github-pages/`）下。构建脚本真源为仓库外的 `scripts/build_pages_data.py`，`tools/build_data.py` 仅作转发兼容入口。
 
 **落文件约定**：
 
-- 页面只有 `site/index.html` 一个，不新建二级页面；`data/` 只放第 5.4 节定义的三个 JSON。
+- 页面只有 `index.html` 一个，不新建二级页面；`data/` 只放第 5.4 节定义的三个 JSON。
 - `index.html` 中注入顺序固定：`<script src="./scripts/data-shim.js"></script>`（无 `defer`/`async`）必须出现在页面原有脚本之前；只读守卫随后。
-- 任何团队成员不得直接编辑 `site/data/*.json`，只能改 `tools/build_data.py` 并重新生成。
-- 本地工作区产物路径：`D:/WorkBuddy/2026-11-17-09-14-03/docs/site-spec.md`（本文件）；前端/数据/部署产物由各自任务约定路径，最终统一归入上述仓库结构。
+- 任何团队成员不得直接编辑 `data/*.json`，只能改 `scripts/build_pages_data.py` 并重新生成（`tools/build_data.py` 仅转发，不含构建逻辑）。
+- 本地工作区产物路径（历史记录，仅说明本文件来源，**不代表发布根**）：`D:/WorkBuddy/2026-11-17-09-14-03/docs/site-spec.md`；前端/数据/部署产物由各自任务约定路径，最终统一归入上述仓库结构。发布根见本节开头勘误——为仓库根，不存在 `site/` 子目录。
 
 ### 验收标准（上线前逐条勾选）
 
@@ -377,7 +390,7 @@ yibao-policy-workbench/                 # Git 仓库根
 3. 政策卡片标题、发布日期、发布机构与 `policies.json` 对应行一致。
 4. 浏览器控制台执行 `window.__SMART_PAGE__.database.query({databaseId:'SyW9fBCPF4zBCd9EMdNlNm',pageSize:50})` 返回含 `results/nextCursor/hasMore/total` 的对象，且 `results.length > 0`。
 5. 执行 `addRecord({})` 被拒绝，错误信息为「只读部署版不可写入」；页面写类按钮被拦截或隐藏，顶部有只读徽标。
-6. `site/index.html` 通过 CRLF 校验命令（见第 6 节）。
+6. `index.html` 通过 CRLF 校验命令（见第 6 节）。
 7. 全仓库无 `<script src="http...">` / `<link href="http...">` 外链；无凭证实际值。
 8. 打印页头含「只读分享版 · 同步自主版工作台 · 不可修改数据」与数据截止日期。
 
@@ -385,7 +398,7 @@ yibao-policy-workbench/                 # Git 仓库根
 
 ## 范围建议（砍到哪层能上线）
 
-砍掉 P1 的打印溯源与统计展示、P2 的 GitHub Actions 与收录优化后，仅保留 P0（SDK 垫片、三份 JSON、单页看板渲染、只读守卫、CRLF、零外链、无凭证、合规说明）即可上线，核心动作「查到并确认一条政策」不受影响；代价仅是数据需手工同步、访客看不到自动同步时间。
+砍掉 P1 的打印溯源与统计展示、P2 的 GitHub Actions 只读告警与收录优化后，仅保留 P0（SDK 垫片、三份 JSON、单页看板渲染、只读守卫、CRLF、零外链、无凭证、合规说明）即可上线，核心动作「查到并确认一条政策」不受影响；代价仅是数据需手工同步、访客看不到自动同步时间。
 
 ## 最大风险（一句话）
 
@@ -393,6 +406,6 @@ yibao-policy-workbench/                 # Git 仓库根
 
 ## 需要用户拍板的 1–3 个决策
 
-1. **只读基线确认**：是否同意以「只读分享版 HTML」为 `site/index.html` 基线（推荐，守卫与徽标已就绪）？若坚持用 v41 主版，需额外移植只读皮肤与守卫。
+1. **只读基线确认**：是否同意以「只读分享版 HTML」为 `index.html` 基线（推荐，守卫与徽标已就绪）？若坚持用 v41 主版，需额外移植只读皮肤与守卫。
 2. **公开可见范围**：仓库与 Pages 站点均为公开，三份 JSON 中的政策标题/摘要/文号对互联网可见——是否确认接受？（如需仅内部可见，需改用私有仓库 + 鉴权方案，不再是纯 GitHub Pages。）
 3. **富化数据来源**：AI 解读、解读要点、乡镇卫生院影响等字段是否允许由 `library_export(DB_POLICY)` 的真实台账导出覆盖？未覆盖时这些字段留空并显示「未评估」，脚本不生成解读内容。

@@ -1,6 +1,6 @@
 # 数据新鲜度检查（P2 增强）
 # ---------------------------------------------------------------------------
-# 作用：每日 UTC 00:30（北京时间 08:30）读取 site/data/state.json 中状态键
+# 作用：每日 UTC 00:30（北京时间 08:30）读取 data/state.json 中状态键
 #       freshness 的 lastCheckedAt；若距当前时间超过 48 小时，则开一个标题含
 #       「数据新鲜度告警」的 Issue 提醒维护人同步数据；未超期则不做任何操作。
 #
@@ -52,7 +52,7 @@ jobs:
             try {
               state = JSON.parse(fs.readFileSync(filePath, 'utf8'));
             } catch (e) {
-              core.setFailed('无法读取或解析 site/data/state.json：' + e.message);
+              core.setFailed('无法读取或解析 data/state.json：' + e.message);
               return;
             }
 

@@ -3424,7 +3424,6 @@ var DB_STATE  = 'h6rLvnHD0OZ9wyiNwJVAAE';
 var LS_KEY    = 'wb_yibao_watch_v1';
 
 var CATS = ['参保缴费','待遇报销','异地就医','药品目录','耗材管理','DRG/DIP支付','基金监管','长期护理保险','生育保险','门诊共济','集采药品','其他'];
-var LEVELS = ['玉溪市','云南省','国家'];
 var IMPACTS = ['高','中','低'];
 var SRC_LOCAL = ['local','ima','auto'];
 var SRC_LABEL = { local:'本地上传', ima:'IMA知识库', auto:'自动采集' };
@@ -3517,6 +3516,15 @@ function esc(s){
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
 function pad2(n){ return (n < 10 ? '0' : '') + n; }
 function toDate(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+/* 日期展示缺省口径：数据占位值 1900-01-01 显示为「日期待补」，排序仍用原 date。 */
+function wbDateText(d){ return (String(d) === '1900-01-01') ? '日期待补' : esc(d); }
+/* 原文链接口径：内部整理索引显示为「内部索引」并给出非原文提示，其余为「查看原文」。 */
+function wbSrcLinkMeta(url){
+  var s = String(url || '');
+  return (s.indexOf('www.workbuddy.cn/space/') >= 0)
+    ? { text: '内部索引', title: '该链接指向内部整理索引，非发文机关原文' }
+    : { text: '查看原文', title: '查看原文' };
+}
 function isoDate(d){ return d.getFullYear() + '-' + pad2(d.getMonth()+1) + '-' + pad2(d.getDate()); }
 function todayISO(){ return isoDate(new Date()); }
 function parseDay(s){
@@ -3992,6 +4000,10 @@ function rowToPolicy(row){
     /* 曝光标记（2026-10-26 新增）：云端台账直接打标，页面不再靠
        「政策类别=基金监管 + 标题语义」二次猜测（那样会混入飞行检查办法等制度性文件）。 */
     exposure: row['曝光标记'] === '是',
+    /* 退出医保机构标记（数据管道派生）：优先用字段，标题语义回退由 wbIsExit 负责。 */
+    '退出医保标记': row['退出医保标记'] || '',
+    '退出方式': row['退出方式'] || '',
+    '机构类别': row['机构类别'] || '',
     category: pickOption(row['政策类别'], CATS, '其他'),
     impact: pickOption(row['影响等级'], IMPACTS, '中'),
     keywords: String(kw).split(/[,，;；\s]+/).filter(function(x){ return !!x; }),
@@ -4854,7 +4866,7 @@ function policyCard(p, mode){
         '<div class="pi-right">' +
           '<span class="who">' +
             (p.org ? '<span class="org" title="' + esc(p.org) + '">' + esc(p.org) + '</span>' : '') +
-            (p.date ? '<span class="date">' + esc(p.date) + '</span>' : '') +
+            (p.date ? '<span class="date">' + wbDateText(p.date) + '</span>' : '') +
           '</span>' +
           '<div class="pi-ops">' + ops + '</div>' +
         '</div>' +
@@ -4870,7 +4882,7 @@ function policyCard(p, mode){
           /* 用原生 <a target="_blank"> 而不是 window.open：
              发布页运行在沙箱 iframe 中，window.open 常被浏览器拦截，点了没反应。 */
           (p.url
-            ? '<a class="btn sm primary" href="' + esc(p.url) + '" target="_blank" rel="noopener noreferrer">' + svg('external',13) + ' 查看原文</a>'
+            ? (function(){ var m = wbSrcLinkMeta(p.url); return '<a class="btn sm primary" href="' + esc(p.url) + '" target="_blank" rel="noopener noreferrer" title="' + esc(m.title) + '">' + svg('external',13) + ' ' + m.text + '</a>'; })()
             : '<button class="btn sm" disabled style="opacity:.45;cursor:not-allowed">' + svg('external',13) + ' 无原文链接</button>') +
           '<button class="btn sm" data-act="read" data-id="' + p.id + '">' + svg('check',13) + (p.read ? ' 标记未读' : ' 标记已读') + '</button>' +
           '<button class="btn sm" data-act="follow" data-id="' + p.id + '">' + (p.follow ? '取消跟进' : '加入跟进') + '</button>' +
@@ -8525,30 +8537,38 @@ function aiBlock(p){
         '<span class="muted" style="margin-left:8px">由服务端定时任务（工作日 08:30，周末及法定节假日跳过）统一生成后回写此处</span>' +
       '</div></div>';
   }
-  /* 阅读顺序按「经办人真正需要的顺序」排：
-     这条讲了什么 → 对玉溪意味着什么 → 要记住哪些口径 → 下一步做什么。
-     「对玉溪影响」排在第二位，因为它才是属地经办人真正要判断的东西。 */
+  /* 解读字段顺序与详情区统一：解读要点 → 对玉溪影响 → 乡镇卫生院影响 → 原文链接 → AI解读 → 行动建议 → 摘要。 */
   var html = '<div class="ai-box">' +
     '<div class="ai-hd">' + svg('spark', 14) + ' AI 解读' + aiBadge() +
       (p.checked ? '<span class="muted" style="font-weight:400">核对 ' + esc(p.checked) + '</span>' : '') +
       '<button class="ai-ask" type="button" data-act="askPolicy" data-id="' + p.id + '" style="margin-left:auto">' +
         AI_DIAMOND + '追问 AI</button>' +
     '</div><div class="ai-bd">';
-  if (p.ai) html += '<div class="ai-txt">' + esc(p.ai) + '</div>';
+  if (p.points) {
+    html += '<div class="ai-sec"><b>解读要点</b><div>' + esc(p.points) + '</div></div>';
+  }
   if (p.yx) {
     html += '<div class="ai-yx"><b>' + svg('globe', 12) + '对玉溪市的影响</b>' +
       '<div>' + esc(p.yx) + '</div></div>';
   }
-  if (p.points) {
-    html += '<div class="ai-sec"><b>解读要点</b><div>' + esc(p.points) + '</div></div>';
+  if (p.town) {
+    html += '<div class="ai-sec"><b>乡镇卫生院影响</b><div>' + esc(p.town) + '</div></div>';
   }
+  if (p.url) {
+    var linkMeta = wbSrcLinkMeta(p.url);
+    html += '<div class="ai-sec"><b>原文链接</b><div><a href="' + esc(p.url) +
+      '" target="_blank" rel="noopener noreferrer">' + esc(linkMeta.text) + '</a></div></div>';
+  }
+  if (p.ai) html += '<div class="ai-txt">' + esc(p.ai) + '</div>';
   if (p.action) {
     html += '<div class="ai-sec"><b>行动建议</b><div>' + esc(p.action) + '</div></div>';
+  }
+  if (p.summary) {
+    html += '<div class="ai-sec"><b>摘要</b><div>' + esc(p.summary) + '</div></div>';
   }
   html += '</div></div>';
   return html;
 }
-
 /* ---------- 解读队列：页面发起，定时任务消费 ---------- */
 function requestAiAnalysis(pid){
   var p = null;
@@ -8700,6 +8720,7 @@ function askWithLLM(q, hits, webList){
 /* ---------- 设置页：大模型接入 ---------- */
 function renderLlmSettings(){ /* 只读分享版不渲染：大模型 Key / 接口地址 —— CSS 隐藏只是「看不见」，
      DOM 仍在，控制台照样能读出来。这里在渲染层短路，元素从未生成。*/
+  /* R-22：构建期保留但渲染层永久短路，只读版不产生任何外部能力入口。 */
   if (window.__WB_RO__){ var b=$('#llmBox'); if(b) b.innerHTML=''; return; }
   var box = $('#llmBox');
   if (!box) return;
@@ -8751,7 +8772,7 @@ function renderLlmSettings(){ /* 只读分享版不渲染：大模型 Key / 接�
 }
 
 /* ============ 联网检索（可选，需自备搜索接口 Key）============ */
-/* ============ 联网检索：多通道（免配置 / 自备密钥 / 权威站点 RSS）============
+/* ============ 联网检索：多通道（免配置 / 自备密钥 / 官方发布平台 RSS）============
    实测结论（2026-09-27 复核）：
    · Tavily / 博查 / 智谱 / Serper 的端点都返回 CORS 许可，浏览器可直连，只缺一个 Key；
    · 免配置通道走公共 RSS 中转（由中转服务器代为抓取），浏览器侧 CORS 为 *，零密钥；
@@ -8759,8 +8780,8 @@ function renderLlmSettings(){ /* 只读分享版不渲染：大模型 Key / 接�
 var SEARCH_PRESETS = {
   free:   { name: '免配置通道（全网新闻 · 零密钥）', base: '', noKey: true,
             hint: '经公共 RSS 中转到全网新闻检索，开箱即用，不需要注册任何服务。' },
-  rss:    { name: '权威站点 RSS（免配置 · 国内源）', base: '', noKey: true,
-            hint: '只在中国政府网、中新网等权威站点的最新发布里检索。' },
+  rss:    { name: '官方发布平台 RSS（免配置 · 国内源）', base: '', noKey: true,
+            hint: '只在中国政府网、中新网等官方发布平台的最新发布里检索。' },
   zhipu:  { name: '智谱 Web 搜索（国内直连）', base: 'https://open.bigmodel.cn/api/paas/v4/web_search',
             auth: 'bearer', hint: '到 open.bigmodel.cn 控制台开通后取 API Key，国内可直连、有免费额度。' },
   bocha:  { name: '博查 Bocha（国内直连）', base: 'https://api.bochaai.com/v1/web-search',
@@ -8775,7 +8796,7 @@ var SEARCH_PRESETS = {
 var SEARCH_DEFAULT = { provider: 'free', key: '', base: '', enabled: true, sv: 2 };
 var SEARCH_SV = 2;                       // 配置结构版本；v2 起免配置通道默认开启
 
-/* 免配置通道的第二条路：国内权威站点 RSS（2026-09-27 逐条实测可达）
+/* 免配置通道的第二条路：国内官方发布平台 RSS（2026-09-27 逐条实测可达）
    direct:true = 实测响应带 ACAO:*，浏览器可零中转直连 —— 公共中转 429 限流时这条路仍然通 */
 var RSS_FALLBACK_SOURCES = [
   { name: '中国政府网', url: 'https://www.gov.cn/pushinfo/v150203/rss.xml', direct: true },
@@ -8966,7 +8987,7 @@ function queryLadder(q){
 
 /* ---------- 通道一：免配置（零密钥）----------
    ① 全网新闻检索（经中转，含关键词降级链）
-   ② 全网无命中 → 国内权威站点 RSS 最新发布 + 本地关键词筛选
+   ② 全网无命中 → 国内官方发布平台 RSS 最新发布 + 本地关键词筛选
    两条都不需要用户填任何东西。 */
 function webSearchFree(q, n){
   n = n || 5;
@@ -8989,9 +9010,9 @@ function webSearchFree(q, n){
     return fetchDomesticRss(q, n).catch(function(e2){
       var m1 = String((e1 && e1.message) || e1);
       var m2 = String((e2 && e2.message) || e2);
-      /* 只有「权威站点连内容都取不到」才算通道整体受阻；取到了但没命中要如实说未命中 */
+      /* 只有「官方发布平台连内容都取不到」才算通道整体受阻；取到了但没命中要如实说未命中 */
       if (isRelayTrouble(m1 + ' ' + m2) && /未能取到内容/.test(m2)) {
-        throw new Error('联网通道整体受阻：公共中转限流（免费通道有频率上限），直连权威站点也失败——稍等片刻再试即可；' +
+        throw new Error('联网通道整体受阻：公共中转限流（免费通道有频率上限），直连官方发布平台也失败——稍等片刻再试即可；' +
           '常用的话建议到「设置 → 联网检索」换成自备密钥的专业通道，不受此限');
       }
       throw new Error('免配置通道未命中（' + (m2 || m1).slice(0, 70) + '）');
@@ -8999,7 +9020,7 @@ function webSearchFree(q, n){
   });
 }
 
-/* 国内权威站点 RSS：并行抓取 → 关键词筛选 → 按命中度与时间排序 */
+/* 国内官方发布平台 RSS：并行抓取 → 关键词筛选 → 按命中度与时间排序 */
 function fetchDomesticRss(q, n){
   var kws = splitKw(q);
   var rawTotal = 0;                     /* 各源原始取到的条目数：区分「没命中」和「没取到」 */
@@ -9031,13 +9052,13 @@ function fetchDomesticRss(q, n){
   function finish(all){
     all.sort(function(a, b){ return (b.score - a.score) || String(b.pub || '').localeCompare(String(a.pub || '')); });
     if (!all.length) throw new Error(rawTotal > 0
-      ? '国内权威站点已取到 ' + rawTotal + ' 条最新发布，但未命中关键词'
-      : '国内权威站点各源均未能取到内容（直连与中转均失败）');
+      ? '国内官方发布平台已取到 ' + rawTotal + ' 条最新发布，但未命中关键词'
+      : '国内官方发布平台各源均未能取到内容（直连与中转均失败）');
     var sites = {};
     all.slice(0, n).forEach(function(x){ sites[x.siteName] = 1; });
     return {
       list: all.slice(0, n),
-      channel: '免配置 · 权威站点 RSS',
+      channel: '免配置 · 官方发布平台 RSS',
       note: '全网检索未命中，已改用「' + Object.keys(sites).join('、') + '」的最新发布',
       degraded: true
     };
@@ -9156,6 +9177,7 @@ function webSearch(q, n){
 
 function renderSearchSettings(){ /* 只读分享版不渲染：搜索服务配置 —— CSS 隐藏只是「看不见」，
      DOM 仍在，控制台照样能读出来。这里在渲染层短路，元素从未生成。*/
+  /* R-22：构建期保留但渲染层永久短路，只读版不产生任何外部能力入口。 */
   if (window.__WB_RO__){ var b=$('#searchBox'); if(b) b.innerHTML=''; return; }
   var box = $('#searchBox');
   if (!box) return;
@@ -10243,6 +10265,7 @@ function renderQaVoiceBtn(){
    ------------------------------------------------------------------ */
 function renderVoiceSettings(){ /* 只读分享版不渲染：语音服务配置 —— CSS 隐藏只是「看不见」，
      DOM 仍在，控制台照样能读出来。这里在渲染层短路，元素从未生成。*/
+  /* R-22：构建期保留但渲染层永久短路，只读版不产生任何外部能力入口。 */
   if (window.__WB_RO__){ var b=$('#voiceBox'); if(b) b.innerHTML=''; return; }
   var box = $('#voiceBox');
   if (!box) return;
@@ -11288,10 +11311,32 @@ function ipReadHtml(p){
   var v = ipView(p);
   var out = '';
 
-  if (v.summary) {
-    out += '<div class="ip-blk sum" data-blk="sum"><div class="bd-hd">' + svg('file', 13) + ' 政策摘要' +
-      '<span class="bd-tag">原文要点</span></div>' +
-      '<div class="bd-tx">' + esc(v.summary) + '</div></div>';
+  /* 详情区解读字段统一顺序：解读要点 → 对玉溪影响 → 乡镇卫生院影响 → 原文链接 → AI解读 → 行动建议 → 摘要。 */
+  var pts = ipSplitLines(v.points);
+  if (pts.length) {
+    out += '<div class="ip-blk pts" data-blk="pts"><div class="bd-hd">' + svg('layers', 13) + ' 解读要点' +
+        '<span class="bd-tag">' + pts.length + ' 条</span></div>' +
+      '<ol class="bd-ls">' + pts.map(function(t){
+        return '<li><span class="ix"></span><span class="tx">' + esc(t) + '</span></li>';
+      }).join('') + '</ol></div>';
+  }
+
+  if (v.yx) {
+    out += '<div class="ip-blk yx" data-blk="yx"><div class="bd-hd">' + svg('globe', 13) + ' 对玉溪市的影响</div>' +
+      '<div class="bd-tx">' + esc(v.yx) + '</div></div>';
+  }
+
+  /* 乡镇卫生院影响：本版新增，视觉权重仅次于「对玉溪市的影响」。
+     必须传 v（合并了 ipExtra 的视图）而不是 p ——
+     传 p 会让 AI 当场生成的结果读不到，这是第一版实测踩到的坑。 */
+  out += ipTownHtml(v);
+
+  if (v.url || p.url) {
+    var linkMeta = wbSrcLinkMeta(v.url || p.url);
+    out += '<div class="ip-blk url" data-blk="url"><div class="bd-hd">' + svg('external', 13) + ' 原文链接</div>' +
+      '<div class="bd-tx"><a href="' + esc(v.url || p.url) + '" target="_blank" rel="noopener noreferrer">' +
+      esc(linkMeta.text) + '</a>' + (linkMeta.text === '内部索引' ? ' <span class="muted">（内部整理索引）</span>' : '') +
+      '</div></div>';
   }
 
   if (v.ai) {
@@ -11309,29 +11354,15 @@ function ipReadHtml(p){
         '乡镇卫生院 7 维度影响与行动清单，不用等定时任务。</div></div>';
   }
 
-  if (v.yx) {
-    out += '<div class="ip-blk yx" data-blk="yx"><div class="bd-hd">' + svg('globe', 13) + ' 对玉溪市的影响</div>' +
-      '<div class="bd-tx">' + esc(v.yx) + '</div></div>';
-  }
-
-  /* 乡镇卫生院影响：本版新增，视觉权重仅次于「对玉溪市的影响」。
-     必须传 v（合并了 ipExtra 的视图）而不是 p ——
-     传 p 会让 AI 当场生成的结果读不到，这是第一版实测踩到的坑。 */
-  out += ipTownHtml(v);
-
-  var pts = ipSplitLines(v.points);
-  if (pts.length) {
-    out += '<div class="ip-blk pts" data-blk="pts"><div class="bd-hd">' + svg('layers', 13) + ' 解读要点' +
-        '<span class="bd-tag">' + pts.length + ' 条</span></div>' +
-      '<ol class="bd-ls">' + pts.map(function(t){
-        return '<li><span class="ix"></span><span class="tx">' + esc(t) + '</span></li>';
-      }).join('') + '</ol></div>';
-  }
-
   out += ipActsHtml(p);
+
+  if (v.summary) {
+    out += '<div class="ip-blk sum" data-blk="sum"><div class="bd-hd">' + svg('file', 13) + ' 政策摘要' +
+      '<span class="bd-tag">原文要点</span></div>' +
+      '<div class="bd-tx">' + esc(v.summary) + '</div></div>';
+  }
   return out;
 }
-
 function ipActsHtml(p){
   var v = ipView(p);
   var list = ipSplitActs(v.action);
@@ -11386,8 +11417,8 @@ function interpCardHtml(p, opts){
         '<button class="btn icon sm ip-speak" data-act="ipSpeak" data-id="' + esc(p.id) + '" ' +
           'title="语音解读：逐块朗读并高亮">' + svg('mic', 13) + '</button>' +
         (p.org ? '<span class="org" title="' + esc(p.org) + '">' + esc(p.org) + '</span>' : '') +
-        (p.date ? '<span class="date">' + esc(p.date) + '</span>' : '') +
-        (p.url ? '<a class="btn icon sm" href="' + esc(p.url) + '" target="_blank" rel="noopener noreferrer" title="查看原文">' + svg('external', 13) + '</a>' : '') +
+        (p.date ? '<span class="date">' + wbDateText(p.date) + '</span>' : '') +
+        (p.url ? (function(){ var m = wbSrcLinkMeta(p.url); return '<a class="btn icon sm" href="' + esc(p.url) + '" target="_blank" rel="noopener noreferrer" title="' + esc(m.title) + '">' + svg('external', 13) + '</a>'; })() : '') +
         '<button class="btn sm" data-act="expand-goto" data-id="' + esc(p.id) + '">详情</button>' +
       '</span>' +
     '</div>' +
@@ -12851,7 +12882,7 @@ function radarGotoLevel(lv){
         return function (params) {
           /* 只读分享版：兜底通道同样要守住写入，不能被绕过去 */
           if (RPC_WRITE_METHODS[methodName] && isRoPage()) {
-            return Promise.reject(new Error('只读分享版不支持写入'));
+            return Promise.reject(new Error('只读部署版不可写入'));
           }
           return rpcCall(methodName, params).catch(function (err) {
             /* 兜底通道同样要认「写被拒」，否则会一路重试把页面顶到登录页 */
@@ -13372,6 +13403,55 @@ function radarGotoLevel(lv){
   }
 
   /* ==========================================================
+     七点零、退出医保机构（数据管道派生字段优先，标题语义回退）
+     ------------------------------------------------------------
+     派生字段：退出医保标记('是'/'否')、退出方式('主动'/'被动'/'')、
+     机构类别('医疗机构'/'医药机构'/'其他')。
+     字段缺失的历史数据回退标题判定，动作词 + 对象词 + 体裁词三者齐备，
+     且不含制度性文件的排除词，才算「退出医保机构」。
+     ========================================================== */
+  var EXIT_ACT = ['解除', '终止', '中止', '暂停', '退出'];
+  var EXIT_OBJ = ['医保服务协议', '医疗保障服务协议', '医保定点', '医疗保障定点',
+                  '定点医药', '定点医疗', '定点零售', '零售药店', '药店', '医院',
+                  '卫生室', '诊所', '医药有限公司'];
+  var EXIT_EXCLUDE = ['管理办法', '协议范本', '签订', '通知', '规范', '指南', '自查',
+                      '专项治理', '监测处置', '负面清单', '印发', '备案', '评估', '考核'];
+  var EXIT_GENRE = ['公告', '公示', '通报', '通告', '决定'];
+
+  function wbIsExit(p) {
+    if (!p) { return false; }
+    if (p['退出医保标记'] === '是') { return true; }
+    if (p['退出医保标记'] === '否') { return false; }
+    var t = String(p.title || '');
+    var hasAct = EXIT_ACT.some(function (w) { return t.indexOf(w) >= 0; });
+    var hasObj = EXIT_OBJ.some(function (w) { return t.indexOf(w) >= 0; });
+    var hasGenre = EXIT_GENRE.some(function (w) { return t.indexOf(w) >= 0; });
+    var hasEx = EXIT_EXCLUDE.some(function (w) { return t.indexOf(w) >= 0; });
+    return hasAct && hasObj && hasGenre && !hasEx;
+  }
+
+  /* 退出方式与机构类别：派生字段优先，标题关键词回退。 */
+  function wbExitInfo(p) {
+    var t = String((p && p.title) || '');
+    var mode = (p && p['退出方式']) || '';
+    if (mode !== '主动' && mode !== '被动') {
+      mode = (/主动|申请|自愿/.test(t)) ? '主动' : '被动';
+    }
+    var kind = (p && p['机构类别']) || '';
+    if (kind !== '医疗机构' && kind !== '医药机构' && kind !== '其他') {
+      if (/零售药店|药店|药房|药行|药业|医药有限公司/.test(t)) { kind = '医药机构'; }
+      else if (/医院|诊所|卫生室|卫生院|医疗机构|医疗/.test(t)) { kind = '医疗机构'; }
+      else { kind = '其他'; }
+    }
+    return { mode: mode, kind: kind };
+  }
+
+  function wbExitList() {
+    var P = (window.App && window.App.data && window.App.data.policies) || [];
+    return P.filter(wbIsExit);
+  }
+
+  /* ==========================================================
      七点一、把曝光台并入「今天要处理」
      ------------------------------------------------------------
      做法：覆盖页面的 stripItems / renderBoardStrip。
@@ -13387,19 +13467,22 @@ function radarGotoLevel(lv){
     if (window.__wbStripMerged) { return; }
     window.__wbStripMerged = true;
 
-    /* 1) 补第 4 类身份。放在 STRIP_KIND_ORDER 最前 = 最高优先级。 */
+    /* 1) 补身份表：曝光 → 退出 → 逾期 → 跟进 → 今日高影响（顺序即优先级）。 */
     if (window.STRIP_KIND) {
       window.STRIP_KIND.exposure = {
         icon: 'report', color: 'var(--err)', txt: '【曝光】'
       };
+      window.STRIP_KIND.exit = {
+        icon: (window.ICONS && window.ICONS.logout) ? 'logout' : 'report',
+        color: 'var(--amber)',
+        txt: '【退出】'
+      };
     }
     if (window.STRIP_KIND_ORDER) {
       var ord = window.STRIP_KIND_ORDER;
-      if (ord.indexOf('exposure') < 0) {
-        window.STRIP_KIND_ORDER = ['exposure'].concat(ord);
-      }
+      var base = ord.filter(function (k) { return k !== 'exposure' && k !== 'exit'; });
+      window.STRIP_KIND_ORDER = ['exposure', 'exit'].concat(base);
     }
-
     /* 2) 覆盖 stripItems：把曝光案例推进清单。
        复用页面原有的 push 机制与 id 去重，一条政策只出现一次。 */
     var origStrip = window.stripItems;
@@ -13407,7 +13490,8 @@ function radarGotoLevel(lv){
       window.stripItems = function () {
         var items = origStrip.apply(this, arguments);
         var exp = wbExposureList();
-        if (!exp.length) { return items; }
+        var exits = wbExitList();
+        if (!exp.length && !exits.length) { return items; }
 
         var map = {}, order = [];
         items.forEach(function (it) { map[it.id] = it; order.push(it); });
@@ -13415,8 +13499,6 @@ function radarGotoLevel(lv){
         exp.forEach(function (p) {
           var id = p.id;
           if (map[id]) {
-            /* 已在清单里的（如同时是「今日高影响」），补上曝光身份即可，
-               顺序由 STRIP_KIND_ORDER 决定，不重复入列。 */
             if (map[id].kinds.indexOf('exposure') < 0) { map[id].kinds.push('exposure'); }
             return;
           }
@@ -13428,7 +13510,26 @@ function radarGotoLevel(lv){
           });
         });
 
-        /* 重新算展示字段：图标/颜色/前缀文本都取归类后的第一个身份。 */
+        /* 退出医保机构：并入同一清单；已在清单的只补 kinds，不重复入列。
+           动态前缀在下面重算 text 时按 wbExitInfo 生成。 */
+        exits.forEach(function (p) {
+          var id = p.id;
+          if (map[id]) {
+            if (map[id].kinds.indexOf('exit') < 0) { map[id].kinds.push('exit'); }
+            if (!map[id].exitInfo) { map[id].exitInfo = wbExitInfo(p); }
+            return;
+          }
+          order.push({
+            id: id, title: p.title, lv: p.level,
+            lvRank: (window.levelRank ? window.levelRank(p.level) : 0),
+            mark: true, late: 0, kinds: ['exit'],
+            exitInfo: wbExitInfo(p),
+            date: String(p.date || '')
+          });
+        });
+
+        /* 重算展示字段：图标/颜色取第一个身份；退出段用动态前缀
+           【退出·主动/被动·医药机构/医疗机构】。 */
         order.forEach(function (it) {
           var kinds = window.STRIP_KIND_ORDER.filter(function (k) {
             return it.kinds.indexOf(k) >= 0;
@@ -13437,24 +13538,23 @@ function radarGotoLevel(lv){
           it.kind = kinds[0];
           it.icon = m.icon;
           it.color = m.color;
-          it.text = kinds.map(function (k) { return window.STRIP_KIND[k].txt; }).join('') + it.title;
+          it.text = kinds.map(function (k) {
+            if (k === 'exit') {
+              var x = it.exitInfo || { mode: '被动', kind: '其他' };
+              return '【退出·' + x.mode + '·' + x.kind + '】';
+            }
+            return window.STRIP_KIND[k].txt;
+          }).join('') + it.title;
         });
 
-        /* 排序沿用页面口径：层级优先（玉溪市 > 云南 > 国家），
-           同层级内按身份紧急度（曝光 > 逾期 > 跟进 > 高影响）。
-
-           同层级同身份内按发布日期**由新到旧**（2026-10-21 用户要求）：
-           原实现用 localeCompare 升序，曝光台会出现「第四期(07-14) 排在
-           第五期(06-18) 前面」这种期数与时间错位的显示。
-           倒序后新曝光的案例自然浮到顶部，符合「先看最新」的扫读直觉。
-           无日期的条目沉到最后（空串在倒序比较里最大）。 */
+        /* 排序：层级优先，同层级内按身份紧急度（曝光 > 退出 > 逾期 > 跟进 > 高影响），
+           同身份内按发布日期由新到旧。 */
         order.sort(function (a, b) {
           if (a.lvRank !== b.lvRank) { return a.lvRank - b.lvRank; }
           var ka = window.STRIP_KIND_ORDER.indexOf(a.kind);
           var kb = window.STRIP_KIND_ORDER.indexOf(b.kind);
           if (ka !== kb) { return ka - kb; }
           if (a.late !== b.late) { return b.late - a.late; }
-          /* 由新到旧：比较结果取反 */
           if (a.date === b.date) { return 0; }
           return a.date > b.date ? -1 : 1;
         });
@@ -13478,12 +13578,24 @@ function radarGotoLevel(lv){
 
         var items = (typeof window.stripItems === 'function') ? window.stripItems() : [];
         var nExp = items.filter(function (it) { return it.kind === 'exposure'; }).length;
-        if (!nExp) { return; }
+        var nExit = items.filter(function (it) { return it.kind === 'exit'; }).length;
+        if (!nExp && !nExit) { return; }
 
-        /* 环图补第四段：与前几段同构（dasharray 弧段），
-           位置按前三段实际占比顺延，避免与已有段重叠。 */
+        /* 下钻：曝光 / 退出条目用 data-wb-ex 承载 id，复用捕获阶段委托
+           wbExposureGoto；不新增 data-act（其出现总次数是受保护契约）。 */
+        var rows = box.querySelectorAll('.strip-item');
+        items.forEach(function (it, i) {
+          var row = rows[i];
+          if (!row) { return; }
+          if (it.kind === 'exposure' || it.kind === 'exit') {
+            row.setAttribute('data-wb-ex', it.id);
+            row.style.cursor = 'pointer';
+          }
+        });
+
+        /* 环图补段：前三段按实际占比累加 acc，曝光段、退出段依次顺延，
+           互不重叠；一条政策只算一段，总数与三段之和保持一致。 */
         var total = items.length || 1;
-        var segs = ring.querySelectorAll('circle.seg');
         var cnt = { late: 0, follow: 0, high: 0 };
         items.forEach(function (it) {
           if (cnt[it.kind] !== undefined) { cnt[it.kind]++; }
@@ -13492,37 +13604,57 @@ function radarGotoLevel(lv){
         [['late', 'var(--red)'], ['follow', 'var(--amber)'], ['high', 'var(--blue)']].forEach(function (pr) {
           if (cnt[pr[0]]) { acc += cnt[pr[0]] / total; }
         });
-        var f = nExp / total;
-        if (f > 0 && acc < 1) {
+        var RING_C = 2 * Math.PI * 50;
+        function addSeg(n, color) {
+          if (!n || acc >= 1) { return; }
+          var f = n / total;
           var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
           c.setAttribute('class', 'seg');
           c.setAttribute('cx', '60'); c.setAttribute('cy', '60'); c.setAttribute('r', '50');
-          c.setAttribute('style', 'stroke:var(--err)');
-          var RING_C = 2 * Math.PI * 50;
+          c.setAttribute('style', 'stroke:' + color);
           var len = f * RING_C;
           c.setAttribute('stroke-dasharray', len.toFixed(2) + ' ' + (RING_C - len + 0.02).toFixed(2));
           c.setAttribute('stroke-dashoffset', (-acc * RING_C).toFixed(2));
-          /* 不要自己加 rotate：.strip-ring svg 已用 CSS transform:rotate(-90deg)
-             把整个 svg 转正起点了，再加一次 rotate(-90 60 60) 会转两圈，
-             段会落到错误位置（实测段数对了但位置错乱）。 */
+          /* 不要自己加 rotate：.strip-ring svg 已用 CSS 转正起点。 */
           ring.appendChild(c);
+          acc += f;
+        }
+        addSeg(nExp, 'var(--err)');
+        addSeg(nExit, 'var(--amber)');
+
+        /* 图例补行：曝光台 / 退出医保机构 */
+        if (nExp) {
+          var row1 = document.createElement('div');
+          row1.className = 'li';
+          row1.innerHTML = '<i style="background:var(--err)"></i>曝光台<b>' + nExp + '</b>';
+          legend.appendChild(row1);
+        }
+        if (nExit) {
+          var row2 = document.createElement('div');
+          row2.className = 'li';
+          row2.innerHTML = '<i style="background:var(--amber)"></i>退出医保机构<b>' + nExit + '</b>';
+          legend.appendChild(row2);
         }
 
-        /* 图例补一行：曝光台 */
-        var row = document.createElement('div');
-        row.className = 'li';
-        row.innerHTML = '<i style="background:var(--err)"></i>曝光台<b>' + nExp + '</b>';
-        legend.appendChild(row);
-
-        /* 标题栏补一个红色计数标签，扫一眼就知道有曝光 */
+        /* 标题栏计数标签：曝光 N 条 / 退出 N 条 */
         var hd = box.querySelector('.hd');
-        if (hd && !hd.querySelector('.ex-strip-tag')) {
-          var tag = document.createElement('span');
-          tag.className = 'tag red ex-strip-tag';
-          tag.textContent = '曝光 ' + nExp + ' 条';
-          var sp = hd.querySelector('.sp');
-          if (sp) { hd.insertBefore(tag, sp); } else { hd.appendChild(tag); }
+        if (hd) {
+          if (nExp && !hd.querySelector('.ex-strip-tag')) {
+            var tag = document.createElement('span');
+            tag.className = 'tag red ex-strip-tag';
+            tag.textContent = '曝光 ' + nExp + ' 条';
+            var sp = hd.querySelector('.sp');
+            if (sp) { hd.insertBefore(tag, sp); } else { hd.appendChild(tag); }
+          }
+          if (nExit && !hd.querySelector('.ex-exit-strip-tag')) {
+            var tag2 = document.createElement('span');
+            tag2.className = 'tag amber ex-exit-strip-tag';
+            tag2.textContent = '退出 ' + nExit + ' 条';
+            var sp2 = hd.querySelector('.sp');
+            if (sp2) { hd.insertBefore(tag2, sp2); } else { hd.appendChild(tag2); }
+          }
         }
+      };
       };
     }
   }
@@ -13576,6 +13708,8 @@ function radarGotoLevel(lv){
     window.wbRenderExposure = wbRenderExposure;
     window.wbIsExposure = wbIsExposure;
     window.wbExposureList = wbExposureList;
+    window.wbIsExit = wbIsExit;
+    window.wbExitList = wbExitList;
 
     /* 把曝光台并入「今天要处理」的分类体系 */
     try { wbMergeExposureIntoStrip(); } catch (e) { /* 忽略 */ }
@@ -14284,6 +14418,13 @@ function radarGotoLevel(lv){
     tip.className = 'ro-src';
     tip.textContent = line;
     wrap.appendChild(tip);
+
+    /* 常驻合规免责声明（site-spec §4 P0）：固定口径，不使用「权威/保证准确/最终解释权」。 */
+    var disc = doc().createElement('div');
+    disc.className = 'ro-disclaimer';
+    disc.style.cssText = 'font-size:11px;line-height:1.5;color:var(--txt-3);margin-top:4px';
+    disc.textContent = '数据来源于公开政策文件与内部整理索引，仅供本中心内部工作参考，不构成对政策效力的认定或对外承诺；如有疑义以发文机关正式文本为准；发现错漏请联系维护人，我们将及时核实修订。';
+    wrap.appendChild(disc);
 
     txt.appendChild(wrap);
   }
