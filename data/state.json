@@ -1,0 +1,28 @@
+{
+  "meta": {
+    "schemaVersion": "1.0",
+    "sourceTable": "h6rLvnHD0OZ9wyiNwJVAAE",
+    "sourceName": "工作台状态与知识库",
+    "generatedAt": "2026-11-17T10:02:24+08:00",
+    "rowCount": 3,
+    "sha256": "ab437d3def62a46073ec7d92a1304d84c897efadb7c999dd06072a9bf3e0d8bd",
+    "pageSizeDefault": 200
+  },
+  "rows": [
+    {
+      "_id": "freshness",
+      "状态键": "freshness",
+      "内容": "{\"lastCheckedAt\": \"2026-11-17T10:02:24+08:00\", \"nextCheckAt\": \"2026-11-18T08:30:00+08:00\", \"source\": \"registry.jsonl 每日08:30自动化\", \"note\": \"准实时同步，非实时推送\"}"
+    },
+    {
+      "_id": "counts",
+      "状态键": "counts",
+      "内容": "{\"policies\": 664, \"kb\": 664, \"byLevel\": {\"玉溪市\": 57, \"云南省\": 541, \"国家\": 66}, \"byImpact\": {\"高\": 160, \"中\": 265, \"低\": 239}}"
+    },
+    {
+      "_id": "syncMeta",
+      "状态键": "syncMeta",
+      "内容": "{\"generatedAt\": \"2026-11-17T10:02:24+08:00\", \"sourceRevision\": \"1eb3389352a0\", \"sha256\": \"1eb3389352a0e0b73a2548533d7719a301d401297a22375a09d123ac4f7c42e8\", \"note\": \"由 build_data.py 生成，请勿手工编辑\"}"
+    }
+  ]
+}

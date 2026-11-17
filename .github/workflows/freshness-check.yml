@@ -1,0 +1,125 @@
+# 数据新鲜度检查（P2 增强）
+# ---------------------------------------------------------------------------
+# 作用：每日 UTC 00:30（北京时间 08:30）读取 site/data/state.json 中状态键
+#       freshness 的 lastCheckedAt；若距当前时间超过 48 小时，则开一个标题含
+#       「数据新鲜度告警」的 Issue 提醒维护人同步数据；未超期则不做任何操作。
+#
+# 只读约束：本 workflow 只读数据文件，不提交、不改写任何 JSON 或站点文件。
+#
+# 凭证说明：文件内不含任何 API Key / Token 字面量。创建 Issue 使用 GitHub
+#       自动提供并注入的 secrets.GITHUB_TOKEN（github-script 默认通过 context
+#       使用），不引用任何自定义 secret。
+#
+# 权限说明（重要）：
+#   - 检出仓库需要 contents: read；创建 Issue 需要 issues: write。
+#   - 下方 permissions 已显式声明这两项。若仓库/组织把 Actions 默认 GITHUB_TOKEN
+#     权限设为「只读」且禁止工作流提权，则 issues: write 可能不生效、创建 Issue
+#     会失败。此时需仓库管理员在 Settings → Actions → General → Workflow permissions
+#     中选择「Read and write permissions」，或由组织策略放行该仓库写 Issue 权限。
+#   - 本 workflow 是独立任务，失败不影响 GitHub Pages 发布（Pages 由独立部署流程
+#     触发，二者无依赖）；创建 Issue 失败时降级为 core.warning，不使任务硬失败。
+# ---------------------------------------------------------------------------
+name: 数据新鲜度检查
+
+on:
+  schedule:
+    - cron: '30 0 * * *'   # 每日 UTC 00:30 = 北京时间 08:30
+  workflow_dispatch:        # 支持手动触发，便于部署后验证
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  freshness-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+
+      - name: 检查 lastCheckedAt 并在过期时开告警 Issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const filePath = 'site/data/state.json';
+            const FRESHNESS_KEY = 'freshness';
+            const MAX_AGE_HOURS = 48;
+            const ISSUE_TITLE = '数据新鲜度告警：政策数据已超过 48 小时未同步';
+
+            // 1) 只读加载 state.json（本 workflow 不写任何文件）
+            let state;
+            try {
+              state = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+            } catch (e) {
+              core.setFailed('无法读取或解析 site/data/state.json：' + e.message);
+              return;
+            }
+
+            // 2) 取状态键 freshness 的 内容（契约 §5.4.2：内容 解析后必须是对象）
+            const row = (state.rows || []).find(r => r && r['状态键'] === FRESHNESS_KEY);
+            if (!row) {
+              core.setFailed('state.json 中缺少状态键 ' + FRESHNESS_KEY + '。');
+              return;
+            }
+            let freshness;
+            try {
+              freshness = (typeof row['内容'] === 'string') ? JSON.parse(row['内容']) : row['内容'];
+            } catch (e) {
+              core.setFailed('freshness.内容 不是合法 JSON：' + e.message);
+              return;
+            }
+            const lastCheckedAt = freshness && freshness.lastCheckedAt;
+            if (!lastCheckedAt) {
+              core.setFailed('freshness 中缺少 lastCheckedAt。');
+              return;
+            }
+            const lastMs = Date.parse(lastCheckedAt);
+            if (!Number.isFinite(lastMs)) {
+              core.setFailed('lastCheckedAt 不是合法 ISO 时间：' + lastCheckedAt);
+              return;
+            }
+
+            // 3) 计算距今小时数；未超期则静默返回
+            const ageHours = (Date.now() - lastMs) / 36e5;
+            core.info(`数据截止时间 lastCheckedAt=${lastCheckedAt}；距今 ${ageHours.toFixed(1)} 小时；阈值 ${MAX_AGE_HOURS} 小时`);
+            if (ageHours <= MAX_AGE_HOURS) {
+              core.info('数据在阈值内，无需操作。');
+              return;
+            }
+
+            // 4) 超期：先按标题查重，避免每天重复开告警 Issue
+            const { data: openIssues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open'
+            });
+            if (openIssues.some(issue => issue.title === ISSUE_TITLE)) {
+              core.info('已存在同标题的未关闭告警 Issue，跳过重复创建。');
+              return;
+            }
+
+            // 5) 创建告警 Issue（仅用自动 GITHUB_TOKEN；失败降级为 warning）
+            const body = [
+              '## 数据新鲜度告警',
+              '',
+              `site/data/state.json 中 freshness.lastCheckedAt = \`${lastCheckedAt}\`，`,
+              `距检查时刻已超过 ${MAX_AGE_HOURS} 小时（约 ${ageHours.toFixed(1)} 小时）。`,
+              '',
+              '请维护人确认本地每日 08:30 同步链路是否正常：registry.jsonl 是否更新、',
+              'tools/build_data.py 是否成功重生成三份 JSON、是否已 commit & push。',
+              '数据同步完成后请手动关闭本 Issue。',
+              '',
+              '> 本 Issue 由 `.github/workflows/freshness-check.yml` 自动创建，仅做只读检查。'
+            ].join('\n');
+            try {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: ISSUE_TITLE,
+                body: body
+              });
+              core.info('已创建数据新鲜度告警 Issue。');
+            } catch (e) {
+              core.warning('创建 Issue 失败（请检查 issues: write 权限）：' + e.message);
+            }
