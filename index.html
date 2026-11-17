@@ -3,310 +3,284 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="澄江市乡镇卫生院医保政策早知道：今日必读、政策检索、政策解读、智能问答、我的关注、更新动态、知识库。">
+<meta name="description" content="澄江市乡镇卫生院医保政策决策台：今日研判、政策库、问一问、我的关注。">
 <title>医保政策早知道 · 服务于澄江市乡镇卫生院</title>
-<!-- 数据垫片必须先于页面脚本同步加载，避免父端 RPC 兜底覆盖本地数据源 -->
 <script src="./scripts/data-shim.js"></script>
 <style>
-/* ============ 设计令牌：年轻、清爽、有活力 ============ */
+/* ============ 设计令牌 v2：可读优先，年轻但克制 ============ */
 :root{
-  --bg:#f4f7fc; --surface:#ffffff; --surface-2:#f8faff;
-  --ink:#17233c; --ink-2:#3c4c6b; --muted:#7180a0;
-  --line:#e6ebf5; --line-2:#d7dfee;
-  --brand:#2563eb; --brand-2:#7c3aed; --cyan:#0891b2; --mint:#0d9488;
-  --warm:#f59e0b; --coral:#f43f5e; --danger:#e11d48; --ok:#10b981;
-  --brand-rgb:37,99,235; --purple-rgb:124,58,237; --coral-rgb:244,63,94; --mint-rgb:13,148,136;
-  --r:18px; --r-sm:11px; --r-xs:7px;
-  --sh:0 8px 28px rgba(30,58,138,.07); --sh-2:0 16px 44px rgba(30,58,138,.12);
-  --fast:.16s cubic-bezier(.2,.8,.2,1);
-  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --bg:#F5F7FB; --surface:#FFFFFF; --surface-2:#F1F5FB;
+  --ink:#0F1F3D; --ink-2:#33415C; --muted:#5B6B8C;
+  --line:#E3E9F3; --line-2:#CBD5E6;
+  --brand:#2563EB; --brand-50:#EEF4FF; --brand-hover:#DBE8FE;
+  --accent:#0EA5A4; --ai:#7C5CFC;
+  --danger:#E11D48; --warn:#F59E0B; --ok:#10B981;
+  --shadow:0 2px 8px rgba(16,32,64,.05);
+  --shadow-h:0 8px 24px rgba(16,32,64,.10);
+  --r:16px; --r-sm:10px; --r-xs:8px;
+  --t:.18s cubic-bezier(.2,.8,.2,1);
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
 }
 html[data-theme="dark"]{
-  --bg:#0c1220; --surface:#141d30; --surface-2:#1a2540;
-  --ink:#eaf0ff; --ink-2:#c3d0ea; --muted:#8c9bb8;
-  --line:#26344f; --line-2:#334361;
-  --brand:#6d9bff; --brand-2:#a78bfa; --cyan:#38bdf8; --mint:#2dd4bf;
-  --sh:0 8px 28px rgba(0,0,0,.28); --sh-2:0 16px 44px rgba(0,0,0,.36);
+  --bg:#0B1220; --surface:#151E31; --surface-2:#1C2740;
+  --ink:#EAF1FF; --ink-2:#C2CFE8; --muted:#93A2C0;
+  --line:#26334E; --line-2:#334261;
+  --brand:#6EA8FF; --brand-50:#1B2A4A; --brand-hover:#24375C;
+  --accent:#2DD4BF; --ai:#A78BFA; --danger:#FB7185; --warn:#FBBF24; --ok:#34D399;
+  --shadow:0 2px 8px rgba(0,0,0,.22); --shadow-h:0 8px 24px rgba(0,0,0,.34);
 }
 *{box-sizing:border-box}
-html,body{margin:0;padding:0;height:100%}
-body{background:var(--bg);color:var(--ink);font:14px/1.6 var(--font);-webkit-font-smoothing:antialiased}
+html,body{margin:0;padding:0;min-height:100%}
+body{background:var(--bg);color:var(--ink);font:14px/1.7 var(--font);-webkit-font-smoothing:antialiased}
 button,input,select{font:inherit;color:inherit}
 button{cursor:pointer}
 a{color:var(--brand);text-decoration:none}
 a:hover{text-decoration:underline}
-::selection{background:rgba(var(--brand-rgb),.18)}
+::selection{background:var(--brand-hover)}
 
 /* ============ 骨架 ============ */
 .app{display:flex;min-height:100vh}
-.sidebar{width:232px;flex:0 0 232px;background:var(--surface);border-right:1px solid var(--line);
-  display:flex;flex-direction:column;position:sticky;top:0;height:100vh;z-index:30}
-.brand{display:flex;align-items:center;gap:10px;padding:20px 16px 14px}
-.brand-mark{width:38px;height:38px;flex:0 0 38px;border-radius:12px;display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;box-shadow:0 6px 16px rgba(var(--brand-rgb),.28)}
-.brand-mark svg{width:21px;height:21px}
-.brand-txt b{display:block;font-size:15px;letter-spacing:.2px;line-height:1.25}
-.brand-txt span{display:block;font-size:10.5px;color:var(--brand);font-weight:700;margin-top:3px;white-space:nowrap}
+.sidebar{width:224px;flex:0 0 224px;background:var(--surface);border-right:1px solid var(--line);
+  position:sticky;top:0;height:100vh;display:flex;flex-direction:column;z-index:30}
+.brand{display:flex;align-items:center;gap:10px;padding:20px 15px 12px}
+.brand-mark{width:36px;height:36px;flex:0 0 36px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--brand),#4F46E5);color:#fff}
+.brand-mark svg{width:20px;height:20px}
+.brand-txt b{display:block;font-size:15px;font-weight:800;line-height:1.3}
+.brand-txt span{display:block;font-size:11px;color:var(--brand);font-weight:700;margin-top:2px;white-space:nowrap}
 .nav{flex:1;overflow-y:auto;padding:6px 10px}
-.nav .group{font-size:10px;font-weight:800;color:var(--muted);letter-spacing:1.4px;padding:14px 10px 6px;text-transform:uppercase}
-.nav-item{width:100%;display:flex;align-items:center;gap:11px;padding:10px 12px;border:0;border-radius:12px;
-  background:transparent;color:var(--ink-2);font-weight:600;font-size:13px;text-align:left;transition:var(--fast);position:relative}
-.nav-item svg{width:18px;height:18px;flex:0 0 18px;opacity:.8}
-.nav-item:hover{background:var(--surface-2);color:var(--ink);transform:translateX(2px)}
-.nav-item.on{background:linear-gradient(100deg,rgba(var(--brand-rgb),.13),rgba(var(--purple-rgb),.07));color:var(--brand)}
-.nav-item.on::before{content:"";position:absolute;left:-10px;top:11px;bottom:11px;width:3px;border-radius:0 3px 3px 0;background:var(--brand)}
-.nav-item .dot{margin-left:auto;background:var(--coral);color:#fff;font-size:10px;font-weight:800;min-width:18px;height:18px;
-  border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 5px}
-.sidebar-foot{padding:10px 14px 16px;border-top:1px solid var(--line)}
-.side-foot-txt{font-size:10.5px;color:var(--muted);line-height:1.7}
-.side-foot-txt b{color:var(--ink-2)}
+.nav-item{width:100%;display:flex;align-items:center;gap:10px;padding:11px 12px;border:0;border-radius:var(--r-sm);
+  background:transparent;color:var(--ink-2);font-size:13px;font-weight:600;text-align:left;transition:var(--t);margin-bottom:2px}
+.nav-item svg{width:18px;height:18px;flex:0 0 18px;opacity:.85}
+.nav-item:hover{background:var(--surface-2);color:var(--ink)}
+.nav-item.on{background:var(--brand-50);color:var(--brand);font-weight:700}
+.sidebar-foot{padding:12px 15px 16px;border-top:1px solid var(--line);font-size:11px;color:var(--muted);line-height:1.7}
+.sidebar-foot b{color:var(--ink-2)}
 
 .app-main{flex:1;min-width:0;display:flex;flex-direction:column}
-.topbar{height:66px;flex:0 0 66px;display:flex;align-items:center;gap:12px;padding:0 24px;
-  background:rgba(255,255,255,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:25}
-html[data-theme="dark"] .topbar{background:rgba(20,29,48,.86)}
-.topbar h1{font-size:17px;margin:0;letter-spacing:.2px;font-weight:800}
-.crumb{font-size:11.5px;color:var(--muted);margin-top:1px}
-.badge-serve{display:inline-flex;align-items:center;gap:5px;margin-left:10px;padding:3px 10px;border-radius:999px;
-  font-size:11px;font-weight:700;white-space:nowrap;color:#fff;background:linear-gradient(100deg,var(--brand),var(--brand-2));
-  box-shadow:0 4px 12px rgba(var(--brand-rgb),.22)}
+.topbar{height:64px;flex:0 0 64px;display:flex;align-items:center;gap:12px;padding:0 22px;
+  background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:25}
+.topbar h1{font-size:17px;margin:0;font-weight:800}
+.crumb{font-size:11px;color:var(--muted);margin-top:1px}
 .spacer{flex:1}
-.search{position:relative;width:270px;max-width:32vw}
-.search input{width:100%;height:36px;border:1px solid var(--line-2);border-radius:11px;background:var(--surface);
-  padding:0 12px 0 34px;outline:none;transition:var(--fast);font-size:12.5px}
-.search input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(var(--brand-rgb),.10)}
-.search svg{position:absolute;left:11px;top:11px;width:14px;height:14px;color:var(--muted)}
-.sug{position:absolute;top:42px;left:0;right:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;
-  box-shadow:var(--sh-2);max-height:340px;overflow:auto;z-index:60;display:none;padding:5px}
+.search{position:relative;width:300px;max-width:34vw}
+.search input{width:100%;height:40px;border:1px solid var(--line-2);border-radius:var(--r-sm);background:var(--bg);
+  padding:0 12px 0 36px;outline:none;font-size:13px;transition:var(--t)}
+.search input:focus{border:2px solid var(--brand);background:var(--surface);box-shadow:var(--shadow)}
+.search svg{position:absolute;left:12px;top:13px;width:15px;height:15px;color:var(--muted)}
+.sug{position:absolute;top:46px;left:0;right:0;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r-sm);box-shadow:var(--shadow-h);max-height:360px;overflow:auto;z-index:60;display:none;padding:5px}
 .sug.on{display:block}
-.sug button{display:block;width:100%;border:0;background:transparent;text-align:left;padding:8px 10px;border-radius:8px;font-size:12px}
+.sug button{display:block;width:100%;border:0;background:transparent;text-align:left;padding:9px 10px;border-radius:var(--r-xs);font-size:13px}
 .sug button:hover{background:var(--surface-2)}
-.sug small{display:block;color:var(--muted);font-size:10.5px}
-.iconbtn{width:36px;height:36px;border:1px solid var(--line-2);background:var(--surface);border-radius:11px;
-  display:flex;align-items:center;justify-content:center;transition:var(--fast);flex:0 0 36px}
-.iconbtn:hover{border-color:var(--brand);color:var(--brand);transform:translateY(-1px)}
-.iconbtn svg{width:16px;height:16px}
+.sug small{display:block;color:var(--muted);font-size:11px}
+.iconbtn{width:38px;height:38px;border:1px solid var(--line-2);background:var(--surface);border-radius:var(--r-sm);
+  display:flex;align-items:center;justify-content:center;transition:var(--t);flex:0 0 38px}
+.iconbtn:hover{border-color:var(--brand);color:var(--brand)}
+.iconbtn svg{width:17px;height:17px}
 .sync-pill{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);white-space:nowrap}
-.sync-pill i{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px rgba(16,185,129,.14)}
+.sync-pill i{width:7px;height:7px;border-radius:50%;background:var(--ok)}
+.serve{margin-left:2px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;color:#fff;
+  background:linear-gradient(100deg,var(--brand),#4F46E5);white-space:nowrap}
 
-.views{padding:22px 24px 60px;max-width:1480px;width:100%;margin:0 auto}
-.view{display:none;animation:rise .32s cubic-bezier(.2,.8,.2,1)}
+.views{padding:20px 22px 70px;max-width:1440px;width:100%;margin:0 auto}
+.view{display:none;animation:rise .26s ease}
 .view.on{display:block}
-@keyframes rise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
-/* ============ 通用组件 ============ */
-.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh)}
-.pad{padding:18px 20px}
-.sec-head{display:flex;align-items:center;gap:10px;margin:0 0 13px}
-.sec-head h2{font-size:16px;margin:0;font-weight:800;letter-spacing:.2px}
-.sec-head .kicker{font-size:10.5px;font-weight:800;color:var(--brand);letter-spacing:1.2px;text-transform:uppercase}
-.sec-head .sub{font-size:11.5px;color:var(--muted)}
+/* ============ 通用 ============ */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:20px 22px;margin-bottom:18px}
+.sec-head{display:flex;align-items:baseline;gap:10px;margin-bottom:14px}
+.sec-head h2{font-size:18px;line-height:1.4;margin:0;font-weight:700}
+.sec-head .sub{font-size:12px;color:var(--muted)}
 .sec-head .right{margin-left:auto;display:flex;gap:8px;align-items:center}
-.btn{border:1px solid var(--line-2);background:var(--surface);border-radius:10px;padding:7px 13px;font-size:12px;font-weight:700;transition:var(--fast)}
-.btn:hover{border-color:var(--brand);color:var(--brand);transform:translateY(-1px)}
-.btn.primary{border:0;color:#fff;background:linear-gradient(100deg,var(--brand),var(--brand-2));box-shadow:0 5px 14px rgba(var(--brand-rgb),.22)}
-.btn.primary:hover{filter:brightness(1.07)}
-.btn.ghost{border-color:transparent;background:transparent;color:var(--muted)}
-.btn.sm{padding:5px 10px;font-size:11px;border-radius:8px}
-.chip{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;font-size:10.5px;font-weight:700;
+.btn{border:1px solid var(--line-2);background:var(--surface);border-radius:var(--r-xs);padding:7px 12px;font-size:12px;font-weight:600;transition:var(--t)}
+.btn:hover{border-color:var(--brand);color:var(--brand)}
+.btn.primary{border:0;color:#fff;background:var(--brand);height:36px;padding:0 16px;font-size:13px;font-weight:700}
+.btn.primary:hover{background:#1D4ED8;color:#fff}
+.btn.sm{padding:5px 10px;font-size:11px}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700;line-height:1.6;
   background:var(--surface-2);border:1px solid var(--line);color:var(--ink-2);white-space:nowrap}
-.chip.blue{color:var(--brand);background:rgba(var(--brand-rgb),.08);border-color:rgba(var(--brand-rgb),.2)}
-.chip.purple{color:var(--brand-2);background:rgba(var(--purple-rgb),.08);border-color:rgba(var(--purple-rgb),.2)}
-.chip.cyan{color:var(--cyan);background:rgba(8,145,178,.09);border-color:rgba(8,145,178,.2)}
-.chip.warn{color:var(--warm);background:rgba(245,158,11,.10);border-color:rgba(245,158,11,.24)}
-.chip.red{color:var(--danger);background:rgba(225,29,72,.09);border-color:rgba(225,29,72,.22)}
-.chip.mint{color:var(--mint);background:rgba(var(--mint-rgb),.10);border-color:rgba(var(--mint-rgb),.22)}
-.chip.click{cursor:pointer;transition:var(--fast)}
-.chip.click:hover{transform:translateY(-1px);box-shadow:var(--sh)}
+.chip.blue{color:var(--brand);background:var(--brand-50);border-color:rgba(37,99,235,.22)}
+.chip.cyan{color:var(--accent);background:rgba(14,165,164,.09);border-color:rgba(14,165,164,.22)}
+.chip.warn{color:#B45309;background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.28)}
+.chip.red{color:var(--danger);background:rgba(225,29,72,.09);border-color:rgba(225,29,72,.24)}
+.chip.click{cursor:pointer;transition:var(--t)}
+.chip.click:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.verdict-badge{padding:3px 11px;border-radius:999px;font-size:12px;font-weight:700;color:#fff;white-space:nowrap}
+.verdict-badge.report{background:var(--danger)}
+.verdict-badge.selfcheck{background:var(--warn);color:#3B2600}
+.verdict-badge.know{background:var(--ok)}
 .muted{color:var(--muted)}
-.mini{font-size:11px}
-.mono{font-variant-numeric:tabular-nums;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-.empty{padding:34px 20px;text-align:center;color:var(--muted);font-size:12.5px}
-.empty b{display:block;color:var(--ink-2);font-size:14px;margin-bottom:5px}
-.divider{height:1px;background:var(--line);margin:14px 0}
+.mini{font-size:12px}
+.mono{font-variant-numeric:tabular-nums}
+.empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:13px}
+.empty b{display:block;color:var(--ink-2);font-size:15px;margin-bottom:6px}
+.divider{height:1px;background:var(--line);margin:16px 0}
 
-/* ============ 今日 · Hero ============ */
-.hero{position:relative;overflow:hidden;border-radius:22px;padding:24px 26px;color:#fff;margin-bottom:18px;
-  background:linear-gradient(118deg,#1d4ed8 0%,#4338ca 46%,#7c3aed 100%);box-shadow:0 18px 44px rgba(var(--brand-rgb),.24)}
-.hero::after{content:"";position:absolute;right:-70px;top:-90px;width:290px;height:290px;border-radius:50%;
-  background:radial-gradient(circle,rgba(255,255,255,.20),transparent 66%)}
-.hero::before{content:"";position:absolute;right:80px;bottom:-110px;width:230px;height:230px;border-radius:50%;
-  background:radial-gradient(circle,rgba(34,211,238,.24),transparent 68%)}
-.hero .hello{font-size:11px;letter-spacing:2px;font-weight:800;opacity:.82;text-transform:uppercase}
-.hero h2{font-size:25px;margin:5px 0 6px;letter-spacing:.3px;font-weight:800;position:relative;z-index:1}
-.hero p{margin:0;max-width:660px;font-size:13px;opacity:.92;position:relative;z-index:1}
-.hero-stats{display:flex;gap:22px;margin-top:18px;position:relative;z-index:1;flex-wrap:wrap}
-.hero-stat b{display:block;font-size:23px;line-height:1.1;font-weight:800}
-.hero-stat span{font-size:10.5px;opacity:.82}
-.hero-actions{position:absolute;right:26px;bottom:22px;display:flex;gap:8px;z-index:2;flex-wrap:wrap}
-.hero-actions button{border:1px solid rgba(255,255,255,.38);background:rgba(255,255,255,.14);color:#fff;
-  border-radius:11px;padding:8px 13px;font-size:12px;font-weight:700;backdrop-filter:blur(6px);transition:var(--fast)}
-.hero-actions button:hover{background:rgba(255,255,255,.26);transform:translateY(-2px)}
-@media (max-width:920px){.hero-actions{position:static;margin-top:18px}}
+/* ============ 第1眼：状态结论条（首屏唯一主角） ============ */
+.status-conclusion{position:relative;overflow:hidden;border-radius:var(--r);border:1px solid var(--line);
+  background:var(--surface);box-shadow:var(--shadow);padding:18px 22px 18px 26px;margin-bottom:18px;min-height:96px;
+  display:flex;align-items:center;gap:18px}
+.status-conclusion::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--warn)}
+.status-conclusion.lv-report::before{background:var(--danger)}
+.status-conclusion.lv-ok::before{background:var(--ok)}
+.status-conclusion .lamp{width:12px;height:12px;border-radius:50%;background:var(--warn);flex:0 0 12px;box-shadow:0 0 0 5px rgba(245,158,11,.14)}
+.status-conclusion.lv-report .lamp{background:var(--danger);box-shadow:0 0 0 5px rgba(225,29,72,.14)}
+.status-conclusion.lv-ok .lamp{background:var(--ok);box-shadow:0 0 0 5px rgba(16,185,129,.14)}
+.status-conclusion .body{flex:1;min-width:0}
+.status-conclusion .ttl{font-size:20px;font-weight:800;line-height:1.4;color:var(--ink)}
+.status-conclusion .big{font-size:28px;font-weight:800;font-family:var(--font);color:var(--ink);margin-right:6px}
+.status-conclusion .desc{font-size:13px;color:var(--ink-2);margin-top:3px}
+.status-conclusion .acts{display:flex;gap:9px;align-items:center;flex-shrink:0}
 
-.grid{display:grid;gap:14px}
-.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
-.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
-.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
-.g21{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}
-@media (max-width:1180px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g21,.g3{grid-template-columns:1fr}}
-@media (max-width:720px){.g4,.g2{grid-template-columns:1fr}}
+/* ============ 第2眼：决策卡（P0三件套 + P1标签 + P2折叠） ============ */
+.decision-card{padding:18px 20px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);
+  margin-bottom:12px;position:relative;padding-left:26px;transition:var(--t)}
+.decision-card:hover{box-shadow:var(--shadow-h)}
+.decision-card::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:4px;border-radius:0 4px 4px 0;background:var(--line-2)}
+.decision-card.lv-report::before{background:var(--danger)}
+.decision-card.lv-selfcheck::before{background:var(--warn)}
+.decision-card.lv-know::before{background:var(--brand)}
+.pol-title{font-size:16px;line-height:1.4;font-weight:700;color:var(--ink);margin:0;display:-webkit-box;
+  -webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer}
+.pol-title:hover{color:var(--brand)}
+.pol-oneliner{font-size:14px;line-height:1.7;color:var(--ink-2);margin-top:8px;padding-left:10px;border-left:2px solid var(--accent);max-width:68ch}
+.pol-oneliner::before{content:"影响 · ";color:var(--accent);font-size:12px;font-weight:700}
+.decision-card.is-group .pol-oneliner::before{content:"概览 · "}
+.meta-lv-exec{color:var(--brand)!important;font-weight:700!important}
+.meta-lv-ref{color:var(--ink-2)!important;font-weight:600!important}
+.meta-lv-base{color:var(--muted)!important;font-weight:500!important}
+.pol-action{display:block;margin-top:12px;background:var(--brand-50);border-left:3px solid var(--brand);
+  border-radius:var(--r-xs);padding:10px 12px;font-size:14px;line-height:1.6;color:var(--ink-2);cursor:pointer;transition:var(--t)}
+.pol-action:hover{background:var(--brand-hover)}
+.pol-action::after{content:"›";float:right;font-size:17px;color:var(--brand);line-height:1}
+.pol-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px;align-items:center}
+.pol-chip{padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700;line-height:1.6;border:1px solid transparent}
+.pol-chip.lv-report{background:var(--danger);color:#fff}
+.pol-chip.lv-selfcheck{background:var(--warn);color:#3B2600}
+.pol-chip.lv-exposure{color:var(--danger);background:rgba(225,29,72,.09);border-color:rgba(225,29,72,.24)}
+.pol-chip.lv-level{color:var(--brand);background:var(--brand-50);border-color:rgba(37,99,235,.22)}
+.pol-chip.lv-plain{color:var(--muted);background:var(--surface-2);border-color:var(--line)}
+.pol-meta{font-size:12px;color:var(--muted);margin-left:auto}
+.pol-p2{margin-top:10px;font-size:12px;color:var(--muted)}
+.pol-p2 summary{cursor:pointer;text-decoration:underline dotted;list-style:none}
+.pol-p2 summary::-webkit-details-marker{display:none}
+.pol-raw{background:var(--surface-2);border-radius:var(--r-xs);padding:12px;margin-top:9px;font-size:12px;line-height:1.8;color:var(--ink-2)}
 
-/* 行动卡 */
-.action{position:relative;overflow:hidden;padding:16px 17px;border-radius:var(--r);background:var(--surface);
-  border:1px solid var(--line);box-shadow:var(--sh);cursor:pointer;transition:var(--fast)}
-.action:hover{transform:translateY(-3px);box-shadow:var(--sh-2)}
-.action .ic{width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
-.action .ic svg{width:18px;height:18px}
-.action b{display:block;font-size:13.5px;font-weight:800}
-.action p{margin:3px 0 0;font-size:11px;color:var(--muted);line-height:1.55;min-height:34px}
-.action .num{position:absolute;right:15px;top:13px;font-size:21px;font-weight:800;font-family:var(--mono,monospace)}
-.a-red .ic{background:rgba(225,29,72,.11);color:var(--danger)} .a-red .num{color:var(--danger)}
-.a-blue .ic{background:rgba(var(--brand-rgb),.11);color:var(--brand)} .a-blue .num{color:var(--brand)}
-.a-purple .ic{background:rgba(var(--purple-rgb),.11);color:var(--brand-2)} .a-purple .num{color:var(--brand-2)}
-.a-mint .ic{background:rgba(var(--mint-rgb),.12);color:var(--mint)} .a-mint .num{color:var(--mint)}
+/* ============ 第3眼：步骤清单 ============ */
+.step-list{margin:0;padding:0;list-style:none}
+.step-list li{position:relative;padding-left:28px;font-size:14px;line-height:1.7;margin-bottom:8px;color:var(--ink-2)}
+.step-list li::before{content:counter(step);counter-increment:step;position:absolute;left:0;top:2px;width:19px;height:19px;
+  border-radius:50%;background:var(--brand-50);color:var(--brand);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.step-list{counter-reset:step}
 
-/* 三级轨道 */
-.track{display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:13px;border:1px solid var(--line);background:var(--surface-2);margin-bottom:9px}
-.track .lv{width:34px;height:34px;flex:0 0 34px;border-radius:10px;display:flex;align-items:center;justify-content:center;
-  font-size:10.5px;font-weight:800;color:#fff}
-.track .lv.city{background:linear-gradient(135deg,#2563eb,#4f46e5)}
-.track .lv.prov{background:linear-gradient(135deg,#0891b2,#0e7490)}
-.track .lv.nat{background:linear-gradient(135deg,#7c3aed,#6d28d9)}
-.track .tt{flex:1;min-width:0}
-.track .tt b{font-size:12.5px;display:block}
-.track .bar{height:5px;border-radius:4px;background:rgba(var(--brand-rgb),.11);margin-top:6px;overflow:hidden}
-.track .bar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--brand),var(--cyan))}
-.track .cnt{font-size:16px;font-weight:800;font-family:var(--mono,monospace);color:var(--ink-2)}
-.track .cnt small{font-size:10px;color:var(--muted);font-weight:600;display:block;text-align:right}
+/* ============ 风险堆叠条（替代雷达环） ============ */
+.risk-stack{margin-top:10px}
+.risk-bar{display:flex;height:14px;border-radius:7px;overflow:hidden;background:var(--surface-2)}
+.risk-bar i{display:block;height:100%;transition:width .3s ease}
+.risk-bar .r{background:var(--danger)} .risk-bar .o{background:var(--warn)} .risk-bar .n{background:var(--line-2)}
+.risk-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:12px;color:var(--ink-2)}
+.risk-legend span{display:flex;align-items:center;gap:5px}
+.risk-legend i{width:9px;height:9px;border-radius:3px;display:block}
+.risk-legend b{font-weight:800}
 
-/* 列表条目 */
-.row{display:flex;gap:10px;align-items:flex-start;padding:11px 6px;border-bottom:1px solid var(--line);cursor:pointer;transition:var(--fast)}
-.row:last-child{border-bottom:0}
-.row:hover{background:var(--surface-2)}
-.row .body{flex:1;min-width:0}
-.row .t{font-size:12.5px;font-weight:700;line-height:1.5;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.row .m{font-size:10.5px;color:var(--muted);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap}
-.row .arrow{color:var(--muted);font-size:16px;align-self:center}
-.row.hot .t{color:var(--danger)}
+/* ============ 三级轨道（按可执行性加权） ============ */
+.track{display:flex;align-items:center;gap:12px;margin-bottom:10px;font-size:12px}
+.track .name{width:92px;flex:0 0 92px;color:var(--ink-2);font-weight:600}
+.track .name small{color:var(--muted);font-weight:400}
+.track .bar{flex:1;height:6px;border-radius:4px;background:var(--surface-2);overflow:hidden}
+.track .bar i{display:block;height:100%;background:var(--line-2)}
+.track .cnt{font-size:12px;color:var(--muted);width:74px;text-align:right}
+.track.exec .bar{height:12px}.track.exec .bar i{background:var(--brand)}
+.track.exec .cnt{font-size:14px;font-weight:700;color:var(--brand)}
+.track.ref .bar i{background:#94A3B8}
+.track.base .bar i{background:#CBD5E6}
 
-/* 时间轴 */
-.tl{position:relative;padding-left:20px}
-.tl::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:2px;background:var(--line)}
-.tl-item{position:relative;padding:0 0 15px}
-.tl-item::before{content:"";position:absolute;left:-19px;top:6px;width:10px;height:10px;border-radius:50%;
-  background:var(--brand);box-shadow:0 0 0 3px rgba(var(--brand-rgb),.14)}
-.tl-item .d{font-size:10.5px;color:var(--muted);font-weight:700}
-.tl-item .t{font-size:12.5px;font-weight:650;line-height:1.55}
-
-/* 雷达环 */
-.radar-wrap{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px}
-.radar-wrap svg{width:126px;height:126px;transform:rotate(-90deg)}
-.radar-wrap .center{margin-top:-88px;text-align:center;position:relative;z-index:1}
-.radar-wrap .center b{font-size:24px;font-weight:800;display:block;line-height:1}
-.radar-wrap .center span{font-size:10px;color:var(--muted)}
-.radar-wrap .note{margin-top:60px;font-size:10.5px;color:var(--muted);text-align:center}
-
-/* 筛选条 */
-.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
-.filters select,.filters input{height:34px;border:1px solid var(--line-2);border-radius:9px;background:var(--surface);padding:0 10px;font-size:12px;outline:none}
+/* ============ 筛选 / 表格 ============ */
+.filters{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.filters input,.filters select{height:38px;border:1px solid var(--line-2);border-radius:var(--r-sm);background:var(--surface);padding:0 11px;font-size:13px;outline:none}
 .filters input{min-width:220px;flex:1}
-.filters select:focus,.filters input:focus{border-color:var(--brand)}
-.seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:3px;gap:2px}
-.seg button{border:0;background:transparent;padding:5px 11px;border-radius:7px;font-size:11.5px;font-weight:700;color:var(--muted)}
-.seg button.on{background:var(--surface);color:var(--brand);box-shadow:var(--sh)}
-
-/* 政策卡片（解读/列表详情） */
-.pcard{padding:16px 18px;border:1px solid var(--line);border-radius:15px;background:var(--surface);margin-bottom:11px;transition:var(--fast)}
-.pcard:hover{border-color:rgba(var(--brand-rgb),.36);box-shadow:var(--sh)}
-.pcard .hd{display:flex;gap:8px;align-items:flex-start}
-.pcard .hd h3{font-size:13.5px;margin:0;flex:1;line-height:1.55;font-weight:750;cursor:pointer}
-.pcard .hd h3:hover{color:var(--brand)}
-.pcard .meta{font-size:10.5px;color:var(--muted);margin:6px 0 9px;display:flex;gap:10px;flex-wrap:wrap}
-.pcard .lead{font-size:12px;color:var(--ink-2);line-height:1.7}
-.pcard .acts{display:flex;gap:7px;margin-top:11px;flex-wrap:wrap}
-.blk{margin-top:11px;padding:11px 13px;border-radius:11px;background:var(--surface-2);border:1px solid var(--line)}
-.blk .bt{font-size:10.5px;font-weight:800;color:var(--brand);letter-spacing:.6px;margin-bottom:5px}
-.blk .bd{font-size:12px;line-height:1.75;color:var(--ink-2);white-space:pre-line}
-.blk.local{background:rgba(var(--mint-rgb),.06);border-color:rgba(var(--mint-rgb),.2)}
-.blk.local .bt{color:var(--mint)}
-.blk.warn{background:rgba(225,29,72,.05);border-color:rgba(225,29,72,.18)}
-.blk.warn .bt{color:var(--danger)}
-.hl{background:rgba(245,158,11,.24);border-radius:3px;padding:0 2px}
-
-/* 问答 */
-.chat-shell{display:flex;flex-direction:column;height:min(68vh,660px)}
-.chat-body{flex:1;overflow-y:auto;padding:6px 4px 12px}
-.msg{display:flex;gap:9px;margin-bottom:13px}
-.msg .av{width:29px;height:29px;flex:0 0 29px;border-radius:9px;display:flex;align-items:center;justify-content:center;
-  color:#fff;font-size:11px;font-weight:800}
-.msg.me .av{background:linear-gradient(135deg,var(--brand),var(--brand-2))}
-.msg.ai .av{background:linear-gradient(135deg,var(--mint),var(--cyan))}
-.msg .bub{max-width:min(760px,84%);padding:11px 13px;border-radius:14px;font-size:12.5px;line-height:1.75;white-space:pre-line}
-.msg.me .bub{background:linear-gradient(100deg,var(--brand),var(--brand-2));color:#fff;border-bottom-left-radius:4px}
-.msg.ai .bub{background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:4px}
-.msg .cite{margin-top:9px;padding-top:8px;border-top:1px dashed var(--line)}
-.suggest{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0 12px}
-.suggest button{border:1px dashed var(--line-2);background:var(--surface-2);border-radius:999px;padding:5px 11px;font-size:11px;color:var(--ink-2)}
-.suggest button:hover{border-color:var(--brand);color:var(--brand)}
-.chat-input{display:flex;gap:8px;padding-top:11px;border-top:1px solid var(--line)}
-.chat-input input{flex:1;height:40px;border:1px solid var(--line-2);border-radius:11px;padding:0 13px;outline:none;background:var(--surface)}
-.chat-input input:focus{border-color:var(--brand)}
-
-/* 分页 */
-.pager{display:flex;align-items:center;justify-content:center;gap:8px;padding:16px 0;font-size:11.5px;color:var(--muted)}
-.pager button{border:1px solid var(--line-2);background:var(--surface);border-radius:8px;padding:5px 10px;font-size:11px}
+.filters input:focus,.filters select:focus{border-color:var(--brand)}
+.seg{display:inline-flex;gap:3px;background:var(--surface-2);border-radius:var(--r-sm);padding:3px}
+.seg button{border:0;background:transparent;border-radius:var(--r-xs);padding:6px 12px;font-size:12px;font-weight:600;color:var(--muted)}
+.seg button.on{background:var(--surface);color:var(--brand);font-weight:700;box-shadow:var(--shadow)}
+.seg button[data-biz="charge"].on{color:#2563EB;box-shadow:inset 0 0 0 2px #2563EB}
+.seg button[data-biz="settle"].on{color:#0EA5A4;box-shadow:inset 0 0 0 2px #0EA5A4}
+.seg button[data-biz="risk"].on{color:#B45309;box-shadow:inset 0 0 0 2px #F59E0B}
+.seg button[data-biz="report"].on{color:#E11D48;box-shadow:inset 0 0 0 2px #E11D48}
+.table-wrap{max-height:66vh;overflow:auto;border:1px solid var(--line);border-radius:var(--r-sm)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted);font-weight:700;background:var(--surface-2);position:sticky;top:0}
+tbody tr:hover{background:var(--surface-2)}
+td .t{font-size:14px;font-weight:650;line-height:1.5;cursor:pointer;color:var(--ink)}
+td .t:hover{color:var(--brand)}
+td .s{font-size:12px;color:var(--muted);margin-top:3px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.pager{display:flex;align-items:center;justify-content:center;gap:9px;padding:16px 0;font-size:12px;color:var(--muted)}
+.pager button{border:1px solid var(--line-2);background:var(--surface);border-radius:var(--r-xs);padding:6px 11px;font-size:12px}
 .pager button:disabled{opacity:.4;cursor:default}
 
-/* 弹层 / Toast */
-.overlay{position:fixed;inset:0;background:rgba(12,20,40,.42);backdrop-filter:blur(3px);z-index:100;display:flex;align-items:center;justify-content:center;padding:22px}
-.modal{width:min(860px,100%);max-height:86vh;overflow:hidden;background:var(--surface);border-radius:20px;box-shadow:var(--sh-2);display:flex;flex-direction:column;animation:pop .22s cubic-bezier(.2,.8,.2,1)}
-@keyframes pop{from{opacity:0;transform:scale(.97) translateY(8px)}to{opacity:1;transform:none}}
+/* ============ 问答 ============ */
+.chat-shell{display:flex;flex-direction:column;height:min(70vh,680px)}
+.chat-body{flex:1;overflow-y:auto;padding:4px}
+.msg{display:flex;gap:10px;margin-bottom:14px}
+.msg .av{width:30px;height:30px;flex:0 0 30px;border-radius:var(--r-xs);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:800}
+.msg.me .av{background:var(--brand)} .msg.ai .av{background:var(--accent)}
+.msg .bub{max-width:min(760px,84%);padding:12px 14px;border-radius:13px;font-size:14px;line-height:1.75;white-space:pre-line}
+.msg.me .bub{background:var(--brand);color:#fff;border-bottom-left-radius:4px}
+.msg.ai .bub{background:var(--surface-2);border-bottom-left-radius:4px}
+.msg .cite{margin-top:10px;padding-top:9px;border-top:1px dashed var(--line-2)}
+.suggest{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0 12px}
+.suggest button{border:1px solid var(--line-2);background:var(--surface-2);border-radius:999px;padding:6px 12px;font-size:12px;color:var(--ink-2)}
+.suggest button:hover{border-color:var(--brand);color:var(--brand)}
+.chat-input{display:flex;gap:8px;padding-top:11px;border-top:1px solid var(--line)}
+.chat-input input{flex:1;height:42px;border:1px solid var(--line-2);border-radius:var(--r-sm);padding:0 13px;outline:none;font-size:14px}
+.chat-input input:focus{border-color:var(--brand)}
+
+/* ============ 弹层 ============ */
+.overlay{position:fixed;inset:0;background:rgba(15,31,61,.44);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal{width:min(880px,100%);max-height:86vh;overflow:hidden;background:var(--surface);border-radius:var(--r);box-shadow:0 20px 60px rgba(0,0,0,.24);display:flex;flex-direction:column}
 .modal .hd{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:9px}
-.modal .hd b{font-size:15px;font-weight:800}
+.modal .hd b{font-size:17px;font-weight:800}
 .modal .hd .right{margin-left:auto}
-.modal .bd{padding:18px 20px;overflow-y:auto}
+.modal .bd{padding:20px;overflow-y:auto}
 .modal .ft{padding:12px 20px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end}
-.toast{position:fixed;left:50%;bottom:30px;transform:translate(-50%,20px);background:#17233c;color:#fff;
-  padding:10px 17px;border-radius:11px;font-size:12px;z-index:200;opacity:0;pointer-events:none;transition:var(--fast);box-shadow:var(--sh-2)}
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,18px);background:var(--ink);color:var(--surface);
+  padding:10px 18px;border-radius:var(--r-xs);font-size:13px;z-index:200;opacity:0;pointer-events:none;transition:var(--t)}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 
-/* 表格 */
-table{width:100%;border-collapse:collapse;font-size:12px}
-th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
-th{font-size:10.5px;color:var(--muted);font-weight:800;letter-spacing:.4px;background:var(--surface-2);position:sticky;top:0}
-tbody tr:hover{background:var(--surface-2)}
-td .ttl{font-weight:650;cursor:pointer}
-td .ttl:hover{color:var(--brand)}
-.table-wrap{max-height:64vh;overflow:auto;border:1px solid var(--line);border-radius:13px}
+/* ============ 阅读块 ============ */
+.blk{margin-top:12px;padding:12px 14px;border-radius:var(--r-xs);background:var(--surface-2);border:1px solid var(--line)}
+.blk .bt{font-size:12px;font-weight:800;color:var(--brand);margin-bottom:5px}
+.blk .bd{font-size:14px;line-height:1.75;color:var(--ink-2);white-space:pre-line;max-width:68ch}
+.blk.local{background:rgba(14,165,164,.06);border-color:rgba(14,165,164,.2)}
+.blk.local .bt{color:var(--accent)}
+.blk.warn{background:rgba(225,29,72,.05);border-color:rgba(225,29,72,.18)}
+.blk.warn .bt{color:var(--danger)}
 
-/* 移动端底栏 */
 .tabbar{display:none}
 @media (max-width:900px){
-  .sidebar{position:fixed;left:0;top:0;transform:translateX(-100%);transition:var(--fast);box-shadow:var(--sh-2)}
+  .sidebar{position:fixed;left:0;top:0;transform:translateX(-100%);transition:var(--t);box-shadow:var(--shadow-h)}
   body.nav-open .sidebar{transform:none}
-  .topbar{padding:0 14px;height:58px;flex-basis:58px}
+  .topbar{padding:0 12px;height:58px;flex-basis:58px}
   .search{width:170px}
-  .badge-serve{display:none}
-  .views{padding:14px 13px 90px}
-  .tabbar{display:flex;position:fixed;left:8px;right:8px;bottom:8px;background:rgba(255,255,255,.94);backdrop-filter:blur(16px);
-    border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh-2);z-index:40;padding:5px;gap:2px;overflow-x:auto}
-  html[data-theme="dark"] .tabbar{background:rgba(20,29,48,.94)}
-  .tabbar button{flex:1;min-width:56px;border:0;background:transparent;border-radius:11px;padding:6px 3px;font-size:9.5px;font-weight:700;color:var(--muted);text-align:center}
-  .tabbar button.on{background:rgba(var(--brand-rgb),.12);color:var(--brand)}
+  .serve{display:none}
+  .views{padding:14px 12px 90px}
+  .tabbar{display:flex;position:fixed;left:8px;right:8px;bottom:8px;background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--r);box-shadow:var(--shadow-h);z-index:40;padding:5px;gap:2px;overflow-x:auto}
+  .tabbar button{flex:1;min-width:62px;border:0;background:transparent;border-radius:var(--r-xs);padding:6px 3px;font-size:10px;font-weight:700;color:var(--muted);text-align:center}
+  .tabbar button.on{background:var(--brand-50);color:var(--brand)}
   .tabbar svg{width:17px;height:17px;display:block;margin:0 auto 2px}
   .menu-btn{display:flex!important}
+  .status-conclusion{flex-wrap:wrap}
+  .status-conclusion .acts{width:100%}
 }
 .menu-btn{display:none}
-@media print{.sidebar,.topbar,.tabbar,.hero-actions,.filters,.pager,.btn{display:none!important}.view{display:block!important}.card{box-shadow:none}}
-
-/* 只读分享版标识 */
-.ro-badge{font-size:10px;color:var(--muted);white-space:nowrap}
+@media print{.sidebar,.topbar,.tabbar,.filters,.pager,.btn{display:none!important}.view{display:block!important}.card{box-shadow:none}}
 </style>
 <!-- WB:RO:HEAD:START -->
-<style id="wb-ro-css">
-  body.ro .write-only{display:none!important}
-</style>
+<style id="wb-ro-css">body.ro .write-only{display:none!important}</style>
 <!-- WB:RO:HEAD:END -->
 </head>
 <body class="ro">
@@ -317,440 +291,379 @@ td .ttl:hover{color:var(--brand)}
       <div class="brand-txt"><b>医保政策早知道</b><span>服务于澄江市乡镇卫生院</span></div>
     </div>
     <nav class="nav" id="nav"></nav>
-    <div class="sidebar-foot">
-      <div class="side-foot-txt"><b>数据说明</b><br>668 条政策 · 每日 08:30 自动更新<br>玉溪市为主 / 云南省为辅 / 国家为引</div>
-    </div>
+    <div class="sidebar-foot"><b>数据说明</b><br>668 条政策 · 每日 08:30 更新<br>玉溪市执行 / 云南省参照 / 国家基线</div>
   </aside>
-
   <main class="app-main">
     <header class="topbar">
       <button class="iconbtn menu-btn" id="menuBtn" type="button" aria-label="展开导航"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-      <div><h1 id="viewTitle">今日必读</h1><div class="crumb" id="viewCrumb">先看今天要做什么，再查政策原文</div></div>
+      <div><h1 id="viewTitle">今日决策台</h1><div class="crumb" id="viewCrumb">先给结论，再给要做的事</div></div>
       <div class="spacer"></div>
       <div class="search">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.4-3.4"/></svg>
-        <input id="globalSearch" type="search" placeholder="搜政策、机构、关键词…" autocomplete="off">
+        <input id="globalSearch" type="search" placeholder="搜政策，或直接问一句话…" autocomplete="off">
         <div class="sug" id="searchSug"></div>
       </div>
       <div class="sync-pill" title="数据同步状态"><i></i><span id="syncText">已同步</span></div>
-      <button class="iconbtn" id="themeBtn" type="button" title="切换明暗主题"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5Z"/></svg></button>
+      <button class="iconbtn" id="themeBtn" type="button" title="明暗主题"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5Z"/></svg></button>
       <button class="iconbtn" id="refreshBtn" type="button" title="刷新数据"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 4v5h-5"/></svg></button>
-      <span class="ro-badge">只读发布版</span>
     </header>
-
     <div class="views">
-      <!-- 今日 -->
       <section class="view on" id="view-home">
-        <div class="hero">
-          <div class="hello" id="heroHello">TODAY · 澄江市乡镇卫生院</div>
-          <h2 id="heroTitle">早上好，今天先看这几件事</h2>
-          <p id="heroDesc">数据正在装载…</p>
-          <div class="hero-stats" id="heroStats"></div>
-          <div class="hero-actions">
-            <button type="button" data-go="library">查政策</button>
-            <button type="button" data-go="insight">看解读</button>
-            <button type="button" data-go="ask">问一问</button>
-            <button type="button" data-go="changes">看变化</button>
-          </div>
-        </div>
-        <div class="grid g4" style="margin-bottom:16px" id="actionCards"></div>
-        <div class="grid g21">
-          <div>
-            <div class="card pad" style="margin-bottom:14px">
-              <div class="sec-head"><span class="kicker">Action</span><h2>今天要处理</h2><span class="sub" id="todoSub"></span><div class="right"><button class="btn sm" type="button" data-go="library">全部政策</button></div></div>
-              <div id="todoList"></div>
-            </div>
-            <div class="card pad">
-              <div class="sec-head"><span class="kicker">Pulse</span><h2>三级政策感知</h2><span class="sub">执行 · 参照 · 基线</span></div>
-              <div id="trackList"></div>
-              <div class="divider"></div>
-              <div class="sec-head" style="margin-bottom:8px"><h2 style="font-size:13px">最近更新</h2><div class="right"><button class="btn sm" type="button" data-go="changes">完整动态</button></div></div>
-              <div class="tl" id="homeTimeline"></div>
-            </div>
-          </div>
-          <div>
-            <div class="card pad" style="margin-bottom:14px">
-              <div class="sec-head"><span class="kicker">Risk</span><h2>红线提醒</h2></div>
-              <div class="radar-wrap" id="radarBox"></div>
-              <div class="divider"></div>
-              <div id="redlineStrip"></div>
-            </div>
-            <div class="card pad">
-              <div class="sec-head"><span class="kicker">Next</span><h2>下次巡检</h2></div>
-              <div id="nextCheck"></div>
-            </div>
-          </div>
-        </div>
+        <div class="status-conclusion lv-warn" id="conclusion"></div>
+        <div class="card" id="decisionCard"></div>
+        <div class="grid g2" id="homeLower" style="display:grid;grid-template-columns:1.2fr .8fr;gap:18px"></div>
       </section>
-
-      <!-- 政策库 -->
       <section class="view" id="view-library">
-        <div class="card pad" style="margin-bottom:14px">
-          <div class="sec-head"><span class="kicker">Library</span><h2>政策库</h2><span class="sub" id="libCount"></span></div>
+        <div class="card">
+          <div class="sec-head"><h2>政策库</h2><span class="sub" id="libCount"></span></div>
           <div class="filters">
-            <input id="libKw" type="search" placeholder="标题 / 机构 / 关键词 / 摘要">
+            <input id="libKw" type="search" placeholder="标题 / 一句话 / 机构 / 关键词">
             <select id="libLevel"><option value="">全部层级</option><option>玉溪市</option><option>云南省</option><option>国家</option></select>
-            <select id="libCat"><option value="">全部类别</option></select>
-            <select id="libImpact"><option value="">全部影响</option><option>高</option><option>中</option><option>低</option></select>
-            <select id="libSort"><option value="date">按发布日期</option><option value="level">按层级</option><option value="title">按标题</option></select>
+            <select id="libBiz"><option value="">全部业务</option><option value="charge">收费</option><option value="settle">结算</option><option value="risk">基金监管</option><option value="report">上报医保局</option></select>
+            <select id="libVerdict"><option value="">全部处置</option><option value="report">必须上报</option><option value="selfcheck">需自查</option><option value="know">仅知晓</option></select>
             <button class="btn sm" id="clearLib" type="button">重置</button>
             <button class="btn sm" id="compareBtn" type="button">对比选中 (0)</button>
             <button class="btn sm" id="exportLib" type="button">导出 CSV</button>
           </div>
-          <div class="table-wrap"><table><thead><tr><th style="width:32px"></th><th>政策标题</th><th style="width:86px">层级</th><th style="width:92px">发布日期</th><th style="width:68px">影响</th><th style="width:72px">变动</th><th style="width:58px">收藏</th></tr></thead><tbody id="libBody"></tbody></table></div>
+          <div class="table-wrap"><table><thead><tr><th style="width:30px"></th><th>一句话（原标题可展开）</th><th style="width:90px">层级</th><th style="width:96px">发布日期</th><th style="width:80px">处置</th><th style="width:52px">收藏</th></tr></thead><tbody id="libBody"></tbody></table></div>
           <div class="pager" id="libPager"></div>
         </div>
       </section>
-
-      <!-- 解读 -->
       <section class="view" id="view-insight">
-        <div class="card pad" style="margin-bottom:14px">
-          <div class="sec-head"><span class="kicker">Insight</span><h2>政策解读</h2><span class="sub">先说对我们卫生院意味着什么，再说怎么做</span></div>
-          <div class="filters">
-            <div class="seg" id="insLevel"><button type="button" class="on" data-lv="玉溪市">执行 · 玉溪市</button><button type="button" data-lv="云南省">参照 · 云南省</button><button type="button" data-lv="国家">基线 · 国家</button></div>
-            <select id="insImpact"><option value="">全部影响</option><option>高</option><option>中</option><option>低</option></select>
-            <input id="insKw" type="search" placeholder="在解读中筛选…">
-          </div>
-          <div id="insList"></div>
-          <div class="pager" id="insPager"></div>
+        <div class="card">
+          <div class="sec-head"><h2>决策解读</h2><span class="sub">只看有处置结论的政策，避免空白卡片</span></div>
+          <div class="filters"><div class="seg" id="insVerdict"><button class="on" data-v="report" type="button">必须上报</button><button data-v="selfcheck" type="button">需自查</button><button data-v="know" type="button">仅知晓</button></div><input id="insKw" type="search" placeholder="在解读中筛选…"></div>
+          <div id="insList"></div><div class="pager" id="insPager"></div>
         </div>
       </section>
-
-      <!-- 问答 -->
       <section class="view" id="view-ask">
-        <div class="card pad chat-shell">
-          <div class="sec-head"><span class="kicker">Ask</span><h2>问一问</h2><span class="sub">基于 668 条本地政策归纳，答案附出处</span><div class="right"><button class="btn sm" id="clearChat" type="button">清空对话</button></div></div>
+        <div class="card chat-shell">
+          <div class="sec-head"><h2>问一问</h2><span class="sub">用日常话提问，答案附出处</span><div class="right"><button class="btn sm" id="clearChat" type="button">清空</button></div></div>
           <div class="chat-body" id="chatBody"></div>
           <div class="suggest" id="askSuggest"></div>
-          <div class="chat-input"><input id="askInput" type="text" placeholder="例如：慢性病报销比例是多少？哪些机构退出了医保？"><button class="btn primary" id="askSend" type="button">发送</button></div>
+          <div class="chat-input"><input id="askInput" type="text" placeholder="例如：慢病报销比例是多少？哪些机构退出了医保？"><button class="btn primary" id="askSend" type="button">发送</button></div>
         </div>
       </section>
-
-      <!-- 关注 -->
       <section class="view" id="view-watch">
-        <div class="grid g21">
-          <div class="card pad">
-            <div class="sec-head"><span class="kicker">Watch</span><h2>我的关注</h2><span class="sub">收藏的政策与关键词，浏览器本地保存</span></div>
-            <div class="filters"><input id="watchKw" type="search" placeholder="添加关注关键词，如：长护险、慢病"><button class="btn primary sm" id="addWatch" type="button">＋ 关注关键词</button></div>
-            <div id="watchKeys" style="margin-bottom:14px"></div>
-            <div class="divider"></div>
-            <div id="watchList"></div>
-          </div>
-          <div class="card pad">
-            <div class="sec-head"><span class="kicker">Tip</span><h2>怎么用</h2></div>
-            <div class="mini muted" style="line-height:2">
-              1. 在政策库点 ☆ 收藏政策<br>
-              2. 或添加关键词，自动匹配政策<br>
-              3. 下次打开先看这里，不用重新翻<br>
-              4. 关注只存在本机浏览器，不上传
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 动态 -->
-      <section class="view" id="view-changes">
-        <div class="card pad">
-          <div class="sec-head"><span class="kicker">Changes</span><h2>更新动态</h2><span class="sub">按发布日期倒序，看政策怎么变</span><div class="right">
-            <select id="chgFilter"><option value="">全部变动</option><option>新增</option><option>修订</option><option>迁移入库</option></select>
-            <button class="btn sm" id="makeReport" type="button">生成日报</button>
-          </div></div>
-          <div id="chgList"></div>
-          <div class="pager" id="chgPager"></div>
-        </div>
-      </section>
-
-      <!-- 知识库 -->
-      <section class="view" id="view-docs">
-        <div class="card pad">
-          <div class="sec-head"><span class="kicker">Docs</span><h2>政策知识库</h2><span class="sub" id="docCount"></span></div>
-          <div class="filters">
-            <input id="docKw" type="search" placeholder="标题 / 文号 / 摘要">
-            <select id="docLevel"><option value="">全部层级</option><option>玉溪市</option><option>云南省</option><option>国家</option></select>
-            <select id="docYear"><option value="">全部年份</option></select>
-          </div>
-          <div class="table-wrap"><table><thead><tr><th>条目标题</th><th style="width:80px">层级</th><th style="width:76px">年份</th><th style="width:150px">文号</th><th style="width:110px">来源</th></tr></thead><tbody id="docBody"></tbody></table></div>
-          <div class="pager" id="docPager"></div>
+        <div class="card">
+          <div class="sec-head"><h2>我的关注</h2><span class="sub">按岗位视角筛选 + 收藏关键词，仅存本机</span></div>
+          <div class="filters"><div class="seg" id="watchBiz"><button class="on" data-b="" type="button">全部</button><button data-b="charge" type="button">收费岗</button><button data-b="settle" type="button">结算岗</button><button data-b="risk" type="button">合规岗</button></div></div>
+          <div class="filters"><input id="watchKw" type="search" placeholder="添加关键词，如：长护险、慢病"><button class="btn primary sm" id="addWatch" type="button">＋ 关注关键词</button></div>
+          <div id="watchKeys" style="margin-bottom:12px"></div><div class="divider"></div><div id="watchList"></div>
         </div>
       </section>
     </div>
   </main>
 </div>
-
 <nav class="tabbar" id="tabbar"></nav>
 <div id="modalRoot"></div>
 <div class="toast" id="toast"></div>
-
 <script>
 /* =========================================================
-   医保政策早知道 · 前端主逻辑
-   数据真源：data/policies.json / state.json / kb.json
-   页面只做读取与本机偏好，不写回业务数据。
+   v2 · 人的问题链：结论 → 决策卡 → 行动 → 原文
+   业务真源 registry.jsonl → build_pages_data.py → data/*.json
+   本页只读取，派生字段仅存在内存，不回写数据。
    ========================================================= */
-var VIEWS = [
-  {id:'home',    name:'今日必读', icon:'home',  group:'每天先看', crumb:'先看今天要做什么，再查政策原文'},
-  {id:'library', name:'政策库',   icon:'book',  group:'每天先看', crumb:'查得到、看得懂、能下钻原文'},
-  {id:'insight', name:'政策解读', icon:'bulb',  group:'每天先看', crumb:'对我们意味着什么，以及怎么做'},
-  {id:'ask',     name:'问一问',   icon:'chat',  group:'更省时间', crumb:'用大白话提问，答案附出处'},
-  {id:'watch',   name:'我的关注', icon:'star',  group:'更省时间', crumb:'关注过的政策和关键词都在这里'},
-  {id:'changes', name:'更新动态', icon:'pulse', group:'更省时间', crumb:'政策怎么变，一屏看清楚'},
-  {id:'docs',    name:'知识库',   icon:'files', group:'资料溯源', crumb:'政策原件索引与文号检索'}
+var VIEWS=[
+  {id:'home',name:'今日决策台',icon:'home',crumb:'先给结论，再给要做的事'},
+  {id:'library',name:'政策库',icon:'book',crumb:'一句话检索，原文按需展开'},
+  {id:'insight',name:'决策解读',icon:'bulb',crumb:'按上报 / 自查 / 知晓分层'},
+  {id:'ask',name:'问一问',icon:'chat',crumb:'用日常话提问，答案附出处'},
+  {id:'watch',name:'我的关注',icon:'star',crumb:'按岗位视角看与自己有关的'}
 ];
-var ICONS = {
+var ICONS={
   home:'<path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5"/>',
   book:'<path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5A2.5 2.5 0 0 0 4 22V4.5Z"/><path d="M8 7h8M8 11h6"/>',
   bulb:'<path d="M9 18h6M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2Z"/>',
   chat:'<path d="M21 12a8 8 0 0 1-8 8H7l-4 3V12a8 8 0 0 1 8-8h2a8 8 0 0 1 8 8Z"/>',
-  star:'<path d="m12 2.8 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.4l6.2-.9L12 2.8Z"/>',
-  pulse:'<path d="M2 12h4l2.5-6 4 12 2.5-6H22"/>',
-  files:'<path d="M6 3h9l4 4v14H6V3Z"/><path d="M14 3v5h5M9 13h7M9 17h7"/>'
+  star:'<path d="m12 2.8 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.4l6.2-.9L12 2.8Z"/>'
 };
-function icon(n,size){ return '<svg viewBox="0 0 24 24" width="'+(size||18)+'" height="'+(size||18)+'" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+(ICONS[n]||ICONS.home)+'</svg>'; }
+function icon(n,s){return '<svg viewBox="0 0 24 24" width="'+(s||18)+'" height="'+(s||18)+'" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+(ICONS[n]||ICONS.home)+'</svg>';}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function $(s){return document.querySelector(s);}
+function $$(s){return Array.prototype.slice.call(document.querySelectorAll(s));}
+function lsGet(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function toast(m){var t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast._t);toast._t=setTimeout(function(){t.classList.remove('on');},2200);}
+function fetchJSON(p){return fetch(p,{cache:'no-cache'}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();});}
+function parseContent(v){if(v==null)return{};if(typeof v==='object')return v;try{return JSON.parse(v);}catch(e){return{};}}
+function fmtDate(s){return String(s||'').slice(0,10)||'日期待补';}
+function levelOrder(l){return l==='玉溪市'?0:(l==='云南省'?1:2);}
 
-var DB={policies:[],kbs:[],state:{},fresh:{},counts:{},loaded:false};
-var UI={view:'home',lib:{kw:'',level:'',cat:'',impact:'',sort:'date',page:1},ins:{level:'玉溪市',impact:'',kw:'',page:1},
-  chg:{filter:'',page:1},doc:{kw:'',level:'',year:'',page:1},compare:[],fav:[],keys:[],chat:[]};
+var DB={policies:[],kbs:[],state:{},fresh:{},loaded:false};
+var UI={view:'home',lib:{kw:'',level:'',biz:'',verdict:'',page:1},ins:{v:'report',kw:'',page:1},
+  watch:{biz:'',page:1},compare:[],fav:[],keys:[],chat:[],homeAll:false};
+/* freshness.lastRun 兼容 state 中的 lastCheckedAt（同一时刻两种写法） */
 
-function lsGet(k,d){ try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;} }
-function lsSet(k,v){ try{localStorage.setItem(k,JSON.stringify(v));}catch(e){} }
-function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
-function $(s){ return document.querySelector(s); }
-function $$(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); }
-function toast(msg){ var t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(toast._t); toast._t=setTimeout(function(){t.classList.remove('on');},2200); }
-
-function fetchJSON(path){ return fetch(path,{cache:'no-cache'}).then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); }); }
-function parseContent(v){ if(v==null) return {}; if(typeof v==='object') return v; try{return JSON.parse(v);}catch(e){return {};} }
-
-function boot(force){
-  var task=Promise.all([fetchJSON('./data/policies.json'),fetchJSON('./data/state.json'),fetchJSON('./data/kb.json')]);
-  return task.then(function(a){
-    DB.policies=(a[0].rows||[]); DB.kbs=(a[2].rows||[]);
-    (a[1].rows||[]).forEach(function(r){ DB.state[r['状态键']]=parseContent(r['内容']); });
-    DB.fresh=DB.state.freshness||{}; DB.counts=DB.state.counts||{};
-    /* freshness.lastRun 兼容 state 中的 lastCheckedAt：两者是同一时刻的两种写法 */
-    if(DB.fresh.lastRun===undefined && DB.fresh.lastCheckedAt!==undefined) DB.fresh.lastRun=DB.fresh.lastCheckedAt;
-    if(DB.fresh.nextRun===undefined && DB.fresh.nextCheckAt!==undefined) DB.fresh.nextRun=DB.fresh.nextCheckAt;
-    UI.fav=lsGet('wb2.fav',[]); UI.keys=lsGet('wb2.keys',[]);
-    DB.loaded=true;
-    renderAll();
-    if(force) toast('数据已刷新');
-  }).catch(function(e){ toast('数据装载失败：'+e.message); });
-}
-
-/* ---------- 数据归一化：中文字段 -> 英文短名（渲染层统一走 esc） ---------- */
-function norm(r){
-  return {
-    id:r._id||'', title:r['政策标题']||'', date:r['发布日期']||'', org:r['发布机构']||'',
-    level:r['行政层级']||'', county:r['所属县区']||'', cat:r['政策类别']||'', impact:r['影响等级']||'',
-    keywords:r['关键词']||'', summary:r['政策摘要']||'', url:r['原文链接']||'',
-    ai:r['AI解读']||'', points:r['解读要点']||'', actions:r['行动建议']||'',
-    yuxi:r['对玉溪影响']||'', local:r['乡镇卫生院影响']||'', status:r['解读状态']||'',
-    change:r['变动类型']||'', checked:r['上次核对']||'', exposure:String(r['曝光标记']||'')==='是',
-    exit:wbIsExit(r), exitType:r['退出方式']||'', orgType:r['机构类别']||''
-  };
-}
-function byId(id){ for(var i=0;i<DB.policies.length;i++){ if(DB.policies[i]._id===id) return DB.policies[i]; } return null; }
-function levelOrder(l){ return l==='玉溪市'?0:(l==='云南省'?1:2); }
-function fmtDate(s){ return String(s||'').slice(0,10)||'日期待补'; }
-function levelChip(l){ var c=l==='玉溪市'?'blue':(l==='云南省'?'cyan':'purple'); return '<span class="chip '+c+'">'+esc(l)+'</span>'; }
-
-/* ============ G9 关键补丁函数：红线与退出机构 ============ */
-function wbIsExit(r){
-  var v=String((r&&r['退出医保标记'])||'').trim();
-  return v==='是'||v==='1'||v==='true'||v==='True'||v==='Y'||v==='yes'||v==='退出'||v==='已退出';
-}
-function wbExitList(rows){
-  return (rows||[]).filter(function(r){ return wbIsExit(r); });
-}
+/* ============ G9 锚点函数：红线与退出机构 ============ */
+function wbIsExit(r){var v=String((r&&r['退出医保标记'])||'').trim();
+  return v==='是'||v==='1'||v==='true'||v==='True'||v==='Y'||v==='yes'||v==='退出'||v==='已退出';}
+function wbExitList(rows){return (rows||[]).filter(function(r){return wbIsExit(r);});}
 function wbMergeExposureIntoStrip(target,rows){
-  if(!target) return;
-  var ex=(rows||[]).filter(function(r){ return String(r['曝光标记']||'')==='是'; }).length;
-  var exList=wbExitList(rows||[]).length;
-  target.innerHTML='<div style="display:flex;gap:7px;flex-wrap:wrap">'+
-    '<button class="chip red click" type="button" data-redline="exposure">曝光 <b class="mono">'+ex+'</b></button>'+
-    '<button class="chip warn click" type="button" data-redline="exit">退出机构 <b class="mono">'+exList+'</b></button></div>'+
-    '<div class="mini muted" style="margin-top:9px">点标签查看名单，点名单可下钻政策详情。</div>';
-  $$('[data-redline]',target).forEach(function(b){ b.addEventListener('click',function(){ openRedline(b.getAttribute('data-redline')); }); });
+  if(!target)return;
+  var ex=(rows||[]).filter(function(r){return String(r['曝光标记']||'')==='是';}).length;
+  var out=wbExitList(rows||[]).length;
+  target.innerHTML='<div class="risk-stack"><div class="risk-bar">'+
+    '<i class="r" style="width:'+(100*ex/(rows.length||1))+'%"></i>'+
+    '<i class="o" style="width:'+(100*out/(rows.length||1))+'%"></i>'+
+    '<i class="n" style="flex:1"></i></div><div class="risk-legend">'+
+    '<span><i style="background:var(--danger)"></i>曝光 <b class="mono">'+ex+'</b></span>'+
+    '<span><i style="background:var(--warn)"></i>退出 <b class="mono">'+out+'</b></span>'+
+    '<span><i style="background:var(--line-2)"></i>常规 <b class="mono">'+Math.max(0,rows.length-ex-out)+'</b></span></div></div>';
 }
 function initRadarFix(){
   var box=$('#radarBox'); if(!box) return;
   var ex=DB.policies.filter(function(r){return String(r['曝光标记']||'')==='是';}).length;
   var out=wbExitList(DB.policies).length;
-  var normal=Math.max(0,DB.policies.length-ex-out);
-  var total=DB.policies.length||1, r=48, c=2*Math.PI*r;
-  var parts=[[ex,'#e11d48'],[out,'#f59e0b'],[normal,'#cbd5e1']];
-  var segs=[], acc=0;
-  parts.forEach(function(p){
-    var len=c*(p[0]/total);
-    if(p[0]>0) segs.push('<circle cx="63" cy="63" r="'+r+'" fill="none" stroke="'+p[1]+'" stroke-width="11" stroke-dasharray="'+Math.max(0,len-2)+' '+(c-Math.max(0,len-2))+'" stroke-dashoffset="'+(-acc)+'"/>');
-    acc+=len;
-  });
-  box.innerHTML='<svg viewBox="0 0 126 126"><circle cx="63" cy="63" r="48" fill="none" stroke="var(--line)" stroke-width="11"/>'+segs.join('')+'</svg>'+
-    '<div class="center"><b class="mono">'+(ex+out)+'</b><span>条风险信号</span></div>'+
-    '<div class="note">曝光 '+ex+' · 退出 '+out+' · 常规 '+normal+'</div>';
+  box.innerHTML='<div class="mini muted">公开通报与协议变动，供对照自查，不代表本院存在问题。</div><div id="radarStrip"></div>';
+  wbMergeExposureIntoStrip($('#radarStrip'),DB.policies);
 }
 
-/* ============ 导航与视图 ============ */
+/* ============ 数据归一化 + 人话派生（内存计算，不写回） ============ */
+function norm(r){
+  return {id:r._id||'',title:r['政策标题']||'',date:r['发布日期']||'',org:r['发布机构']||'',
+    level:r['行政层级']||'',cat:r['政策类别']||'',impact:r['影响等级']||'',keywords:r['关键词']||'',
+    summary:r['政策摘要']||'',url:r['原文链接']||'',ai:r['AI解读']||'',points:r['解读要点']||'',
+    actions:r['行动建议']||'',yuxi:r['对玉溪影响']||'',local:r['乡镇卫生院影响']||'',
+    status:r['解读状态']||'',change:r['变动类型']||'',checked:r['上次核对']||'',
+    exposure:String(r['曝光标记']||'')==='是',exit:wbIsExit(r),
+    exitType:r['退出方式']||'',orgType:r['机构类别']||''};
+}
+/* 清洗：去结构化标记【…】、markdown 星号、文号括注，避免脏字符进人话句 */
+function cleanText(v){
+  return String(v||'').replace(/【[^】]*】/g,'').replace(/[*_]/g,'')
+    .replace(/〔[^〕]*〕\s*\d+号?/g,'').replace(/【/g,'').replace(/】/g,'')
+    .replace(/\s+/g,' ').trim();
+}
+/* 从正文里挑一句真正能指导行动的话：跳过「无/未涉及/无需单独制定」这类空句 */
+function pickImpact(v){
+  var raw=String(v||'');
+  var parts=raw.split(/[\n|；;。]/);
+  var best='';
+  for(var i=0;i<parts.length;i++){
+    var p=cleanText(parts[i]);
+    if(p.length<8)continue;
+    if(/未涉及|无需单独|不涉及|待补|原文未|无调整|暂无/.test(p))continue;
+    if(/建议|须|需要|应|核对|关注|同步|按本地|确认|调整/.test(p)){best=p;break;}
+    if(!best)best=p;
+  }
+  return best;
+}
+function humanize(r){
+  var x=norm(r);
+  /* 短标题：摘要首句优先，但跳过「依据…文号」「《…」这类不适合当标题的开头 */
+  var s=cleanText(String(r['政策摘要']||'')).split(/[。；;]/)[0].trim();
+  if(s.length<6||/^(依据|根据|按照|参照|《|转发|关于印发)/.test(s)){
+    s=cleanText(String(r['政策标题']||''));
+    s=s.replace(/^[\u4e00-\u9fa5A-Za-z0-9、·\s]{2,50}?关于/,'关于').replace(/^关于/,'');
+    s=s.replace(/(的通知|的公告|的通报|的意见)$/,'').replace(/^(印发|转发)/,'');
+  }
+  /* 书名号内容优先：把《XXX》里的 XXX 提出来当短句，避免「《玉溪…」这种断头标题 */
+  var bk=s.match(/《([^》]{4,40})》/);
+  if(bk&&bk[1].length>=6) s=bk[1];
+  s=s.replace(/^(关于印发|关于|印发|转发|发布|公布)/,'').replace(/^《/,'').replace(/》$/,'');
+  /* 截断后清掉尾部悬空括号/连接词，避免出现「…事项清单（」这种断句 */
+  var shortTitle=(s.length>18?s.slice(0,18):s)
+    .replace(/[（《「【、，,·:：\-\s]+$/,'')
+    .replace(/(关于|印发|和|及|的)$/,'')||x.title.slice(0,18);
+  var oneLiner=pickImpact(r['乡镇卫生院影响']).slice(0,42);
+  if(!oneLiner){ var pat=x.ai.match(/影响对象[：:]([^。；]{4,40})/); oneLiner=pat?cleanText(pat[1]):('涉及'+x.cat+'业务，请按本地口径核对'); }
+  if(!/^(我院|结算时|需上报|定点|窗口|按|对|本|相关)/.test(oneLiner)) oneLiner='我院'+oneLiner;
+  var act=String(r['行动建议']||'').replace(/\s+/g,' ').trim();
+  var actionHint=act.split(/[。；;\n]/)[0].trim().slice(0,26)||'按本地经办口径核对执行';
+  var report=x.exposure||x.exit;
+  var verdict=report?'report':(x.impact==='高'?'selfcheck':'know');
+  var biz=[];
+  var hay=[x.title,x.summary,x.points,x.actions,x.local,x.keywords].join(' ');
+  if(/收费|诊疗费|价格|收费项目|免收/.test(hay))biz.push('charge');
+  if(/结算|报销|支付|起付|比例|拨付/.test(hay))biz.push('settle');
+  if(/基金|违规|稽核|检查|监管|自查|通报|曝光/.test(hay))biz.push('risk');
+  if(report||/上报|报送|报告医保/.test(hay))biz.push('report');
+  return Object.assign(x,{shortTitle:shortTitle,oneLiner:oneLiner,actionHint:actionHint,
+    verdict:verdict,biz:biz,rawTitle:x.title});
+}
+function cardOf(r){return humanize(r);}
+function byId(id){for(var i=0;i<DB.policies.length;i++){if(DB.policies[i]._id===id)return DB.policies[i];}return null;}
+function chipOf(c){
+  var out='<span class="pol-chip lv-'+c.verdict+'">'+(c.verdict==='report'?'上报':(c.verdict==='selfcheck'?'自查':'知晓'))+'</span>';
+  if(c.exposure||c.exit)out+='<span class="pol-chip lv-exposure">'+(c.exit?'退出定点':'曝光通报')+'</span>';
+  var lvCls=c.level==='玉溪市'?'meta-lv-exec':(c.level==='云南省'?'meta-lv-ref':'meta-lv-base');
+  out+='<span class="pol-chip lv-level '+lvCls+'">'+esc(c.level)+'</span>';
+  return out+'<span class="pol-meta">'+fmtDate(c.date)+'</span>';
+}
+/* ============ 导航 ============ */
 function renderNav(){
-  var lastGroup='';
-  $('#nav').innerHTML=VIEWS.map(function(v){
-    var g=(v.group!==lastGroup)?('<div class="group">'+esc(v.group)+'</div>'):''; lastGroup=v.group;
-    return g+'<button type="button" class="nav-item'+(UI.view===v.id?' on':'')+'" data-nav="'+v.id+'">'+icon(v.icon)+'<span>'+esc(v.name)+'</span></button>';
-  }).join('');
-  $('#tabbar').innerHTML=VIEWS.map(function(v){
-    return '<button type="button" class="'+(UI.view===v.id?'on':'')+'" data-nav="'+v.id+'">'+icon(v.icon,17)+'<span>'+esc(v.name)+'</span></button>';
-  }).join('');
-  $$('[data-nav]').forEach(function(b){ b.addEventListener('click',function(){ switchView(b.getAttribute('data-nav')); }); });
+  $('#nav').innerHTML=VIEWS.map(function(v){return '<button type="button" class="nav-item'+(UI.view===v.id?' on':'')+'" data-nav="'+v.id+'">'+icon(v.icon)+'<span>'+esc(v.name)+'</span></button>';}).join('');
+  $('#tabbar').innerHTML=VIEWS.map(function(v){return '<button type="button" class="'+(UI.view===v.id?'on':'')+'" data-nav="'+v.id+'">'+icon(v.icon,17)+'<span>'+esc(v.name)+'</span></button>';}).join('');
+  $$('[data-nav]').forEach(function(b){b.addEventListener('click',function(){switchView(b.getAttribute('data-nav'));});});
 }
 function switchView(id){
   UI.view=id;
-  $$('.view').forEach(function(v){ v.classList.toggle('on',v.id==='view-'+id); });
+  $$('.view').forEach(function(v){v.classList.toggle('on',v.id==='view-'+id);});
   var m=VIEWS.filter(function(v){return v.id===id;})[0];
-  if(m){ $('#viewTitle').textContent=m.name; $('#viewCrumb').textContent=m.crumb; }
-  renderNav(); document.body.classList.remove('nav-open'); window.scrollTo(0,0);
+  if(m){$('#viewTitle').textContent=m.name;$('#viewCrumb').textContent=m.crumb;}
+  renderNav();document.body.classList.remove('nav-open');window.scrollTo(0,0);
 }
-
 function renderAll(){
-  renderNav(); renderHome(); renderLibrary(); renderInsight(); renderChanges(); renderDocs(); renderWatch(); renderChat();
+  renderNav();renderHome();renderLibrary();renderInsight();renderAsk();renderWatch();
   var f=DB.fresh||{};
   $('#syncText').textContent=f.lastRun?('更新于 '+String(f.lastRun).slice(5,16).replace('T',' ')):'已同步';
 }
 
-/* ============ 今日 ============ */
-function renderHome(){
-  var d=new Date(), hh=d.getHours();
-  $('#heroHello').textContent='TODAY · '+d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+' · 澄江市乡镇卫生院';
-  $('#heroTitle').textContent=(hh<11?'早上好':(hh<14?'中午好':(hh<18?'下午好':'晚上好')))+'，今天先看这几件事';
-  var ex=DB.policies.filter(function(r){return String(r['曝光标记']||'')==='是';}).length;
-  var ex2=wbExitList(DB.policies).length;
-  var hi=DB.policies.filter(function(r){return r['影响等级']==='高';}).length;
-  $('#heroDesc').textContent='在册 '+DB.policies.length+' 条政策中，'+hi+' 条高影响、'+ex+' 条曝光案例、'+ex2+' 条退出医保机构记录。先看下面的「今天要处理」，再决定要不要点进政策库细查。';
-  $('#heroStats').innerHTML='<div class="hero-stat"><b class="mono">'+DB.policies.length+'</b><span>在册政策</span></div>'+
-    '<div class="hero-stat"><b class="mono">'+hi+'</b><span>高影响</span></div>'+
-    '<div class="hero-stat"><b class="mono">'+ex+'</b><span>曝光案例</span></div>'+
-    '<div class="hero-stat"><b class="mono">'+ex2+'</b><span>退出机构</span></div>';
-  var cards=[
-    {cls:'a-red',go:'home',n:ex, t:'红线提醒',d:'曝光与退出医保机构名单',redline:'exposure',icon:'pulse'},
-    {cls:'a-blue',go:'library',n:DB.policies.length,t:'查政策',d:'668 条政策，按层级与影响筛选',icon:'book'},
-    {cls:'a-purple',go:'insight',n:DB.policies.filter(function(r){return r['解读状态']==='已解读';}).length,t:'看解读',d:'对我们意味着什么、怎么做',icon:'bulb'},
-    {cls:'a-mint',go:'ask',n:'AI',t:'问一问',d:'用大白话提问，答案附出处',icon:'chat'}
-  ];
-  $('#actionCards').innerHTML=cards.map(function(c){
-    return '<div class="action '+c.cls+'" data-card="'+c.go+'"'+(c.redline?' data-card-redline="'+c.redline+'"':'')+'><div class="ic">'+icon(c.icon)+'</div><div class="num mono">'+c.n+'</div><b>'+c.t+'</b><p>'+c.d+'</p></div>';
-  }).join('');
-  $$('[data-card]').forEach(function(el){ el.addEventListener('click',function(){
-    if(el.getAttribute('data-card-redline')) openRedline(el.getAttribute('data-card-redline'));
-    else switchView(el.getAttribute('data-card'));
-  }); });
-
-  /* 今天要处理：高影响 / 曝光 / 退出 / 近 30 天新增修订 */
+/* ============ 第1/2眼：状态结论条 + 决策卡 ============ */
+function todoPool(){
   var now=new Date();
-  var todo=DB.policies.filter(function(r){
+  return DB.policies.filter(function(r){
+    var x=humanize(r);
+    if(x.exit||x.exposure)return true;
     var dt=new Date(String(r['发布日期']||'').slice(0,10));
-    var recent=!isNaN(dt.getTime()) && ((now-dt)/86400000)<=30;
-    return r['影响等级']==='高' || String(r['曝光标记']||'')==='是' || wbIsExit(r) || (recent && (r['变动类型']==='新增'||r['变动类型']==='修订'));
-  }).sort(function(a,b){
-    var sa=(a['影响等级']==='高'?4:0)+(String(a['曝光标记']||'')==='是'?3:0)+(wbIsExit(a)?2:0);
-    var sb=(b['影响等级']==='高'?4:0)+(String(b['曝光标记']||'')==='是'?3:0)+(wbIsExit(b)?2:0);
-    return sb-sa || String(b['发布日期']||'').localeCompare(String(a['发布日期']||''));
-  }).slice(0,7);
-  $('#todoSub').textContent='共 '+todo.length+' 条优先项';
-  $('#todoList').innerHTML=todo.length?todo.map(function(r){
-    var x=norm(r), tags='';
-    if(x.impact==='高') tags+='<span class="chip red">高影响</span>';
-    if(x.exposure) tags+='<span class="chip red">曝光</span>';
-    if(x.exit) tags+='<span class="chip warn">退出</span>';
-    return '<div class="row'+(x.exposure?' hot':'')+'" data-open="'+esc(x.id)+'"><div class="body"><div class="t">'+esc(x.title)+'</div><div class="m">'+levelChip(x.level)+tags+'<span>'+esc(x.org.slice(0,24))+'</span><span>'+fmtDate(x.date)+'</span></div></div><span class="arrow">›</span></div>';
-  }).join(''):'<div class="empty"><b>暂无高优先事项</b>政策库里还有更多内容可以慢慢看。</div>';
-  $$('[data-open]').forEach(function(el){ el.addEventListener('click',function(){ openPolicy(el.getAttribute('data-open')); }); });
+    var recent=!isNaN(dt.getTime())&&((now-dt)/86400000)<=90;
+    return x.impact==='高'&&(recent||x.level==='玉溪市'||/修订|替代|失效|补充/.test(x.change));
+  });
+}
+function renderHome(){
+  var cards=DB.policies.map(humanize);
+  var pool=todoPool().map(humanize);
+  var ex=cards.filter(function(c){return c.exposure;}).length;
+  var out=cards.filter(function(c){return c.exit;}).length;
+  var bizHigh=pool.filter(function(c){return !c.exposure&&!c.exit&&c.impact==='高';}).length;
+  var hasReport=pool.some(function(c){return c.verdict==='report';});
+  var cls=hasReport?'lv-report':(pool.some(function(c){return c.verdict==='selfcheck';})?'lv-warn':'lv-ok');
+  var badge=hasReport?'<span class="verdict-badge report">需上报</span>':(pool.length?'<span class="verdict-badge selfcheck">需自查</span>':'<span class="verdict-badge know">暂无需处置</span>');
+  $('#conclusion').className='status-conclusion '+cls;
+  $('#conclusion').innerHTML='<span class="lamp"></span><div class="body">'+
+    '<div class="ttl">'+badge+' 今天有 <span class="mono" style="font-size:22px">'+pool.length+'</span> 条需要你研判</div>'+
+    '<div class="desc"><span style="font-weight:700;color:var(--ink-2)">待处理 '+pool.length+' 条</span> · 曝光 '+ex+' · 退出 '+out+' · 业务高影响 '+bizHigh+'　<span class="muted">公开通报与协议变动，供对照自查，不代表本院存在问题</span></div></div>'+
+    '<div class="acts"><button class="btn primary" type="button" id="goHandle">开始处理 →</button></div>';
+  $('#goHandle').onclick=function(){switchView('library');$('#libVerdict').value='report';UI.lib.verdict='report';UI.lib.page=1;renderLibrary();};
 
-  /* 三级轨道 */
-  var levels=['玉溪市','云南省','国家'], role={玉溪市:'执行',云南省:'参照',国家:'基线'};
-  $('#trackList').innerHTML=levels.map(function(l){
-    var rows=DB.policies.filter(function(r){return r['行政层级']===l;});
-    var read=rows.filter(function(r){return r['已读']===true||r['已读']==='true';}).length;
-    var pct=rows.length?Math.round(read/rows.length*100):0;
-    var cls=l==='玉溪市'?'city':(l==='云南省'?'prov':'nat');
-    return '<div class="track"><div class="lv '+cls+'">'+role[l]+'</div><div class="tt"><b>'+esc(l)+'医保政策</b><div class="bar"><i style="width:'+pct+'%"></i></div></div><div class="cnt mono">'+rows.length+'<small>已读 '+pct+'%</small></div></div>';
+  /* 首屏决策卡：2 组卡 + 3 业务卡（同主题折叠，避免刷屏） */
+  var exRows=DB.policies.filter(function(r){return String(r['曝光标记']||'')==='是';}).sort(function(a,b){return String(b['发布日期']||'').localeCompare(String(a['发布日期']||''));});
+  var outRows=wbExitList(DB.policies).sort(function(a,b){return String(b['发布日期']||'').localeCompare(String(a['发布日期']||''));});
+  var bizRows=pool.filter(function(c){return !c.exposure&&!c.exit;}).sort(function(a,b){
+    var va=a.verdict==='selfcheck'?1:0, vb=b.verdict==='selfcheck'?1:0;
+    return vb-va||levelOrder(a.level)-levelOrder(b.level)||String(b.date||'').localeCompare(String(a.date||''));
+  }).slice(0,UI.homeAll?12:3);
+  var html='';
+  function groupCard(key,title,desc,hint,rows,tone){
+    if(!rows.length)return '';
+    var latest=humanize(rows[0]);
+    return '<article class="decision-card is-group '+tone+'" style="background:var(--surface-2);border-radius:12px">'+
+      '<h3 class="pol-title" style="font-size:14px" data-group="'+key+'">'+esc(title)+'</h3>'+
+      '<div class="pol-oneliner" style="font-size:13px">'+esc(desc)+'</div>'+
+      '<div class="pol-chips"><span class="pol-chip lv-report">上报</span><span class="pol-chip lv-exposure">'+rows.length+' 条</span><span class="pol-meta">'+fmtDate(latest.date)+' 最新</span></div>'+
+      '<button class="btn sm" type="button" data-group="'+key+'" style="margin-top:10px;font-size:12px;color:var(--accent)">展开查看 '+rows.length+' 条 ›</button></article>';
+  }
+  html+=groupCard('exposure','医保违规曝光通报','本类 '+ex+' 条，多涉收费与诊疗问题，合规岗须核对本院同类风险。','',exRows,'lv-report');
+  html+=groupCard('exit','定点协议中止 / 解除','本类 '+out+' 条，涉及定点资格变动，医保办须确认本院或科室是否在列。','',outRows,'lv-report');
+  html+=bizRows.map(function(c){
+    return '<article class="decision-card '+c.verdict+'">'+
+      '<h3 class="pol-title" data-open="'+esc(c.id)+'" title="'+esc(c.rawTitle)+'">'+esc(c.shortTitle)+'</h3>'+
+      '<div class="pol-oneliner">'+esc(c.oneLiner)+'</div>'+
+      '<div class="pol-action" data-open="'+esc(c.id)+'">'+esc(c.actionHint)+'</div>'+
+      '<div class="pol-chips">'+chipOf(c)+'</div>'+
+      '<details class="pol-p2"><summary>查看原文标题与发布机构</summary><div class="pol-raw"><b>原文标题：</b>'+esc(c.rawTitle)+'<br><b>发布机构：</b>'+esc(c.org)+(c.url?'<br><a href="'+esc(c.url)+'" target="_blank" rel="noopener">查看原文 ↗</a>':'')+'</div></details></article>';
   }).join('');
+  $('#decisionCard').innerHTML='<div class="sec-head"><h2>今天要处理</h2><span class="sub">先看上报，再看自查，按执行层级排</span><div class="right"><button class="btn sm" type="button" id="homeToggle">'+(UI.homeAll?'收起':'展开全部 '+pool.length+' 条')+'</button></div></div>'+
+    '<div class="decision-list" style="max-height:clamp(360px,48vh,520px);overflow-y:auto;overscroll-behavior:contain">'+html+'</div>'+
+    '<div class="list-more" style="position:sticky;bottom:0;background:var(--surface);padding-top:10px;font-size:12px;color:var(--accent);font-weight:700">还有 '+Math.max(0,pool.length-3)+' 条待处理 →</div>';
+  $('#homeToggle').onclick=function(){UI.homeAll=!UI.homeAll;renderHome();};
+  $$('#decisionCard [data-open]').forEach(function(el){el.addEventListener('click',function(){openPolicy(el.getAttribute('data-open'));});});
+  $$('#decisionCard [data-group]').forEach(function(el){el.addEventListener('click',function(){openGroup(el.getAttribute('data-group'));});});
 
-  /* 最近更新 */
-  var recent=DB.policies.slice().sort(function(a,b){return String(b['发布日期']||'').localeCompare(String(a['发布日期']||''));}).slice(0,5);
-  $('#homeTimeline').innerHTML=recent.map(function(r){ var x=norm(r);
-    return '<div class="tl-item"><div class="d">'+fmtDate(x.date)+' · '+esc(x.level)+'</div><div class="t" data-open="'+esc(x.id)+'">'+esc(x.title)+'</div></div>';
+  /* 第3/4眼降级层：三级轨道 + 风险条 + 更新 + 巡检 */
+  var levels=[['exec','执行 · 玉溪市'],['ref','参照 · 云南省'],['base','基线 · 国家']];
+  var tracks=levels.map(function(p){
+    var l=p[1].split('· ')[1], rows=cards.filter(function(c){return c.level===l;});
+    return '<div class="track '+p[0]+'"><div class="name">'+esc(p[1])+' <small>'+rows.length+' 条</small></div><div class="bar"><i style="width:'+(100*rows.length/(cards.length||1))+'%"></i></div><div class="cnt mono">'+rows.length+'</div></div>';
   }).join('');
-  $$('#homeTimeline [data-open]').forEach(function(el){ el.addEventListener('click',function(){ openPolicy(el.getAttribute('data-open')); }); });
-
-  wbMergeExposureIntoStrip($('#redlineStrip'),DB.policies);
+  var recent=cards.slice().sort(function(a,b){return String(b.date||'').localeCompare(String(a.date||''));}).slice(0,5);
+  $('#homeLower').innerHTML='<div class="card"><div class="sec-head"><h2>三级政策感知</h2><span class="sub">按可执行性加权</span></div>'+tracks+
+    '<div class="divider"></div><div class="sec-head"><h2 style="font-size:15px">最近更新</h2><div class="right"><button class="btn sm" type="button" id="moreLib">查看全部 →</button></div></div>'+
+    recent.map(function(c){return '<div class="row" data-open="'+esc(c.id)+'" style="padding:9px 0;border-bottom:1px solid var(--line);cursor:pointer"><div style="font-size:13px;font-weight:600;line-height:1.5">'+esc(c.shortTitle)+'</div><div class="mini muted">'+esc(c.level)+' · '+fmtDate(c.date)+'</div></div>';}).join('')+'</div>'+
+    '<div class="card"><div class="sec-head"><h2>风险构成</h2></div><div id="radarBox"></div><div class="divider"></div><div class="mini muted" id="nextCheck"></div></div>';
   initRadarFix();
   var f=DB.fresh||{};
-  $('#nextCheck').innerHTML='<div style="font-size:19px;font-weight:800" class="mono">'+esc(String(f.nextRun||'待定').slice(0,16).replace('T',' '))+'</div>'+
-    '<div class="mini muted" style="margin-top:5px">上次巡检 '+esc(String(f.lastRun||'—').slice(0,16).replace('T',' '))+'</div>'+
-    '<div class="mini muted" style="margin-top:9px">'+esc(f.note||'准实时同步，非实时推送')+'</div>';
+  $('#nextCheck').innerHTML='<b style="color:var(--ink-2)">下次巡检</b><br>'+esc(String(f.nextRun||'待定').slice(0,16).replace('T',' '))+'<br>上次 '+esc(String(f.lastRun||'—').slice(0,16).replace('T',' '));
+  $$('#homeLower [data-open]').forEach(function(el){el.onclick=function(){openPolicy(el.getAttribute('data-open'));};});
+  $('#moreLib').onclick=function(){switchView('library');};
 }
 
 /* ============ 政策库 ============ */
 function filteredLib(){
   var f=UI.lib;
   var rows=DB.policies.filter(function(r){
-    if(f.level && r['行政层级']!==f.level) return false;
-    if(f.cat && r['政策类别']!==f.cat) return false;
-    if(f.impact && r['影响等级']!==f.impact) return false;
-    if(f.kw){ var hay=[r['政策标题'],r['发布机构'],r['关键词'],r['政策摘要'],r['文号']].join(' ').toLowerCase();
-      if(f.kw.toLowerCase().split(/\s+/).some(function(t){return t&&hay.indexOf(t)<0;})) return false; }
+    var c=humanize(r);
+    if(f.level&&c.level!==f.level)return false;
+    if(f.verdict&&c.verdict!==f.verdict)return false;
+    if(f.biz&&c.biz.indexOf(f.biz)<0)return false;
+    if(f.kw){var hay=[c.title,c.shortTitle,c.oneLiner,c.org,c.keywords,c.summary].join(' ').toLowerCase();
+      if(f.kw.toLowerCase().split(/\s+/).some(function(t){return t&&hay.indexOf(t)<0;}))return false;}
     return true;
   });
-  rows.sort(function(a,b){
-    if(f.sort==='title') return String(a['政策标题']||'').localeCompare(String(b['政策标题']||''),'zh');
-    if(f.sort==='level') return levelOrder(a['行政层级'])-levelOrder(b['行政层级'])||String(b['发布日期']||'').localeCompare(String(a['发布日期']||''));
-    return String(b['发布日期']||'').localeCompare(String(a['发布日期']||''));
-  });
-  return rows;
+  return rows.sort(function(a,b){return String(b['发布日期']||'').localeCompare(String(a['发布日期']||''));});
 }
 function renderLibrary(){
-  var cats={}; DB.policies.forEach(function(r){var c=r['政策类别']||'未分类';cats[c]=(cats[c]||0)+1;});
-  var $c=$('#libCat'), cur=UI.lib.cat;
-  $c.innerHTML='<option value="">全部类别</option>'+Object.keys(cats).sort(function(a,b){return cats[b]-cats[a];}).map(function(c){return '<option value="'+esc(c)+'">'+esc(c)+' ('+cats[c]+')</option>';}).join('');
-  $c.value=cur;
-  var rows=filteredLib(), ps=20, pages=Math.max(1,Math.ceil(rows.length/ps));
-  if(UI.lib.page>pages) UI.lib.page=pages;
+  var rows=filteredLib(),ps=20,pages=Math.max(1,Math.ceil(rows.length/ps));if(UI.lib.page>pages)UI.lib.page=pages;
   var page=rows.slice((UI.lib.page-1)*ps,UI.lib.page*ps);
   $('#libCount').textContent='命中 '+rows.length+' 条 / 共 '+DB.policies.length+' 条';
-  $('#libBody').innerHTML=page.length?page.map(function(r){ var x=norm(r), on=UI.compare.indexOf(x.id)>=0, fav=UI.fav.indexOf(x.id)>=0;
-    return '<tr><td><input type="checkbox" data-cmp="'+esc(x.id)+'"'+(on?' checked':'')+' aria-label="加入对比"></td>'+
-      '<td><span class="ttl" data-open="'+esc(x.id)+'">'+esc(x.title)+'</span><div class="mini muted">'+esc(x.org.slice(0,38))+'</div></td>'+
-      '<td>'+levelChip(x.level)+'</td><td class="mono mini">'+fmtDate(x.date)+'</td>'+
-      '<td><span class="chip '+(x.impact==='高'?'red':(x.impact==='中'?'warn':''))+'">'+esc(x.impact||'—')+'</span></td>'+
-      '<td class="mini">'+esc(x.change||'—')+'</td><td><button class="btn sm" data-fav="'+esc(x.id)+'" title="收藏">'+(fav?'★':'☆')+'</button></td></tr>';
-  }).join(''):'<tr><td colspan="7"><div class="empty"><b>没有命中任何政策</b>试试减少筛选条件，或换一个关键词。</div></td></tr>';
+  $('#libBody').innerHTML=page.length?page.map(function(r){var c=humanize(r),on=UI.compare.indexOf(c.id)>=0;
+    return '<tr><td><input type="checkbox" data-cmp="'+esc(c.id)+'"'+(on?' checked':'')+'></td>'+
+      '<td><div class="t" data-open="'+esc(c.id)+'">'+esc(c.shortTitle)+'</div><div class="s">'+esc(c.oneLiner)+'</div></td>'+
+      '<td><span class="chip '+(c.level==='玉溪市'?'blue':(c.level==='云南省'?'cyan':''))+'">'+esc(c.level)+'</span></td>'+
+      '<td class="mono mini">'+fmtDate(c.date)+'</td>'+
+      '<td><span class="pol-chip lv-'+c.verdict+'" style="font-size:11px">'+(c.verdict==='report'?'上报':(c.verdict==='selfcheck'?'自查':'知晓'))+'</span></td>'+
+      '<td><button class="btn sm" data-fav="'+esc(c.id)+'">'+(UI.fav.indexOf(c.id)>=0?'★':'☆')+'</button></td></tr>';
+  }).join(''):'<tr><td colspan="6"><div class="empty"><b>没有命中政策</b>减少筛选条件或换一个词。</div></td></tr>';
   $('#libPager').innerHTML='<button type="button" id="libPrev"'+(UI.lib.page<=1?' disabled':'')+'>上一页</button><span>第 '+UI.lib.page+' / '+pages+' 页</span><button type="button" id="libNext"'+(UI.lib.page>=pages?' disabled':'')+'>下一页</button>';
-  $$('#libBody [data-open]').forEach(function(el){ el.addEventListener('click',function(){ openPolicy(el.getAttribute('data-open')); }); });
-  $$('#libBody [data-cmp]').forEach(function(el){ el.addEventListener('change',function(){ toggleCompare(el.getAttribute('data-cmp'),el.checked); }); });
-  $$('#libBody [data-fav]').forEach(function(el){ el.addEventListener('click',function(){ toggleFav(el.getAttribute('data-fav')); }); });
-  $('#libPrev').onclick=function(){UI.lib.page--;renderLibrary();};
-  $('#libNext').onclick=function(){UI.lib.page++;renderLibrary();};
+  $$('#libBody [data-open]').forEach(function(el){el.onclick=function(){openPolicy(el.getAttribute('data-open'));};});
+  $$('#libBody [data-cmp]').forEach(function(el){el.onchange=function(){toggleCompare(el.getAttribute('data-cmp'),el.checked);};});
+  $$('#libBody [data-fav]').forEach(function(el){el.onclick=function(){toggleFav(el.getAttribute('data-fav'));};});
+  $('#libPrev').onclick=function(){UI.lib.page--;renderLibrary();};$('#libNext').onclick=function(){UI.lib.page++;renderLibrary();};
   $('#compareBtn').textContent='对比选中 ('+UI.compare.length+')';
 }
 function toggleCompare(id,on){
-  if(on && UI.compare.length>=3){ toast('最多同时对比 3 条'); renderLibrary(); return; }
-  if(on && UI.compare.indexOf(id)<0) UI.compare.push(id);
-  if(!on) UI.compare=UI.compare.filter(function(x){return x!==id;});
+  if(on&&UI.compare.length>=3){toast('最多同时对比 3 条');renderLibrary();return;}
+  if(on&&UI.compare.indexOf(id)<0)UI.compare.push(id);
+  if(!on)UI.compare=UI.compare.filter(function(x){return x!==id;});
   renderLibrary();
 }
 function toggleFav(id){
   var i=UI.fav.indexOf(id);
   if(i>=0){UI.fav.splice(i,1);toast('已取消收藏');}else{UI.fav.push(id);toast('已收藏，去「我的关注」查看');}
-  lsSet('wb2.fav',UI.fav); renderLibrary(); renderWatch();
+  lsSet('wb2.fav',UI.fav);renderLibrary();renderWatch();
 }
 
-/* ============ AI 解读块（渲染统一 esc，防 XSS） ============ */
+/* ============ 决策解读（只渲染有解读内容的） ============ */
+function renderInsight(){
+  var f=UI.ins;
+  var rows=DB.policies.map(humanize).filter(function(c){
+    if(c.verdict!==f.v)return false;
+    if(!c.ai&&!c.points&&!c.local)return false;
+    if(f.kw&&[c.title,c.shortTitle,c.oneLiner,c.ai,c.points].join(' ').indexOf(f.kw)<0)return false;
+    return true;
+  }).sort(function(a,b){return String(b.date||'').localeCompare(String(a.date||''));});
+  var ps=8,pages=Math.max(1,Math.ceil(rows.length/ps));if(f.page>pages)f.page=pages;
+  var page=rows.slice((f.page-1)*ps,f.page*ps);
+  $('#insList').innerHTML=page.length?page.map(function(c){
+    return '<article class="decision-card '+c.verdict+'"><h3 class="pol-title" data-open="'+esc(c.id)+'">'+esc(c.shortTitle)+'</h3>'+
+      '<div class="pol-oneliner">'+esc(c.oneLiner)+'</div>'+
+      '<div class="pol-chips">'+chipOf(c)+'</div>'+
+      aiBlock(byId(c.id))+
+      '<div class="pol-action" data-open="'+esc(c.id)+'">'+esc(c.actionHint)+'</div></article>';
+  }).join(''):'<div class="empty"><b>这一档没有可解读内容</b>换个档位看看。</div>';
+  $('#insPager').innerHTML='<button type="button" id="insPrev"'+(f.page<=1?' disabled':'')+'>上一页</button><span>第 '+f.page+' / '+pages+' 页 · 命中 '+rows.length+'</span><button type="button" id="insNext"'+(f.page>=pages?' disabled':'')+'>下一页</button>';
+  $$('#insList [data-open]').forEach(function(el){el.onclick=function(){openPolicy(el.getAttribute('data-open'));};});
+  $('#insPrev').onclick=function(){f.page--;renderInsight();};$('#insNext').onclick=function(){f.page++;renderInsight();};
+}
+
+/* ============ AI 解读块（G5：统一 esc） ============ */
 function aiBlock(row){
   var x=norm(row);
-  var points=String(x.points||'').split(/[；;\n]/).filter(function(s){return s.trim();}).slice(0,5);
-  return '<div class="blk"><div class="bt">政策要点 · '+esc(x.status||'已解读')+'</div><div class="bd">'+
-    (points.length?points.map(function(p){return '· '+esc(p.trim());}).join('\n'):esc(x.points))+'</div></div>'+
-    '<div class="blk"><div class="bt">AI 解读摘要</div><div class="bd">'+esc(x.ai)+'</div></div>'+
-    '<div class="blk"><div class="bt">一句话摘要</div><div class="bd">'+esc(x.summary)+'</div></div>';
+  var pt=esc(x.points).split(/[；;\n]/).filter(function(s){return s.trim();}).slice(0,5);
+  return (pt.length?'<div class="blk"><div class="bt">政策要点</div><div class="bd">'+pt.map(function(p){return '· '+p.trim();}).join('\n')+'</div></div>':'')+
+    (x.ai?'<div class="blk"><div class="bt">解读摘要 · '+esc(x.title)+'</div><div class="bd">'+esc(x.ai)+'</div></div>':'')+
+    (x.summary?'<div class="blk"><div class="bt">一句话说明</div><div class="bd">'+esc(x.summary)+'</div></div>':'');
 }
 function ipReadHtml(row){
   var x=norm(row);
@@ -759,267 +672,154 @@ function ipReadHtml(row){
     '<div class="blk"><div class="bt">对玉溪的影响</div><div class="bd">'+esc(x.yuxi)+'</div></div>';
 }
 
-/* ============ 解读 ============ */
-function renderInsight(){
-  var f=UI.ins;
-  var rows=DB.policies.filter(function(r){
-    if(r['行政层级']!==f.level) return false;
-    if(f.impact && r['影响等级']!==f.impact) return false;
-    if(f.kw){var hay=[r['政策标题'],r['AI解读'],r['解读要点'],r['行动建议'],r['乡镇卫生院影响']].join(' ').toLowerCase();
-      if(hay.indexOf(f.kw.toLowerCase())<0) return false;}
-    return true;
-  }).sort(function(a,b){return String(b['发布日期']||'').localeCompare(String(a['发布日期']||''));});
-  var ps=8, pages=Math.max(1,Math.ceil(rows.length/ps)); if(f.page>pages)f.page=pages;
-  var page=rows.slice((f.page-1)*ps,f.page*ps);
-  $('#insList').innerHTML=page.length?page.map(function(r){ var x=norm(r);
-    return '<article class="pcard"><div class="hd">'+levelChip(x.level)+
-      '<h3 data-open="'+esc(x.id)+'">'+esc(x.title)+'</h3>'+
-      '<span class="chip '+(x.impact==='高'?'red':(x.impact==='中'?'warn':''))+'">'+esc(x.impact||'—')+'</span></div>'+
-      '<div class="meta"><span>'+fmtDate(x.date)+'</span><span>'+esc(x.org.slice(0,34))+'</span><span>'+esc(x.change||'')+'</span></div>'+
-      aiBlock(r)+
-      '<div class="acts"><button class="btn sm" data-open="'+esc(x.id)+'">看完整详情</button>'+
-      '<button class="btn sm" data-speak="'+esc(x.id)+'">朗读要点</button>'+
-      '<button class="btn sm" data-fav="'+esc(x.id)+'">'+(UI.fav.indexOf(x.id)>=0?'★ 已收藏':'☆ 收藏')+'</button></div></article>';
-  }).join(''):'<div class="empty"><b>这个层级还没有命中解读</b>换个筛选条件试试。</div>';
-  $('#insPager').innerHTML='<button type="button" id="insPrev"'+(f.page<=1?' disabled':'')+'>上一页</button><span>第 '+f.page+' / '+pages+' 页 · 命中 '+rows.length+'</span><button type="button" id="insNext"'+(f.page>=pages?' disabled':'')+'>下一页</button>';
-  $$('#insList [data-open]').forEach(function(el){ el.addEventListener('click',function(){ openPolicy(el.getAttribute('data-open')); }); });
-  $$('#insList [data-fav]').forEach(function(el){ el.addEventListener('click',function(){ toggleFav(el.getAttribute('data-fav')); renderInsight(); }); });
-  $$('#insList [data-speak]').forEach(function(el){ el.addEventListener('click',function(){ speak(el.getAttribute('data-speak')); }); });
-  $('#insPrev').onclick=function(){f.page--;renderInsight();};
-  $('#insNext').onclick=function(){f.page++;renderInsight();};
-}
-function speak(id){
-  if(!('speechSynthesis' in window)){ toast('当前浏览器不支持朗读'); return; }
-  var r=byId(id); if(!r)return; var x=norm(r);
-  var text=x.title+'。'+x.summary+'。'+x.points+'。'+x.local;
-  window.speechSynthesis.cancel();
-  var u=new SpeechSynthesisUtterance(text); u.lang='zh-CN'; u.rate=1.02;
-  window.speechSynthesis.speak(u); toast('开始朗读：'+x.title.slice(0,16));
-}
-
-/* ============ 问一问：本地检索式问答 ============ */
-function tokens(q){
-  var s=String(q||'').toLowerCase().replace(/[，。？！、；：,.?!\s]/g,' ');
-  var parts=s.split(' ').filter(function(x){return x.length>0;});
-  var out=[];
-  parts.forEach(function(p){
-    out.push(p);
-    if(/[\u4e00-\u9fa5]/.test(p)&&p.length>2){ for(var i=0;i<p.length-1;i++) out.push(p.slice(i,i+2)); }
-  });
-  return out.filter(function(v,i,a){return a.indexOf(v)===i;});
-}
+/* ============ 问一问 ============ */
+function tokens(q){var s=String(q||'').toLowerCase().replace(/[，。？！、；：,.?!\s]/g,' ');var out=[];
+  s.split(' ').filter(function(x){return x;}).forEach(function(p){out.push(p);if(/[\u4e00-\u9fa5]/.test(p)&&p.length>2){for(var i=0;i<p.length-1;i++)out.push(p.slice(i,i+2));}});
+  return out.filter(function(v,i,a){return a.indexOf(v)===i;});}
 function ask(q){
   var ts=tokens(q);
-  if(!ts.length) return {text:'请先说清楚你想查什么，比如「慢性病报销比例」「哪些机构退出了医保」。',refs:[]};
-  if(/退出|退医保|定点.*取消/.test(q)){
-    var ex=wbExitList(DB.policies).slice(0,8);
-    return {text:'在本地台账中，共有 '+wbExitList(DB.policies).length+' 条退出医保机构记录。以下是最近 8 条：\n'+ex.map(function(r){return '· '+String(r['政策标题']||'').slice(0,42)+'（'+String(r['退出方式']||'')+' / '+String(r['机构类别']||'')+'）';}).join('\n')+'\n\n点下方出处可看原文与完整分类。',refs:ex.slice(0,3).map(function(r){return r._id;})};
+  if(!ts.length)return{text:'请先说说想查什么，比如「慢病报销比例」「哪些机构退出了医保」。',refs:[]};
+  if(/退出|退医保|定点.*取消|中止协议/.test(q)){
+    var list=wbExitList(DB.policies).slice(0,8);
+    return{text:'本地台账共 '+wbExitList(DB.policies).length+' 条退出医保机构记录，最近 8 条：\n'+list.map(function(r){return '· '+String(r['政策标题']||'').slice(0,42)+'（'+String(r['退出方式']||'')+' / '+String(r['机构类别']||'')+'）';}).join('\n')+'\n\n点出处可看原文。',refs:list.slice(0,3).map(function(r){return r._id;})};
   }
-  var scored=DB.policies.map(function(r){
-    var x=norm(r);
-    var hay=[x.title,x.summary,x.points,x.keywords,x.cat,x.ai].join(' ').toLowerCase();
-    var sc=0; ts.forEach(function(t){ if(hay.indexOf(t)>=0) sc+=t.length; });
-    if(x.impact==='高') sc+=0.4;
-    return {r:r,x:x,sc:sc};
-  }).filter(function(o){return o.sc>0;}).sort(function(a,b){return b.sc-a.sc;}).slice(0,3);
-  if(!scored.length) return {text:'本地 668 条政策里没有直接命中「'+q+'」。试试更短的词，比如「慢病」「长护险」「一般诊疗费」，或者到政策库用筛选条件找。',refs:[]};
-  var text='我在 '+DB.policies.length+' 条政策里找到 '+scored.length+' 条最相关的：\n\n'+scored.map(function(o,i){
-    return (i+1)+'. '+o.x.title+'\n   '+String(o.x.summary||o.x.points||'').slice(0,110)+'\n   建议：'+String(o.x.actions||'').split('\n')[0].slice(0,80);
-  }).join('\n\n');
-  return {text:text,refs:scored.map(function(o){return o.x.id;})};
+  if(/上报|医保局/.test(q)){
+    return{text:'判断口径：曝光通报或退出定点的条目 → 必须上报；高影响政策 → 需自查；其余仅知晓。可在政策库用「处置」筛选，或在决策解读中查看对应档位。',refs:[]};
+  }
+  var scored=DB.policies.map(function(r){var c=humanize(r);var hay=[c.title,c.shortTitle,c.summary,c.points,c.keywords,c.cat,c.ai].join(' ').toLowerCase();
+    var sc=0;ts.forEach(function(t){if(hay.indexOf(t)>=0)sc+=t.length;});return{c:c,sc:sc};}).filter(function(o){return o.sc>0;}).sort(function(a,b){return b.sc-a.sc;}).slice(0,3);
+  if(!scored.length)return{text:'本地 '+DB.policies.length+' 条政策没有直接命中「'+q+'」。试试更短的词，比如「慢病」「长护险」「一般诊疗费」。',refs:[]};
+  return{text:'找到 '+scored.length+' 条最相关的：\n\n'+scored.map(function(o,i){return (i+1)+'. '+o.c.shortTitle+'\n   影响：'+o.c.oneLiner+'\n   建议：'+o.c.actionHint;}).join('\n\n'),refs:scored.map(function(o){return o.c.id;})};
 }
-function renderChat(){
-  $('#chatBody').innerHTML=UI.chat.map(function(m){
-    var cite=m.refs&&m.refs.length?('<div class="cite">出处：'+m.refs.map(function(id){var r=byId(id);return r?'<button class="btn sm" data-ref="'+esc(id)+'">'+esc(String(r['政策标题']||id).slice(0,22))+'…</button>':'';}).join(' ')+'</div>'):'';
+function renderAsk(){
+  $('#chatBody').innerHTML=UI.chat.length?UI.chat.map(function(m){
+    var cite=m.refs&&m.refs.length?'<div class="cite">出处：'+m.refs.map(function(id){var r=byId(id);return r?'<button class="btn sm" data-ref="'+esc(id)+'">'+esc(String(r['政策标题']||id).slice(0,22))+'…</button>':'';}).join(' ')+'</div>':'';
     return '<div class="msg '+(m.me?'me':'ai')+'"><div class="av">'+(m.me?'我':'AI')+'</div><div class="bub">'+esc(m.text)+cite+'</div></div>';
-  }).join('')||'<div class="msg ai"><div class="av">AI</div><div class="bub">你好，我是政策小助手。用日常语言问我，比如：\n\n· 慢性病报销比例是多少？\n· 哪些医疗机构退出了医保？\n· 曝光案例主要是什么问题？\n\n我会从本地政策里找答案，并附上出处。</div></div>';
-  $$('#chatBody [data-ref]').forEach(function(el){ el.addEventListener('click',function(){ openPolicy(el.getAttribute('data-ref')); }); });
-  var box=$('#chatBody'); box.scrollTop=box.scrollHeight;
+  }).join(''):'<div class="msg ai"><div class="av">AI</div><div class="bub">你好。用日常话问我，比如：\n\n· 慢病报销比例是多少？\n· 哪些机构退出了医保？\n· 什么情况要上报医保局？\n\n我会从本地政策里找答案并附出处。</div></div>';
+  $$('#chatBody [data-ref]').forEach(function(el){el.onclick=function(){openPolicy(el.getAttribute('data-ref'));};});
+  $('#chatBody').scrollTop=$('#chatBody').scrollHeight;
 }
-function sendAsk(){
-  var inp=$('#askInput'), q=inp.value.trim(); if(!q)return;
-  UI.chat.push({me:true,text:q}); var a=ask(q); UI.chat.push({me:false,text:a.text,refs:a.refs});
-  inp.value=''; renderChat();
-}
-$('#askSend').onclick=sendAsk;
-$('#askInput').addEventListener('keydown',function(e){if(e.key==='Enter')sendAsk();});
-$('#clearChat').onclick=function(){UI.chat=[];renderChat();};
-$('#askSuggest').innerHTML=['慢性病报销比例是多少？','哪些机构退出了医保？','一般诊疗费怎么执行？','最近有什么新政策？'].map(function(q){return '<button type="button">'+esc(q)+'</button>';}).join('');
-$$('#askSuggest button').forEach(function(b){ b.onclick=function(){ $('#askInput').value=b.textContent; sendAsk(); }; });
+function sendAsk(){var inp=$('#askInput'),q=inp.value.trim();if(!q)return;
+  UI.chat.push({me:true,text:q});var a=ask(q);UI.chat.push({me:false,text:a.text,refs:a.refs});inp.value='';renderAsk();}
 
-/* ============ 我的关注 ============ */
+/* ============ 我的关注（岗位视角 + 关键词） ============ */
 function renderWatch(){
-  $('#watchKeys').innerHTML=UI.keys.length?UI.keys.map(function(k,i){
-    return '<span class="chip blue click" style="margin:0 6px 6px 0" data-delkey="'+i+'">#'+esc(k)+' ✕</span>';
-  }).join(''):'<div class="mini muted">还没有关注关键词。</div>';
-  $$('[data-delkey]').forEach(function(el){ el.onclick=function(){ UI.keys.splice(Number(el.getAttribute('data-delkey')),1); lsSet('wb2.keys',UI.keys); renderWatch(); }; });
-  var rows=DB.policies.filter(function(r){
-    if(UI.fav.indexOf(r._id)>=0) return true;
-    if(!UI.keys.length) return false;
-    var hay=[r['政策标题'],r['关键词'],r['政策摘要']].join(' ');
-    return UI.keys.some(function(k){return hay.indexOf(k)>=0;});
-  }).sort(function(a,b){return String(b['发布日期']||'').localeCompare(String(a['发布日期']||''));});
-  $('#watchList').innerHTML=rows.length?rows.slice(0,60).map(function(r){ var x=norm(r), fav=UI.fav.indexOf(x.id)>=0;
-    return '<div class="row" data-open="'+esc(x.id)+'"><div class="body"><div class="t">'+esc(x.title)+'</div><div class="m">'+levelChip(x.level)+'<span>'+fmtDate(x.date)+'</span>'+(fav?'<span class="chip warn">已收藏</span>':'<span class="chip cyan">关键词命中</span>')+'</div></div><span class="arrow">›</span></div>';
-  }).join(''):'<div class="empty"><b>还没有关注内容</b>收藏政策或添加关键词后，这里会替你盯着。</div>';
-  $$('#watchList [data-open]').forEach(function(el){ el.onclick=function(){ openPolicy(el.getAttribute('data-open')); }; });
-}
-$('#addWatch').onclick=function(){
-  var v=$('#watchKw').value.trim(); if(!v)return;
-  if(UI.keys.indexOf(v)<0){ UI.keys.push(v); lsSet('wb2.keys',UI.keys); toast('已关注：'+v); }
-  $('#watchKw').value=''; renderWatch();
-};
-$('#watchKw').addEventListener('keydown',function(e){if(e.key==='Enter')$('#addWatch').click();});
-
-/* ============ 更新动态 ============ */
-function renderChanges(){
-  var f=UI.chg;
-  var rows=DB.policies.filter(function(r){return !f.filter||r['变动类型']===f.filter;})
-    .sort(function(a,b){return String(b['发布日期']||'').localeCompare(String(a['发布日期']||''));});
-  var ps=20,pages=Math.max(1,Math.ceil(rows.length/ps)); if(f.page>pages)f.page=pages;
-  var page=rows.slice((f.page-1)*ps,f.page*ps);
-  $('#chgList').innerHTML=page.length?'<div class="tl">'+page.map(function(r){var x=norm(r);
-    return '<div class="tl-item"><div class="d">'+fmtDate(x.date)+' · <span class="mono">'+esc(x.id)+'</span></div><div class="t" data-open="'+esc(x.id)+'">'+esc(x.title)+'</div><div class="mini muted">'+levelChip(x.level)+' <span class="chip">'+esc(x.change||'—')+'</span> '+esc(x.org.slice(0,28))+'</div></div>';
-  }).join('')+'</div>':'<div class="empty"><b>没有匹配的变动</b>换个类型看看。</div>';
-  $('#chgPager').innerHTML='<button type="button" id="chgPrev"'+(f.page<=1?' disabled':'')+'>上一页</button><span>第 '+f.page+' / '+pages+' 页 · 共 '+rows.length+'</span><button type="button" id="chgNext"'+(f.page>=pages?' disabled':'')+'>下一页</button>';
-  $$('#chgList [data-open]').forEach(function(el){ el.onclick=function(){ openPolicy(el.getAttribute('data-open')); }; });
-  $('#chgPrev').onclick=function(){f.page--;renderChanges();};
-  $('#chgNext').onclick=function(){f.page++;renderChanges();};
-}
-$('#makeReport').onclick=function(){
-  var now=new Date(), lines=[];
-  lines.push('医保政策日报 · '+now.toISOString().slice(0,10));
-  lines.push('服务对象：澄江市乡镇卫生院');
-  lines.push('在册政策：'+DB.policies.length+' 条（玉溪 '+DB.policies.filter(function(r){return r['行政层级']==='玉溪市';}).length+
-    ' / 云南 '+DB.policies.filter(function(r){return r['行政层级']==='云南省';}).length+' / 国家 '+DB.policies.filter(function(r){return r['行政层级']==='国家';}).length+'）');
-  lines.push('曝光案例：'+DB.policies.filter(function(r){return String(r['曝光标记']||'')==='是';}).length+' 条；退出医保机构：'+wbExitList(DB.policies).length+' 条');
-  lines.push('');
-  lines.push('【今日优先】');
-  DB.policies.filter(function(r){return r['影响等级']==='高';}).slice(0,10).forEach(function(r){ lines.push('· '+String(r['政策标题']||'')+'（'+String(r['发布日期']||'').slice(0,10)+'）'); });
-  lines.push('');
-  lines.push('【最近发布】');
-  DB.policies.slice().sort(function(a,b){return String(b['发布日期']||'').localeCompare(String(a['发布日期']||''));}).slice(0,10).forEach(function(r){ lines.push('· '+String(r['发布日期']||'').slice(0,10)+' '+String(r['政策标题']||'')); });
-  openModal('日报预览','<pre style="white-space:pre-wrap;font:12px/1.8 var(--font);margin:0">'+esc(lines.join('\n'))+'</pre>',
-    [{label:'复制全文',fn:function(){copyText(lines.join('\n'));}},{label:'打印',fn:function(){window.print();},primary:true}]);
-};
-function copyText(t){ if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){toast('已复制');},function(){fallbackCopy(t);});}else fallbackCopy(t); }
-function fallbackCopy(t){ var a=document.createElement('textarea'); a.value=t; document.body.appendChild(a); a.select(); try{document.execCommand('copy');toast('已复制');}catch(e){toast('复制失败，请手动选择');} document.body.removeChild(a); }
-
-/* ============ 知识库 ============ */
-function renderDocs(){
-  var f=UI.doc;
-  var years={}; DB.kbs.forEach(function(r){var y=r['年份']||'未标年份';years[y]=1;});
-  $('#docYear').innerHTML='<option value="">全部年份</option>'+Object.keys(years).sort().reverse().map(function(y){return '<option value="'+esc(y)+'">'+esc(y)+'</option>';}).join('');
-  $('#docYear').value=f.year;
-  var rows=DB.kbs.filter(function(r){
-    if(f.level&&r['行政层级']!==f.level)return false;
-    if(f.year&&String(r['年份']||'')!==f.year)return false;
-    if(f.kw){var hay=[r['条目标题'],r['文号'],r['内容摘要']].join(' ').toLowerCase();if(hay.indexOf(f.kw.toLowerCase())<0)return false;}
-    return true;
-  }).sort(function(a,b){return String(b['年份']||'').localeCompare(String(a['年份']||''));});
-  var ps=20,pages=Math.max(1,Math.ceil(rows.length/ps)); if(f.page>pages)f.page=pages;
-  var page=rows.slice((f.page-1)*ps,f.page*ps);
-  $('#docCount').textContent='命中 '+rows.length+' 条 / 共 '+DB.kbs.length+' 条';
-  $('#docBody').innerHTML=page.length?page.map(function(r){
-    return '<tr><td><span class="ttl" data-doc="'+esc(r._id)+'">'+esc(r['条目标题']||'')+'</span><div class="mini muted">'+esc(String(r['内容摘要']||'').slice(0,60))+'</div></td>'+
-      '<td>'+levelChip(r['行政层级']||'')+'</td><td class="mono mini">'+esc(r['年份']||'')+'</td><td class="mini">'+esc(r['文号']||'')+'</td><td class="mini">'+esc(r['来源']||'')+'</td></tr>';
-  }).join(''):'<tr><td colspan="5"><div class="empty"><b>没有命中条目</b>换个关键词或年份试试。</div></td></tr>';
-  $('#docPager').innerHTML='<button type="button" id="docPrev"'+(f.page<=1?' disabled':'')+'>上一页</button><span>第 '+f.page+' / '+pages+' 页</span><button type="button" id="docNext"'+(f.page>=pages?' disabled':'')+'>下一页</button>';
-  $$('#docBody [data-doc]').forEach(function(el){ el.onclick=function(){ var id=el.getAttribute('data-doc'); if(byId(id)){switchView('library');openPolicy(id);}else toast('该条目暂无对应政策详情'); }; });
-  $('#docPrev').onclick=function(){f.page--;renderDocs();};
-  $('#docNext').onclick=function(){f.page++;renderDocs();};
+  $('#watchKeys').innerHTML=UI.keys.length?UI.keys.map(function(k,i){return '<span class="chip blue click" style="margin:0 6px 6px 0" data-delkey="'+i+'">#'+esc(k)+' ✕</span>';}).join(''):'<div class="mini muted">还没有关键词。</div>';
+  $$('[data-delkey]').forEach(function(el){el.onclick=function(){UI.keys.splice(Number(el.getAttribute('data-delkey')),1);lsSet('wb2.keys',UI.keys);renderWatch();};});
+  var rows=DB.policies.map(humanize).filter(function(c){
+    var fav=UI.fav.indexOf(c.id)>=0;
+    var kw=UI.keys.some(function(k){return [c.title,c.oneLiner,c.keywords,c.summary].join(' ').indexOf(k)>=0;});
+    return (fav||kw)&&(!UI.watch.biz||c.biz.indexOf(UI.watch.biz)>=0);
+  }).sort(function(a,b){return String(b.date||'').localeCompare(String(a.date||''));});
+  $('#watchList').innerHTML=rows.length?rows.slice(0,60).map(function(c){
+    return '<article class="decision-card '+c.verdict+'" style="padding:14px 16px 14px 22px"><h3 class="pol-title" style="font-size:15px" data-open="'+esc(c.id)+'">'+esc(c.shortTitle)+'</h3>'+
+      '<div class="pol-oneliner" style="font-size:13px">'+esc(c.oneLiner)+'</div><div class="pol-chips">'+chipOf(c)+'</div></article>';
+  }).join(''):'<div class="empty"><b>还没有关注内容</b>在政策库点 ☆ 收藏，或添加关键词。</div>';
+  $$('#watchList [data-open]').forEach(function(el){el.onclick=function(){openPolicy(el.getAttribute('data-open'));};});
 }
 
-/* ============ 详情 / 对比 / 红线弹层 ============ */
+/* ============ 弹层：详情 / 对比 / 组卡 / 报告 ============ */
 function openModal(title,html,actions){
-  var root=$('#modalRoot');
-  root.innerHTML='<div class="overlay"><div class="modal"><div class="hd"><b>'+esc(title)+'</b><div class="right"><button class="iconbtn" id="modalClose" type="button">✕</button></div></div><div class="bd">'+html+'</div>'+
+  $('#modalRoot').innerHTML='<div class="overlay"><div class="modal"><div class="hd"><b>'+esc(title)+'</b><div class="right"><button class="iconbtn" id="modalClose" type="button">✕</button></div></div><div class="bd">'+html+'</div>'+
     (actions&&actions.length?'<div class="ft">'+actions.map(function(a,i){return '<button class="btn'+(a.primary?' primary':'')+'" data-ma="'+i+'" type="button">'+esc(a.label)+'</button>';}).join('')+'</div>':'')+'</div></div>';
   $('#modalClose').onclick=closeModal;
-  $('.overlay').addEventListener('click',function(e){if(e.target===$('.overlay'))closeModal();});
-  (actions||[]).forEach(function(a,i){ $('[data-ma="'+i+'"]').onclick=a.fn; });
+  $('.overlay').onclick=function(e){if(e.target===$('.overlay'))closeModal();};
+  (actions||[]).forEach(function(a,i){$('[data-ma="'+i+'"]').onclick=a.fn;});
 }
-function closeModal(){ $('#modalRoot').innerHTML=''; }
+function closeModal(){$('#modalRoot').innerHTML='';}
 function openPolicy(id){
-  var r=byId(id); if(!r){toast('未找到该政策');return;} var x=norm(r);
-  var tags=levelChip(x.level)+' <span class="chip '+(x.impact==='高'?'red':(x.impact==='中'?'warn':''))+'">'+esc(x.impact||'—')+'</span> '+(x.exposure?'<span class="chip red">曝光</span>':'')+(x.exit?'<span class="chip warn">退出医保 · '+esc(x.exitType)+' / '+esc(x.orgType)+'</span>':'');
-  var body='<div style="font-size:16px;font-weight:800;line-height:1.6;margin-bottom:8px">'+esc(x.title)+'</div>'+
-    '<div class="mini muted" style="margin-bottom:12px">'+tags+' <span>'+fmtDate(x.date)+'</span> <span>'+esc(x.org)+'</span> <span class="mono">'+esc(x.id)+'</span></div>'+
-    (x.url?'<div style="margin-bottom:12px"><a href="'+esc(x.url)+'" target="_blank" rel="noopener">查看原文 ↗</a></div>':'<div class="mini muted" style="margin-bottom:12px">原文链接待补，当前为内部整理索引。</div>')+
+  var r=byId(id);if(!r){toast('未找到该政策');return;}var c=humanize(r);
+  var body='<h3 style="font-size:18px;line-height:1.5;margin:0 0 8px">'+esc(c.shortTitle)+'</h3>'+
+    '<div style="font-size:13px;color:var(--muted);margin-bottom:14px">'+esc(c.level)+' · '+fmtDate(c.date)+' · <span class="mono">'+esc(c.id)+'</span>　<span class="pol-chip lv-'+c.verdict+'">'+(c.verdict==='report'?'上报':(c.verdict==='selfcheck'?'自查':'知晓'))+'</span></div>'+
+    '<div class="pol-oneliner" style="font-size:15px">'+esc(c.oneLiner)+'</div>'+
+    '<div class="pol-action" style="cursor:default">'+esc(c.actionHint)+'</div>'+
+    (c.url?'<p style="margin:14px 0"><a href="'+esc(c.url)+'" target="_blank" rel="noopener">查看政策原文 ↗</a></p>':'')+
     aiBlock(r)+ipReadHtml(r)+
-    '<div class="blk"><div class="bt">核对信息</div><div class="bd">上次核对 '+fmtDate(x.checked)+' · 变动类型 '+esc(x.change||'—')+' · 上位依据 '+esc(r['上位依据']||'—')+'</div></div>';
-  openModal('政策详情',body,[
-    {label:'复制要点',fn:function(){copyText(x.title+'\n'+x.summary+'\n'+x.points+'\n'+x.local);}},
-    {label:UI.fav.indexOf(x.id)>=0?'取消收藏':'收藏',fn:function(){toggleFav(x.id);closeModal();}},
-    {label:'朗读',fn:function(){speak(x.id);}},
-    {label:'关闭',fn:closeModal,primary:true}
-  ]);
+    '<details class="pol-p2" open><summary>原文信息（用于溯源）</summary><div class="pol-raw"><b>原文标题：</b>'+esc(c.rawTitle)+'<br><b>发布机构：</b>'+esc(c.org)+'<br><b>文号 / 变动：</b>'+esc(c.change)+' · 核对 '+fmtDate(c.checked)+'</div></details>';
+  openModal('政策详情',body,[{label:'复制要点',fn:function(){copyText(c.shortTitle+'\n'+c.oneLiner+'\n'+c.actionHint);}},
+    {label:UI.fav.indexOf(c.id)>=0?'取消收藏':'收藏',fn:function(){toggleFav(c.id);closeModal();}},
+    {label:'关闭',fn:closeModal,primary:true}]);
+}
+function openGroup(key){
+  var rows=key==='exposure'?DB.policies.filter(function(r){return String(r['曝光标记']||'')==='是';}):wbExitList(DB.policies);
+  var title=(key==='exposure'?'曝光通报':'退出医保机构')+' · 共 '+rows.length+' 条';
+  var guide='是否涉及本院 / 本科室，请逐条确认。';
+  openModal(title,'<div class="pol-action" style="cursor:default;margin:0 0 14px">'+esc(guide)+'</div><div class="filters"><input id="grpKw" type="search" placeholder="在名单中筛选…"><span class="mini muted">点条目看详情</span></div><div id="grpList"></div>',
+    [{label:'导出 CSV',fn:function(){exportRows(rows,title);}},{label:'关闭',fn:closeModal,primary:true}]);
+  function draw(kw){
+    var list=rows.filter(function(r){return !kw||[r['政策标题'],r['发布机构'],r['退出方式'],r['机构类别']].join(' ').indexOf(kw)>=0;});
+    $('#grpList').innerHTML=list.length?list.map(function(r){var c=humanize(r);
+      return '<div class="row" data-open="'+esc(c.id)+'" style="padding:11px 0;border-bottom:1px solid var(--line);cursor:pointer"><div style="font-size:14px;font-weight:600;line-height:1.5">'+esc(c.shortTitle)+'</div><div class="mini muted">'+esc(c.level)+' · '+fmtDate(c.date)+(c.exit?' · '+esc(c.exitType)+' / '+esc(c.orgType):'')+'</div></div>';
+    }).join(''):'<div class="empty"><b>名单里没有命中</b>换个词试试。</div>';
+    $$('#grpList [data-open]').forEach(function(el){el.onclick=function(){closeModal();openPolicy(el.getAttribute('data-open'));};});
+  }
+  draw('');$('#grpKw').oninput=function(){draw(this.value.trim());};
 }
 function openCompare(){
   if(UI.compare.length<2){toast('请先勾选 2～3 条政策');return;}
   var rows=UI.compare.map(byId).filter(Boolean);
-  var fields=[['标题','政策标题'],['层级','行政层级'],['发布日期','发布日期'],['发布机构','发布机构'],['影响等级','影响等级'],['变动类型','变动类型'],['政策摘要','政策摘要'],['乡镇卫生院影响','乡镇卫生院影响'],['行动建议','行动建议']];
-  var html='<div class="table-wrap"><table><thead><tr><th style="width:92px">对比项</th>'+rows.map(function(r){return '<th>'+esc(String(r['政策标题']||'').slice(0,28))+'…</th>';}).join('')+'</tr></thead><tbody>'+
-    fields.map(function(f){return '<tr><th>'+esc(f[0])+'</th>'+rows.map(function(r){return '<td>'+esc(String(r[f[1]]||'—').slice(0,240))+'</td>';}).join('')+'</tr>';}).join('')+'</tbody></table></div>';
+  var fields=[['一句话','shortTitle'],['人话短句','shortTitle'],['影响说明','oneLiner'],['建议动作','actionHint'],['层级','level'],['发布日期','date'],['处置','verdict'],['原文标题','rawTitle']];
+  var html='<div class="table-wrap"><table><thead><tr><th style="width:88px">对比项</th>'+rows.map(function(r){return '<th>'+esc(humanize(r).shortTitle)+'</th>';}).join('')+'</tr></thead><tbody>'+
+    fields.filter(function(f,i,a){return a.findIndex(function(x){return x[1]===f[1];})===i;}).map(function(f){return '<tr><th>'+esc(f[0])+'</th>'+rows.map(function(r){return '<td>'+esc(String(humanize(r)[f[1]]||'—'))+'</td>';}).join('')+'</tr>';}).join('')+'</tbody></table></div>';
   openModal('政策对比 · '+rows.length+' 条',html,[{label:'关闭',fn:closeModal,primary:true}]);
 }
-function openRedline(type){
-  var rows=type==='exit'?wbExitList(DB.policies):DB.policies.filter(function(r){return String(r['曝光标记']||'')==='是';});
-  var title=type==='exit'?('退出医保机构 · 全部 '+rows.length+' 条'):('曝光案例 · 全部 '+rows.length+' 条');
-  var html='<div class="filters"><input id="rlKw" type="search" placeholder="在名单中筛选…"><span class="mini muted">点条目下钻政策详情</span></div><div id="rlList"></div>';
-  openModal(title,html,[{label:'导出 CSV',fn:function(){exportRows(rows,type==='exit'?'退出医保机构':'曝光案例');}},{label:'关闭',fn:closeModal,primary:true}]);
-  function draw(kw){
-    var list=rows.filter(function(r){return !kw||[r['政策标题'],r['发布机构'],r['退出方式'],r['机构类别']].join(' ').indexOf(kw)>=0;});
-    $('#rlList').innerHTML=list.length?list.map(function(r){var x=norm(r);
-      return '<div class="row" data-open="'+esc(x.id)+'"><div class="body"><div class="t">'+esc(x.title)+'</div><div class="m">'+levelChip(x.level)+'<span>'+fmtDate(x.date)+'</span>'+(type==='exit'?'<span class="chip warn">'+esc(x.exitType||'退出')+' / '+esc(x.orgType||'—')+'</span>':'<span class="chip red">曝光</span>')+'</div></div><span class="arrow">›</span></div>';
-    }).join(''):'<div class="empty"><b>名单里没有命中</b>换个词再试。</div>';
-    $$('#rlList [data-open]').forEach(function(el){ el.onclick=function(){closeModal();openPolicy(el.getAttribute('data-open'));}; });
-  }
-  draw(''); $('#rlKw').addEventListener('input',function(){draw(this.value.trim());});
-}
+function copyText(t){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){toast('已复制');},function(){fallback(t);});}else fallback(t);}
+function fallback(t){var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy');toast('已复制');}catch(e){toast('复制失败');}document.body.removeChild(a);}
 function exportRows(rows,name){
-  var cols=['_id','政策标题','发布日期','发布机构','行政层级','曝光标记','退出医保标记','退出方式','机构类别','原文链接'];
+  var cols=['_id','政策标题','发布日期','发布机构','行政层级','影响等级','曝光标记','退出医保标记','退出方式','机构类别','原文链接'];
   var csv='\ufeff'+cols.join(',')+'\n'+rows.map(function(r){return cols.map(function(c){return '"'+String(r[c]||'').replace(/"/g,'""')+'"';}).join(',');}).join('\n');
-  var a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})); a.download=name+'.csv'; a.click(); URL.revokeObjectURL(a.href); toast('已导出 '+rows.length+' 条');
+  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download=name+'.csv';a.click();toast('已导出 '+rows.length+' 条');
 }
 
-/* ============ 全局筛选与事件 ============ */
-$$('[data-go]').forEach(function(b){ b.onclick=function(){switchView(b.getAttribute('data-go'));}; });
-$('#themeBtn').onclick=function(){
-  var cur=document.documentElement.getAttribute('data-theme'); var next=cur==='dark'?'light':'dark';
-  document.documentElement.setAttribute('data-theme',next); try{localStorage.setItem('wb2.theme',next);}catch(e){}
-};
-try{ var th=localStorage.getItem('wb2.theme'); if(th==='dark'||th==='light')document.documentElement.setAttribute('data-theme',th); }catch(e){}
+/* ============ 事件绑定 ============ */
+$('#themeBtn').onclick=function(){var cur=document.documentElement.getAttribute('data-theme'),next=cur==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',next);lsSet('wb2.theme',next);};
+if(lsGet('wb2.theme','')==='dark')document.documentElement.setAttribute('data-theme','dark');
 $('#refreshBtn').onclick=function(){boot(true);};
 $('#menuBtn').onclick=function(){document.body.classList.toggle('nav-open');};
-$('#libKw').addEventListener('input',function(){UI.lib.kw=this.value.trim();UI.lib.page=1;renderLibrary();});
+$('#libKw').oninput=function(){UI.lib.kw=this.value.trim();UI.lib.page=1;renderLibrary();};
 $('#libLevel').onchange=function(){UI.lib.level=this.value;UI.lib.page=1;renderLibrary();};
-$('#libCat').onchange=function(){UI.lib.cat=this.value;UI.lib.page=1;renderLibrary();};
-$('#libImpact').onchange=function(){UI.lib.impact=this.value;UI.lib.page=1;renderLibrary();};
-$('#libSort').onchange=function(){UI.lib.sort=this.value;UI.lib.page=1;renderLibrary();};
-$('#clearLib').onclick=function(){UI.lib={kw:'',level:'',cat:'',impact:'',sort:'date',page:1};$('#libKw').value='';$('#libLevel').value='';$('#libCat').value='';$('#libImpact').value='';$('#libSort').value='date';renderLibrary();};
+$('#libBiz').onchange=function(){UI.lib.biz=this.value;UI.lib.page=1;renderLibrary();};
+$('#libVerdict').onchange=function(){UI.lib.verdict=this.value;UI.lib.page=1;renderLibrary();};
+$('#clearLib').onclick=function(){UI.lib={kw:'',level:'',biz:'',verdict:'',page:1};$('#libKw').value='';$('#libLevel').value='';$('#libBiz').value='';$('#libVerdict').value='';renderLibrary();};
 $('#compareBtn').onclick=openCompare;
 $('#exportLib').onclick=function(){exportRows(filteredLib(),'政策库');};
-$$('#insLevel button').forEach(function(b){ b.onclick=function(){UI.ins.level=b.getAttribute('data-lv');UI.ins.page=1;$$('#insLevel button').forEach(function(x){x.classList.toggle('on',x===b);});renderInsight();}; });
-$('#insImpact').onchange=function(){UI.ins.impact=this.value;UI.ins.page=1;renderInsight();};
-$('#insKw').addEventListener('input',function(){UI.ins.kw=this.value.trim();UI.ins.page=1;renderInsight();});
-$('#chgFilter').onchange=function(){UI.chg.filter=this.value;UI.chg.page=1;renderChanges();};
-$('#docKw').addEventListener('input',function(){UI.doc.kw=this.value.trim();UI.doc.page=1;renderDocs();});
-$('#docLevel').onchange=function(){UI.doc.level=this.value;UI.doc.page=1;renderDocs();};
-$('#docYear').onchange=function(){UI.doc.year=this.value;UI.doc.page=1;renderDocs();};
-$('#globalSearch').addEventListener('input',function(){
-  var q=this.value.trim(), box=$('#searchSug');
-  if(!q){box.classList.remove('on');return;}
+$$('#insVerdict button').forEach(function(b){b.onclick=function(){UI.ins.v=b.getAttribute('data-v');UI.ins.page=1;$$('#insVerdict button').forEach(function(x){x.classList.toggle('on',x===b);});renderInsight();};});
+$('#insKw').oninput=function(){UI.ins.kw=this.value.trim();UI.ins.page=1;renderInsight();};
+$('#askSend').onclick=sendAsk;
+$('#askInput').onkeydown=function(e){if(e.key==='Enter')sendAsk();};
+$('#clearChat').onclick=function(){UI.chat=[];renderAsk();};
+$('#askSuggest').innerHTML=['慢病报销比例是多少？','哪些机构退出了医保？','什么情况要上报医保局？'].map(function(q){return '<button type="button">'+esc(q)+'</button>';}).join('');
+$$('#askSuggest button').forEach(function(b){b.onclick=function(){$('#askInput').value=b.textContent;sendAsk();};});
+$$('#watchBiz button').forEach(function(b){b.onclick=function(){UI.watch.biz=b.getAttribute('data-b');UI.watch.page=1;$$('#watchBiz button').forEach(function(x){x.classList.toggle('on',x===b);});renderWatch();};});
+$('#addWatch').onclick=function(){var v=$('#watchKw').value.trim();if(!v)return;
+  if(UI.keys.indexOf(v)<0){UI.keys.push(v);lsSet('wb2.keys',UI.keys);toast('已关注：'+v);}$('#watchKw').value='';renderWatch();};
+$('#watchKw').onkeydown=function(e){if(e.key==='Enter')$('#addWatch').click();};
+$('#globalSearch').oninput=function(){
+  var q=this.value.trim(),box=$('#searchSug');if(!q){box.classList.remove('on');return;}
   var ts=tokens(q);
-  var hit=DB.policies.filter(function(r){var hay=[r['政策标题'],r['关键词'],r['发布机构']].join(' ').toLowerCase();return ts.some(function(t){return hay.indexOf(t)>=0;});}).slice(0,8);
-  box.innerHTML=hit.length?hit.map(function(r){return '<button type="button" data-sug="'+esc(r._id)+'">'+esc(String(r['政策标题']||'').slice(0,36))+'<small>'+esc(r['行政层级']||'')+' · '+fmtDate(r['发布日期'])+'</small></button>';}).join('')+'<button type="button" data-sug-all="1">在政策库中查看全部结果 →</button>':'<button type="button" data-sug-all="1">没有直接命中，去政策库筛选 →</button>';
+  var hit=DB.policies.map(humanize).filter(function(c){var hay=[c.title,c.shortTitle,c.oneLiner,c.keywords].join(' ').toLowerCase();return ts.some(function(t){return hay.indexOf(t)>=0;});}).slice(0,6);
+  box.innerHTML=hit.length?hit.map(function(c){return '<button type="button" data-sug="'+esc(c.id)+'">'+esc(c.shortTitle)+'<small>'+esc(c.level)+' · '+fmtDate(c.date)+'</small></button>';}).join('')+
+    '<button type="button" data-sug-ask="1">把「'+esc(q)+'」当作问题提问 →</button>':'<button type="button" data-sug-ask="1">把「'+esc(q)+'」当作问题提问 →</button>';
   box.classList.add('on');
-  $$('[data-sug]',box).forEach(function(b){ b.onclick=function(){box.classList.remove('on');$('#globalSearch').value='';switchView('library');openPolicy(b.getAttribute('data-sug'));}; });
-  $$('[data-sug-all]',box).forEach(function(b){ b.onclick=function(){box.classList.remove('on');UI.lib.kw=q;$('#libKw').value=q;UI.lib.page=1;switchView('library');renderLibrary();}; });
-});
-document.addEventListener('click',function(e){ if(!e.target.closest('.search')) $('#searchSug').classList.remove('on'); });
-document.addEventListener('keydown',function(e){ if(e.key==='Escape'){closeModal();$('#searchSug').classList.remove('on');} });
+  $$('[data-sug]',box).forEach(function(b){b.onclick=function(){box.classList.remove('on');$('#globalSearch').value='';openPolicy(b.getAttribute('data-sug'));};});
+  $$('[data-sug-ask]',box).forEach(function(b){b.onclick=function(){box.classList.remove('on');$('#globalSearch').value='';switchView('ask');$('#askInput').value=q;sendAsk();};});
+};
+document.addEventListener('click',function(e){if(!e.target.closest('.search'))$('#searchSug').classList.remove('on');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeModal();$('#searchSug').classList.remove('on');}});
 
+/* ============ 启动 ============ */
+function boot(force){
+  return Promise.all([fetchJSON('./data/policies.json'),fetchJSON('./data/state.json'),fetchJSON('./data/kb.json')]).then(function(a){
+    DB.policies=a[0].rows||[];DB.kbs=a[2].rows||[];
+    (a[1].rows||[]).forEach(function(r){DB.state[r['状态键']]=parseContent(r['内容']);});
+    DB.fresh=DB.state.freshness||{};
+    if(DB.fresh.lastRun===undefined&&DB.fresh.lastCheckedAt!==undefined)DB.fresh.lastRun=DB.fresh.lastCheckedAt;
+    if(DB.fresh.nextRun===undefined&&DB.fresh.nextCheckAt!==undefined)DB.fresh.nextRun=DB.fresh.nextCheckAt;
+    UI.fav=lsGet('wb2.fav',[]);UI.keys=lsGet('wb2.keys',[]);DB.loaded=true;
+    renderAll();if(force)toast('数据已刷新');
+  }).catch(function(e){toast('数据装载失败：'+e.message);});
+}
 boot(false);
 </script>
 </body>
