@@ -42,7 +42,7 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const filePath = 'site/data/state.json';
+            const filePath = 'data/state.json';
             const FRESHNESS_KEY = 'freshness';
             const MAX_AGE_HOURS = 48;
             const ISSUE_TITLE = '数据新鲜度告警：政策数据已超过 48 小时未同步';
@@ -103,7 +103,7 @@ jobs:
             const body = [
               '## 数据新鲜度告警',
               '',
-              `site/data/state.json 中 freshness.lastCheckedAt = \`${lastCheckedAt}\`，`,
+              `data/state.json 中 freshness.lastCheckedAt = \`${lastCheckedAt}\`，`,
               `距检查时刻已超过 ${MAX_AGE_HOURS} 小时（约 ${ageHours.toFixed(1)} 小时）。`,
               '',
               '请维护人确认本地每日 08:30 同步链路是否正常：registry.jsonl 是否更新、',
