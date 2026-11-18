@@ -126,7 +126,9 @@ body{
   background-attachment:fixed;
   color:var(--txt);
   font-family:var(--sans);
-  font-size:14px;
+  /* 字号整体上调一档（2026-11 观感急救）：乡镇卫生院多为大屏低分辨率显示器，
+     14px 基准在 1080p 下偏小；升到 16px 后列表扫读不吃力。 */
+  font-size:16px;
   line-height:1.62;
   min-height:100vh;
   -webkit-font-smoothing:antialiased;
@@ -234,6 +236,16 @@ body.mini .collapse-btn .lbl{display:none}
 .sync.s-err i{background:var(--red);box-shadow:0 0 8px rgba(var(--err-rgba), .7)}
 @keyframes blink{50%{opacity:.25}}
 .views{padding:24px 24px 40px;flex:1}
+/* 页脚（2026-11 观感急救）：外壳 min-height:100vh（body L131 / .app L145）
+   会把页面拉到视口高度，内容约 2300px 结束后下方是整片无信号空白。
+   页脚锚在主列底部（.app-main 是 flex 列、.views flex:1 已占满余量），
+   让「到底了」有明确视觉终点，不再像渲染事故。 */
+.site-footer{margin-top:auto;padding:16px 24px 22px;border-top:1px solid var(--line);
+  text-align:center;font-size:12px;color:var(--txt-3);letter-spacing:.2px;background:transparent}
+.site-footer .ft-b{font-weight:600;color:var(--txt-2)}
+.site-footer .ft-sep{margin:0 8px;opacity:.55}
+.site-footer b{font-weight:600}
+.site-footer .ft-muted{opacity:.8}
 .view{display:none}
 .view.on{display:block;animation:viewIn .18s var(--ease)}
 .view.on{display:block}
@@ -452,6 +464,10 @@ h2.t::before{content:"";display:inline-block;width:3px;height:13px;border-radius
 .pi-main{flex:1;min-width:0}
 .pi-title{font-size:15px;font-weight:600;color:#0F1E33;cursor:pointer;display:inline-flex;align-items:flex-start;gap:7px;text-align:left;background:transparent;border:0;padding:0;line-height:1.55;transition:color .16s}
 .pi-title:hover{color:var(--blue)}
+/* 标题两行截断（2026-11 观感急救）：长标题原本无限撑行，把元信息挤到几屏外。
+   截断只作用于 .tt（纯标题文本），徽标 chip 仍在标题前正常内联；
+   全题经按钮 title 属性悬浮可见。 */
+.pi-title .tt{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .pi-title .caret{transition:transform .2s var(--ease);flex:0 0 14px;margin-top:5px;opacity:.5}
 .pi.open .pi-title .caret{transform:rotate(90deg);opacity:1;color:var(--blue)}
 .pi-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
@@ -460,12 +476,15 @@ h2.t::before{content:"";display:inline-block;width:3px;height:13px;border-radius
    把「谁发的、什么时候」移到右侧贴近操作区，行两侧就都有内容承重。 */
 .pi-right{display:flex;align-items:center;gap:10px;flex:0 0 auto;margin-left:auto;padding-left:16px}
 .pi-right .who{display:flex;align-items:center;gap:8px;min-width:0}
-.pi-right .org{font-size:12px;color:var(--txt-2);max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pi-right .date{font-size:12px;color:var(--txt-3);font-family:var(--mono);white-space:nowrap}
+.pi-right .org{font-size:12.5px;color:var(--txt-2);max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pi-right .date{font-size:12.5px;color:var(--txt-3);font-family:var(--mono);white-space:nowrap}
+/* 脏日期（1900-01-01 兜底）：显式文字「日期待核」，去等宽数字字体，
+   不带「数据感」信号，让用户读出「这是待核对占位」而不是「这是真实日期」。 */
+.date .dn{font-family:var(--sans);letter-spacing:.3px}
 .pi-ops{display:flex;gap:6px;flex-shrink:0;align-items:center}
 .pi-body{display:none;margin-top:13px;padding:14px;border-radius:var(--radius-sm);background:rgba(var(--ink-rgba), 0.045);border:1px solid var(--line)}
 .pi.open .pi-body{display:block;animation:fadeIn .22s var(--ease)}
-.pi-body p{margin:0 0 10px;font-size:13px;color:var(--txt-2);line-height:1.8;max-width:68ch}
+.pi-body p{margin:0 0 10px;font-size:14.5px;color:var(--txt-2);line-height:1.8;max-width:68ch}
 .srclink{color:var(--blue);text-decoration:none;word-break:break-all;border-bottom:1px dashed rgba(var(--blue-rgba), .45)}
 .srclink:hover{color:#1B54C4;border-bottom-style:solid}
 /* ---- AI 解读区块 ---- */
@@ -530,9 +549,9 @@ h2.t::before{content:"";display:inline-block;width:3px;height:13px;border-radius
 .zone .pi{padding:10px 12px}
 .zone .pi-head{flex-wrap:wrap;gap:7px 10px}
 .zone .pi-main{flex:1 1 100%;min-width:0}
-.zone .pi-title{font-size:13px;line-height:1.5}
+.zone .pi-title{font-size:14px;line-height:1.5}
 .zone .pi-meta{gap:4px;margin-top:6px}
-.zone .pi-meta .tag{font-size:11px;padding:1px 6px}
+.zone .pi-meta .tag{font-size:12px;padding:1px 6px}
 .zone .pi-right{flex:1 1 100%;margin-left:0;padding-left:0;justify-content:space-between;margin-top:6px}
 .zone .pi-right .org{max-width:210px}
 .zone .pi-ops{gap:4px}
@@ -2571,8 +2590,8 @@ html[data-theme="dark"] .stat .v{
   .views{padding:9px 8px calc(84px + env(safe-area-inset-bottom))}
   .grid4,.grid3,.grid2{grid-template-columns:minmax(0,1fr)}
   .stat .v{font-size:23px}
-  .tabbar button{min-width:52px;min-height:48px;font-size:10px}
-  .tabbar button .wb-tb-tx{font-size:9.5px}
+  .tabbar button{min-width:52px;min-height:48px;font-size:11px}
+  .tabbar button .wb-tb-tx{font-size:11px}
   .chip{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .chat-in{gap:6px}
   .view,.views{min-width:0}
@@ -2788,14 +2807,13 @@ body.wb-nav-drag .sidebar{transition:none}
   background:rgba(var(--ink-rgba),.055);border:1px solid var(--line);white-space:nowrap;
   letter-spacing:.3px;line-height:1.35}
 
-/* 曝光项强调：红底 + 左侧红条 + 标题加粗。
-   曝光是基金监管红线信号（点名机构、涉及追回金额），必须一眼可见。 */
-#boardStrip.kn-top .strip .strip-item.kn-exp{background:linear-gradient(90deg,rgba(var(--err-rgba),.085),rgba(var(--err-rgba),.02));
-  border-left:3px solid var(--err);padding-left:9px;border-radius:3px 9px 9px 3px;
+/* 曝光项降权（2026-11 观感急救）：红底渐变整片刷红是「狼来了」式强调，
+   降为浅中性底 + 细红左边线；标题文字回到正文色，红色只留给左条线与关键数字。
+   曝光是基金监管红线信号（点名机构、涉及追回金额），仍需一眼可辨，但不再满屏报警。 */
+#boardStrip.kn-top .strip .strip-item.kn-exp{background:rgba(var(--ink-rgba),.038);
+  border-left:2px solid var(--err);padding-left:10px;border-radius:3px 9px 9px 3px;
   margin:2px 0}
-#boardStrip.kn-top .strip .strip-item.kn-exp .d{color:var(--err);font-weight:600}
-#boardStrip.kn-top .strip .strip-item.kn-exp .kn-mark{background:rgba(var(--err-rgba),.15);
-  border-color:rgba(var(--err-rgba),.35);color:var(--err)}
+#boardStrip.kn-top .strip .strip-item.kn-exp .d{color:var(--txt);font-weight:600}
 
 /* 清单滚动区：条目多了仍保持视觉节奏 */
 #boardStrip.kn-top .strip .strip-list{padding:4px 14px 8px;max-height:420px;overflow-y:auto}
@@ -2818,30 +2836,36 @@ body.wb-nav-drag .sidebar{transition:none}
 /* 关键：width 必须显式给。SVG 若只给 height 而 width:auto，
    在 flex 容器里会被压成图标宽度，文字被裁掉——实测踩过。 */
 #boardStrip.kn-top .strip .hd b.kn-hd-title{font-size:0;letter-spacing:0}
-/* 「曝光台」标题：常规字排版 + 渐变填充 + 轻投影。
-   不用艺术字（用户 2026-10-21 反馈楷体字标不理想），
-   也不用素字——渐变与投影给足分量，但保持工作台该有的克制。 */
+/* 「曝光台」标题：常规字排版 + 深红粗体 + 左侧细色条（2026-11 降权）。
+   红金渐变艺术字把工作清单压成「展品」观感，改为克制的深红粗体；
+   左侧细色条保住「这是红线信号模块」的一眼可辨。 */
 #boardStrip.kn-top .strip .hd .kn-wordmark-text{
   display:inline-block;font-size:21px;font-weight:800;letter-spacing:1.6px;line-height:1.25;
-  background:linear-gradient(94deg,var(--err) 0%,var(--warn) 52%,var(--err) 100%);
-  -webkit-background-clip:text;background-clip:text;
-  color:transparent;-webkit-text-fill-color:transparent;
-  text-shadow:none}
-#boardStrip.kn-top .strip .hd .kn-wordmark-text::after{
-  content:"";display:block;height:2px;margin-top:3px;border-radius:2px;
-  background:linear-gradient(90deg,var(--err),rgba(var(--warn-rgba),.55),transparent)}
-/* 副标题：紧跟艺术字，说明模块范围 */
+  color:var(--err);background:none;text-shadow:none;
+  border-left:3px solid var(--err);padding-left:10px}
+/* 副标题：紧跟标题，说明模块范围 */
 #boardStrip.kn-top .strip .hd .kn-subtitle{
   font-size:11.5px;color:var(--txt-3);letter-spacing:.2px;
   padding-left:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:34%}
 /* 读屏与页面内搜索用的真实文本：视觉隐藏但可被读屏器与 Ctrl+F 命中 */
 .kn-wm-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
   clip:rect(0 0 0 0);white-space:nowrap;border:0}
-/* 暗色主题下描边与投影要跟着变，否则深红描边在深底上糊成一片 */
-html[data-theme="dark"] #boardStrip.kn-top .strip .hd .kn-wordmark-text{
-  filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))}
+/* 暗色主题下深红字标在深底上仍可读（原渐变版需要投影，纯色版不再需要） */
 html[data-theme="dark"] #boardStrip.kn-top .strip .hd b.kn-hd-title{
   text-shadow:none}
+
+/* 曝光台默认折叠（2026-11 观感急救）：收起为一行摘要条，点击展开原清单。
+   折叠态隐藏 .hd 与 .strip-body，只留摘要条——曝光案例是「知晓项」而非「每日必办」，
+   不该每轮都占首屏视觉中心。 */
+#boardStrip.kn-fold .card.strip > .hd,
+#boardStrip.kn-fold .strip-body{display:none}
+.kn-fold-bar{display:flex;align-items:center;gap:6px;padding:11px 16px;cursor:pointer;
+  font-size:13px;color:var(--txt-2);user-select:none;-webkit-user-select:none}
+.kn-fold-bar:hover{background:rgba(var(--ink-rgba),.03)}
+.kn-fold-bar b{color:var(--err);font-weight:700;font-family:var(--mono);padding:0 2px}
+.kn-fold-bar .kn-fb-caret{color:var(--txt-3);font-size:11px;flex:0 0 auto}
+.kn-fold-bar .kn-fb-hint{margin-left:auto;font-size:11.5px;color:var(--txt-3)}
+#boardStrip.kn-fold{box-shadow:none}
 /* 窄屏收缩字标，避免把标签挤出可视区 */
 @media (max-width:900px){
   #boardStrip.kn-top .strip .hd .kn-wordmark-text{font-size:19px;letter-spacing:1.2px}
@@ -3404,6 +3428,10 @@ html[data-theme="dark"] .fl-bar{
         </div>
       </section>
     </div>
+
+    <footer class="site-footer" id="siteFooter">
+      <span class="ft-b">医保政策工作台</span><span class="ft-sep">·</span><span>政策 <b id="ftPolicyCount">—</b> 条</span><span class="ft-sep">·</span><span>最近同步 <span id="ftSyncTime">—</span></span><span class="ft-sep">·</span><span class="ft-muted">澄江市乡镇卫生院医保经办参考</span>
+    </footer>
   </main>
 
   <nav data-page-node-id="AAb0nL4uZycd6ocG2GLCz9" class="tabbar" id="tabbar"></nav>
@@ -3516,8 +3544,8 @@ function esc(s){
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
 function pad2(n){ return (n < 10 ? '0' : '') + n; }
 function toDate(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
-/* 日期展示缺省口径：数据占位值 1900-01-01 显示为「日期待补」，排序仍用原 date。 */
-function wbDateText(d){ return (String(d) === '1900-01-01') ? '日期待补' : esc(d); }
+/* 日期展示缺省口径：数据占位值 1900-01-01 显示为「日期待核」，排序仍用原 date。 */
+function wbDateText(d){ return (String(d) === '1900-01-01') ? '<span class="dn">日期待核</span>' : esc(d); }
 /* 原文链接口径：内部整理索引显示为「内部索引」并给出非原文提示，其余为「查看原文」。 */
 function wbSrcLinkMeta(url){
   var s = String(url || '');
@@ -4840,7 +4868,7 @@ function policyCard(p, mode){
       '<div class="pi-head">' +
         picker +
         '<div class="pi-main">' +
-          '<button class="pi-title" type="button" data-act="expand" data-id="' + p.id + '">' +
+          '<button class="pi-title" type="button" data-act="expand" data-id="' + p.id + '" title="' + esc(p.title) + '">' +
             '<span class="caret">' + svg('caret',13) + '</span>' +
             '<span>' + (isToday(p) ? '<span class="tag red" style="margin-right:6px">今日新增</span>' : '') +
             (p.follow && !p.done ? '<span class="tag blue" style="margin-right:6px">待跟进</span>' : '') +
@@ -4848,13 +4876,15 @@ function policyCard(p, mode){
             (p.exposure ? '<span class="tag red" style="margin-right:6px" title="基金监管曝光案例">曝光</span>' : '') +
             /* 县区标签（2026-10-26）：县区级政策归玉溪市栏，但要写明具体县区 */
             (p.county ? '<span class="tag gray" style="margin-right:6px" title="所属县区">' + esc(p.county) + '</span>' : '') +
-            esc(p.title) + '</span>' +
+            '<span class="tt">' + esc(p.title) + '</span></span>' +
           '</button>' +
           '<div class="pi-meta">' +
             '<span class="tag ' + lvTag + '"><span class="lv-bg">' + lvBadge(p.level) + '</span>' + lvTxt(p.level) + '</span>' +
             countyTag +
             '<span class="tag ' + imp + '">' + esc(p.impact) + '影响</span>' +
-            '<span class="tag outline">' + esc(p.category) + '</span>' +
+            /* 「其他」类别胶囊不渲染（2026-11 观感急救）：400/668 条都是「其他」，
+               满屏灰胶囊是噪声不是信息；筛选下拉里的「其他」选项保留。 */
+            (p.category && p.category !== '其他' ? '<span class="tag outline">' + esc(p.category) + '</span>' : '') +
             (p.change === '修订' ? '<span class="tag red">原文已修订</span>' : '') +
             (p.change === '废止' ? '<span class="tag red">疑已废止/撤下</span>' : '') +
             (p.ai ? '<span class="tag ai">' + (compact ? 'AI' : 'AI 已解读') + '</span>'
@@ -4872,18 +4902,18 @@ function policyCard(p, mode){
         '</div>' +
       '</div>' +
       '<div class="pi-body">' +
-        '<p>' + esc(p.summary || '暂无摘要，点击「编辑」补充。') + '</p>' +
+        '<p>' + (p.summary ? esc(p.summary) : '<span class="muted" style="font-size:12.5px">暂无摘要，点「编辑」可补充。</span>') + '</p>' +
         aiBlock(p) +
         (p.url
           ? '<p class="small" style="margin:0 0 10px"><span class="muted">原文出处 </span>' +
             '<a href="' + esc(p.url) + '" target="_blank" rel="noopener" class="srclink">' + esc(p.url) + '</a></p>'
-          : '<p class="small muted" style="margin:0 0 10px">本条尚未登记原文链接，点「编辑」可补充；由监测任务采集的政策会自动写入链接。</p>') +
+          : '<p class="small muted" style="margin:0 0 10px">本条原文暂缺，点「编辑」可补充；由监测任务采集的政策会自动写入链接。</p>') +
         '<div class="row small">' +
           /* 用原生 <a target="_blank"> 而不是 window.open：
              发布页运行在沙箱 iframe 中，window.open 常被浏览器拦截，点了没反应。 */
           (p.url
             ? (function(){ var m = wbSrcLinkMeta(p.url); return '<a class="btn sm primary" href="' + esc(p.url) + '" target="_blank" rel="noopener noreferrer" title="' + esc(m.title) + '">' + svg('external',13) + ' ' + m.text + '</a>'; })()
-            : '<button class="btn sm" disabled style="opacity:.45;cursor:not-allowed">' + svg('external',13) + ' 无原文链接</button>') +
+            : '<button class="btn sm" disabled style="opacity:.45;cursor:not-allowed">' + svg('external',13) + ' 原文暂缺</button>') +
           '<button class="btn sm" data-act="read" data-id="' + p.id + '">' + svg('check',13) + (p.read ? ' 标记未读' : ' 标记已读') + '</button>' +
           '<button class="btn sm" data-act="follow" data-id="' + p.id + '">' + (p.follow ? '取消跟进' : '加入跟进') + '</button>' +
           '<button class="btn sm" data-act="toKb" data-id="' + p.id + '">存入知识库</button>' +
@@ -5221,7 +5251,6 @@ function renderBoardStrip(){
   var items = stripItems();
   var all = !!App.ui.stripAll;
   var show = all ? items : items.slice(0, STRIP_PAGE);
-  var rest = items.length - show.length;
   var total = items.length;
 
   /* 三段环：逾期 → 跟进 → 今日高影响，按本工作台的语义色上色。
@@ -5268,7 +5297,7 @@ function renderBoardStrip(){
     if (total > STRIP_PAGE) {
       list += '<div class="strip-more">' +
         '<button class="btn sm" type="button" data-act="stripMore">' +
-          (all ? '收起，仅显示最新 ' + STRIP_PAGE + ' 条' : '展开其余 ' + rest + ' 条') +
+          (all ? '收起' : '展开更多（分批加载）') +
         '</button></div>';
     }
   }
@@ -5367,7 +5396,7 @@ function renderBoardZones(){
       (list.length > ZONE_PAGE
         ? '<div class="zone-more">' +
             '<button class="btn sm" type="button" data-act="zoneMore" data-lv="' + esc(lv) + '">' +
-              (all ? '收起，仅显示最新 ' + ZONE_PAGE + ' 条' : '展开其余 ' + (list.length - ZONE_PAGE) + ' 条') +
+              (all ? '收起' : '展开更多（分批加载）') +
             '</button></div>'
         : '') +
     '</div>';
@@ -5395,7 +5424,11 @@ function renderBoardStatus(){
   var enabled = srcs.filter(function(x){ return x && x.on !== false; }).length;
   var unread = unreadAlerts().length;
   var follow = ps.filter(function(p){ return p.follow && !p.done; }).length;
-  var changed = ps.filter(function(p){ return p.change; }).length;
+  /* 「原文有变动」只统计真实变动（2026-11 修正）：此前 p.change 真值判断把
+     「新增/迁移入库/存量补录」等入库轨迹也算成变动，668 条全部命中，
+     横幅天天喊「668 条有变动」＝狼来了。口径对齐 renderBoardStats 与
+     问答能力卡（修订/废止才算变动），为 0 时落到后续分支、整条横幅不渲染。 */
+  var changed = ps.filter(function(p){ return p.change === '修订' || p.change === '废止'; }).length;
   var today = todayPolicies ? todayPolicies() : [];
   var err = Cloud.lastError;
 
@@ -5738,7 +5771,7 @@ function renderPolicyList(){
     : emptyState(pFilteredEmptyReason(), policyEmptyOptsMerge());
   if (list.length < all.length) {
     html += '<div class="zone-more"><button class="btn sm" type="button" data-act="polMore">' +
-      '加载更多（已显示 ' + list.length + ' / ' + all.length + ' 条）</button></div>';
+      '展开更多（分批加载）</button></div>';
   }
   $('#policyList').innerHTML = html;
   renderPolicyStat(all);
@@ -7571,7 +7604,7 @@ function renderArchiveTimeline(){
       '<div style="margin-top:6px">' + show.map(rowHtml).join('') + '</div>' +
       (month.length > ARCH_MONTH_PAGE
         ? '<div class="zone-more"><button class="btn sm" type="button" data-act="archMore" data-ym="' + esc(ym) + '">' +
-            (openAll ? '收起' : '展开其余 ' + (month.length - ARCH_MONTH_PAGE) + ' 条') + '</button></div>'
+            (openAll ? '收起' : '展开更多（分批加载）') + '</button></div>'
         : '') +
     '</div>';
   }).join('') : '<div class="empty">没有符合筛选条件的归档政策。</div>';
@@ -11406,7 +11439,8 @@ function interpCardHtml(p, opts){
         '<button class="ttl" type="button" data-act="ipToggle" data-id="' + esc(p.id) + '">' + esc(p.title) + '</button>' +
         '<div class="ip-sub">' +
           '<span class="tag ' + imp + '">' + esc(p.impact) + '影响</span>' +
-          '<span class="tag outline">' + esc(p.category) + '</span>' +
+          /* 「其他」类别胶囊不渲染（与 policyCard 同口径，2026-11 观感急救） */
+          (p.category && p.category !== '其他' ? '<span class="tag outline">' + esc(p.category) + '</span>' : '') +
           (v.ai ? '<span class="tag green">已解读</span>' : '<span class="tag gray">待解读</span>') +
           (t ? '<span class="tag clinic">卫生院 ' + (t.top >= 0 ? TOWN_LV[t.top].n : '未涉及') + '</span>' : '') +
           ipMeter(v) +
@@ -13879,11 +13913,116 @@ function radarGotoLevel(lv){
     } catch (e) { /* 忽略 */ }
   }
 
+  /* ==========================================================
+     曝光台降权折叠（2026-11 观感急救）
+     ------------------------------------------------------------
+     曝光案例是「知晓项」而非「每日必办」，此前整个清单（含环图、
+     图例与全部条目）默认全展开，把首屏视觉中心让给了报警式信息。
+     现在默认折叠为一行摘要条「基金监管曝光案例 N 项（本周 +N）」，
+     点击展开原清单，再点收起。状态存模块变量，重渲染后保持。
+     只动补丁层的渲染收尾，不触碰主版 stripItems / renderBoardStrip 真源。
+     ========================================================== */
+  var knFoldOpen = false; /* false = 默认折叠 */
+
+  function knExposureStats() {
+    var items = (typeof window.stripItems === 'function') ? window.stripItems() : [];
+    var nExp = items.filter(function (i) { return i.kind === 'exposure'; }).length;
+    /* 「本周 +N」：近 7 天内发布的曝光案例数（按发布日期，无日期不计入） */
+    var cut = new Date(Date.now() - 7 * 86400000);
+    var cutoff = cut.getFullYear() + '-' +
+      ('0' + (cut.getMonth() + 1)).slice(-2) + '-' + ('0' + cut.getDate()).slice(-2);
+    var nWeek = items.filter(function (i) {
+      return i.kind === 'exposure' && String(i.date || '').slice(0, 10) >= cutoff;
+    }).length;
+    return { n: nExp, w: nWeek, total: items.length };
+  }
+
+  function knApplyFold() {
+    try {
+      var box = document.getElementById('boardStrip');
+      if (!box) { return; }
+      var card = box.querySelector('.card.strip');
+      if (!card) { return; }
+      var st = knExposureStats();
+      var bar = card.querySelector('.kn-fold-bar');
+      if (!st.total) {
+        /* 没有任何待处理/知晓项：不折叠也不留摘要条，回到默认空态 */
+        box.classList.remove('kn-fold');
+        if (bar && bar.parentNode) { bar.parentNode.removeChild(bar); }
+        return;
+      }
+      if (!bar) {
+        bar = document.createElement('div');
+        bar.className = 'kn-fold-bar';
+        card.insertBefore(bar, card.firstChild);
+      }
+      bar.innerHTML = '<span class="kn-fb-caret">' + (knFoldOpen ? '▾' : '▸') + '</span>' +
+        '<span>基金监管曝光案例 <b>' + st.n + '</b> 项' +
+        (st.w ? '（本周 +' + st.w + '）' : '') + '</span>' +
+        '<span class="kn-fb-hint">' + (knFoldOpen ? '点击收起' : '点击展开') + '</span>';
+      if (knFoldOpen) { box.classList.remove('kn-fold'); }
+      else { box.classList.add('kn-fold'); }
+    } catch (e) { /* 忽略 */ }
+  }
+
+  function knInitFold() {
+    if (window.__knFoldInit) { return; }
+    window.__knFoldInit = true;
+    document.addEventListener('click', function (e) {
+      var t = e.target && e.target.closest ? e.target.closest('.kn-fold-bar') : null;
+      if (!t) { return; }
+      e.preventDefault();
+      e.stopPropagation();
+      knFoldOpen = !knFoldOpen;
+      knApplyFold();
+    }, true);
+  }
+  window.knApplyFold = knApplyFold;
+
   function initRadarFix() {
     try { wbFixLastSeen(); } catch (e) { /* 忽略 */ }
     try { wbFixSourceLabel(); } catch (e) { /* 忽略 */ }
     try { initExposureDesk(); } catch (e2) { /* 忽略 */ }
     try { initKnowNow(); } catch (e3) { /* 忽略 */ }
+    try { knInitFold(); } catch (e4) { /* 忽略 */ }
+    try { wbRenderFooter(); } catch (e5) { /* 忽略 */ }
+  }
+
+  /* ==========================================================
+     页脚（2026-11 观感急救）
+     ------------------------------------------------------------
+     外壳 min-height:100vh 把页面拉到视口高度，内容结束后下方是整片空白。
+     页脚挂在 .app-main 末尾（静态 HTML），这里只负责把动态字段填上：
+     政策总条数与最近同步时间（freshness.lastRun，与状态句同口径）。
+     ========================================================== */
+  function wbRenderFooter() {
+    try {
+      var d = (window.App || {}).data || {};
+      var el = document.getElementById('ftPolicyCount');
+      if (el) { el.textContent = String((d.policies || []).length); }
+      var tEl = document.getElementById('ftSyncTime');
+      var f = d.freshness || {};
+      if (tEl) {
+        tEl.textContent = f.lastRun
+          ? String(f.lastRun).slice(0, 16).replace('T', ' ')
+          : '暂无记录';
+      }
+    } catch (e) { /* 忽略 */ }
+  }
+
+  function initFooterWatch() {
+    if (window.__wbFooterInit) { return; }
+    window.__wbFooterInit = true;
+    wbRenderFooter();
+    var tries = 0;
+    var timer = window.setInterval(function () {
+      tries = tries + 1;
+      var d = (window.App || {}).data || {};
+      if ((d.policies && d.policies.length) || tries > 40) {
+        window.clearInterval(timer);
+        wbRenderFooter();
+      }
+    }, 500);
   }
 
   /* ==========================================================
@@ -13953,6 +14092,8 @@ function radarGotoLevel(lv){
             /* 条目重绘：两行式 + 曝光强调 */
             var items = (typeof window.stripItems === 'function') ? window.stripItems() : [];
             knRepaintRows(items);
+            /* 降权折叠：每次重画后重建摘要条并应用折叠态 */
+            try { knApplyFold(); } catch (eK) { /* 忽略 */ }
           } catch (e) { /* 忽略 */ }
         };
         wrapped.__knowNow = true;
@@ -14205,6 +14346,7 @@ function radarGotoLevel(lv){
     try { enhanceInterpSpeak(); } catch (e81) { /* 忽略 */ }
     try { initCloudGuard(); } catch (e9) { /* 忽略 */ }
     try { initRadarFix(); } catch (e11) { /* 忽略 */ }
+    try { initFooterWatch(); } catch (e12) { /* 忽略 */ }
     try { initObserver(); } catch (e10) { /* 忽略 */ }
   }
 
@@ -14215,6 +14357,7 @@ function radarGotoLevel(lv){
     try { enhanceInterpSpeak(); } catch (e4) { /* 忽略 */ }
     /* 云端数据此刻才刚落地，页面可能用的是被覆盖前的旧结果，补一次覆盖 + 重画 */
     try { initRadarFix(); } catch (e5) { /* 忽略 */ }
+    try { initFooterWatch(); } catch (e5b) { /* 忽略 */ }
     try { if (typeof window.renderRadar === 'function') { window.renderRadar(); } }
     catch (e6) { /* 忽略 */ }
     /* renderRadar 会重画右栏、把补丁改过的标签冲回「监测源在跑」，
