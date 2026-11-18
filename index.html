@@ -987,8 +987,13 @@ h2.t::before{content:"";display:inline-block;width:3px;height:13px;border-radius
 .x-btn:hover{background:rgba(var(--ink-rgba), 0.07);color:var(--txt)}
 
 /* toast */
-.toasts{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:120;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
-.toast{padding:10px 16px;border-radius:var(--radius-sm);background:rgba(14,23,35,0.97);border:1px solid var(--line-strong);box-shadow:var(--shadow-lift);font-size:13px;color:#EEF3FA;animation:fadeIn .2s var(--ease)}
+.toasts{position:fixed;bottom:calc(22px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:130;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;max-width:min(560px,calc(100vw - 32px))}
+.toast{max-width:100%;padding:10px 16px;border-radius:var(--radius-sm);background:rgba(14,23,35,0.97);border:1px solid var(--line-strong);box-shadow:var(--shadow-lift);font-size:13px;line-height:1.55;color:#EEF3FA;word-break:break-word;animation:fadeIn .2s var(--ease)}
+@media (max-width:720px){
+  /* 底部 tabbar 留 60px、悬浮按钮顶到 118px，提示条抬到 136px 正好在两者之上 */
+  .toasts{bottom:calc(136px + env(safe-area-inset-bottom));max-width:calc(100vw - 24px)}
+  .toast{text-align:center}
+}
 .toast.ok{border-color:rgba(var(--ok-rgba), 0.42)}
 .toast.err{border-color:rgba(var(--err-rgba), 0.45)}
 .toast.warn{border-color:rgba(var(--warn-rgba), 0.45)}
@@ -2224,6 +2229,9 @@ body{
 /* ==========================================================
    2. 深色玻璃拟态（html[data-theme="dark"]）
    ========================================================== */
+/* 声明 color-scheme，原生滚动条/表单控件才会跟随深浅色，否则深色下右侧留一条浅灰滚动条 */
+html{color-scheme:light}
+html[data-theme="dark"]{color-scheme:dark}
 html[data-theme="dark"]{
   --bg:#070C13;
   --bg-deep:#050810;
@@ -2305,6 +2313,12 @@ html[data-theme="dark"] select{
 }
 html[data-theme="dark"] input::placeholder,
 html[data-theme="dark"] textarea::placeholder{color:var(--txt-3)}
+/* 深色下搜索框外壳仍是白玻璃、聚焦时还变纯白，会亮成一块灰白补丁 */
+html[data-theme="dark"] .search{background:rgba(148,176,214,.08);border-color:rgba(148,176,214,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+html[data-theme="dark"] .search input:focus,
+html[data-theme="dark"] .field input:focus,
+html[data-theme="dark"] .field textarea:focus,
+html[data-theme="dark"] .field select:focus{background:rgba(255,255,255,.10)}
 html[data-theme="dark"] .btn{
   background:rgba(255,255,255,.06);
   border-color:var(--line);
@@ -2576,7 +2590,8 @@ html[data-theme="dark"] .stat .v{
   .fab{bottom:calc(70px + env(safe-area-inset-bottom));width:48px;height:48px}
   .topbar{padding:9px 10px}
   .topbar h1{font-size:15px}
-  .search{flex:1 1 140px}
+  /* 620px 以下顶栏挤成一行时搜索框会挤出屏幕，改为独占一行 */
+  .search{flex:1 1 100%;min-width:0}
   .stat .v{font-size:24px}
   .quick{overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}
   .quick::-webkit-scrollbar{display:none}
@@ -3180,6 +3195,8 @@ html[data-theme="dark"] .fl-bar{
 }
 </style>
 <!-- generated-at: 2026-10-29 06:47:30 -->
+<link rel="icon" href="./favicon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="./favicon.svg" type="image/svg+xml">
 <!-- WB:RO:HEAD:END -->
 <style data-page-node-id="w3aWeekAct" id="wb-batch3a">
 /* ============================================================
@@ -16110,10 +16127,15 @@ function radarGotoLevel(lv){
     badge.textContent = '只读 · 同步自工作台';
     wrap.appendChild(badge);
 
-    var line = meta.ver ? ('源版本 v' + meta.ver + ' · 同步于 ' + meta.at) : ('同步于 ' + meta.at);
+    /* 页壳版本戳来自构建快照（本页 2026-10-29 生成），而政策数据每天重建；
+       直接展示旧日期会让访客以为数据停更，故改为数据口径，版本戳收进 title。 */
     var tip = doc().createElement('div');
     tip.className = 'ro-src';
-    tip.textContent = line;
+    tip.textContent = '政策数据同步中…';
+    if (meta.ver) {
+      tip.setAttribute('title', '页壳为只读快照 v' + meta.ver + '（' + String(meta.at).slice(0, 10) + ' 构建），政策数据每日重建');
+    }
+    refreshSrcLine(tip);
     wrap.appendChild(tip);
 
     /* 常驻合规免责声明（site-spec §4 P0）：固定口径，不使用「权威/保证准确/最终解释权」。 */
@@ -16124,6 +16146,27 @@ function radarGotoLevel(lv){
     wrap.appendChild(disc);
 
     txt.appendChild(wrap);
+  }
+
+  /* 数据就绪后把版本戳改写为真实数据口径（最近巡检日 + 条数） */
+  function refreshSrcLine(tip) {
+    var tries = 0;
+    var timer = window.setInterval(function () {
+      tries = tries + 1;
+      var d = window.App && window.App.data;
+      var f = d && d.freshness;
+      var n = (d && d.policies) ? d.policies.length : 0;
+      if (f && f.lastRun && n) {
+        var at = String(f.lastRun).replace('T', ' ').slice(0, 10);
+        /* 侧栏只有百来像素宽，长句会折成三行把免责声明挤掉，故压成短句、完整日期放 title */
+        tip.textContent = '数据同步 ' + at.slice(5) + ' · ' + n + ' 条';
+        tip.setAttribute('title', '政策数据最近巡检：' + at + '，共 ' + n + ' 条');
+        window.clearInterval(timer);
+      } else if (tries > 60) {
+        tip.textContent = '政策数据每日同步更新';
+        window.clearInterval(timer);
+      }
+    }, 250);
   }
 
   /* ---------- 启动 ---------- */

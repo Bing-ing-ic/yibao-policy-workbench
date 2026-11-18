@@ -25,6 +25,59 @@
     try { console.log('[cfg] ' + msg); } catch (e) { /* 忽略 */ }
   }
 
+  /* ---------- 配置差异：发布前先看清改了什么 ----------
+     只比对会真正落到线上的字段，忽略 version / updatedAt，
+     否则每次打开面板都会显示「有改动」。 */
+  var DIFF_FIELDS = [
+    ['site.title', '标签页标题'],
+    ['site.brand', '侧栏站名'],
+    ['site.subtitle', '副标题'],
+    ['site.footer', '页脚署名'],
+    ['announcement.enabled', '公告横幅'],
+    ['announcement.style', '公告样式'],
+    ['announcement.text', '公告文本'],
+    ['features.qa', '智能问答入口'],
+    ['features.exposure', '曝光台并入待办']
+  ];
+  var STYLE_TXT = { info: '信息（蓝）', warn: '提醒（橙）', alert: '紧急（红）' };
+
+  function pick(obj, path) {
+    var parts = path.split('.');
+    var cur = obj;
+    for (var i = 0; i < parts.length; i++) {
+      if (!cur || typeof cur !== 'object') { return undefined; }
+      cur = cur[parts[i]];
+    }
+    return cur;
+  }
+
+  function rawVal(path, v) {
+    if (v === undefined || v === null) { return '（未设置）'; }
+    if (path === 'announcement.enabled' || path === 'features.qa' || path === 'features.exposure') {
+      return v ? '开启' : '关闭';
+    }
+    if (path === 'announcement.style') { return STYLE_TXT[v] || String(v); }
+    return String(v).replace(/\s+/g, ' ').trim() || '（空）';
+  }
+
+  function clip(s, n) {
+    return s.length > n ? s.slice(0, n) + '…' : s;
+  }
+
+  function diffList(next, base) {
+    var out = [];
+    DIFF_FIELDS.forEach(function (pair) {
+      var a = pick(base || {}, pair[0]);
+      var b = pick(next || {}, pair[0]);
+      if (String(a === undefined ? '' : a) !== String(b === undefined ? '' : b)) {
+        var fa = rawVal(pair[0], a);
+        var fb = rawVal(pair[0], b);
+        out.push({ label: pair[1], from: clip(fa, 34), to: clip(fb, 34), fromFull: clip(fa, 160), toFull: clip(fb, 160) });
+      }
+    });
+    return out;
+  }
+
   function sha256Hex(text) {
     if (!(window.crypto && window.crypto.subtle && window.crypto.subtle.digest)) {
       return Promise.reject(new Error('当前环境不支持安全哈希（需 HTTPS）'));
@@ -146,7 +199,8 @@
       '  <div class="wcfg-hd">' +
       '    <span class="wcfg-chip"><i></i>已登录管理</span>' +
       '    <span class="wcfg-dirty" id="cfgDirty">有未保存的修改</span>' +
-      '    <p class="wcfg-lead">改动先存到本机预览，确认无误再「发布到线上」写入仓库，全站生效约 1—3 分钟。</p>' +
+      '    <span class="wcfg-chip out" id="cfgOutSync"></span>' +
+      '    <p class="wcfg-lead">改动先存到本机预览，确认无误再「发布到线上」写入仓库，全站生效约 1—3 分钟。本机预览只影响这台电脑的浏览器。</p>' +
       '  </div>' +
 
       /* 1. 站点标识 */
@@ -215,11 +269,13 @@
       '        <div class="wcfg-f">' +
       '          <label class="wcfg-lb" for="cfgPat">GitHub 访问令牌（PAT）</label>' +
       '          <input id="cfgPat" class="wcfg-in" type="password" autocomplete="off" placeholder="ghp_… 或 github_pat_…">' +
+      '          <p class="wcfg-hint">出于安全，令牌不落盘、不记住到下次开机；同一浏览器会话内只需粘贴一次。</p>' +
       '        </div>' +
       '      </div>' +
+      '      <div class="wcfg-diff" id="cfgPubDiff" hidden></div>' +
       '      <div class="wcfg-btn-row">' +
       '        <button class="btn primary sm" id="cfgPublish" type="button">发布到线上</button>' +
-      '        <span class="wcfg-msg" id="cfgPubMsg">发布后可用另一台设备打开站点复核。</span>' +
+      '        <span class="wcfg-msg" id="cfgPubMsg">发布后会自动回读线上文件校验，确认真的生效。</span>' +
       '      </div>' +
       '    </div>' +
       '  </div>' +
@@ -278,6 +334,7 @@
         var next = collectForm();
         window.SiteCfg.savePreview(next);
         markDirty(false);
+        syncOutBadge();
         toast('已保存本机预览并即时生效；刷新页面可复核', 'ok');
       });
     }
@@ -299,7 +356,9 @@
     if (btn) {
       btn.addEventListener('click', function () {
         window.SiteCfg.clearPreview();
-        toast('已清除本机预览，刷新后回到线上配置', 'ok');
+        toast('已清除本机预览，正在恢复线上配置…', 'ok');
+        /* 只删 localStorage 不会把已应用的配置撤回，必须重新加载才能回到线上版本 */
+        window.setTimeout(function () { window.location.reload(); }, 600);
       });
     }
     btn = document.getElementById('cfgLogout');
@@ -307,13 +366,14 @@
       btn.addEventListener('click', function () {
         sessionStorage.removeItem(SS_AUTH);
         sessionStorage.removeItem(SS_TOKEN);
+        resetPublishConfirm();
         render();
         toast('已退出管理', 'ok');
       });
     }
     btn = document.getElementById('cfgPublish');
     if (btn) {
-      btn.addEventListener('click', publish);
+      btn.addEventListener('click', onPublishClick);
     }
     btn = document.getElementById('cfgChgPwd');
     if (btn) {
@@ -357,19 +417,95 @@
     return btoa(unescape(encodeURIComponent(text)));
   }
 
-  function publish() {
+  /* ---------- 本机 / 线上一致性徽章 ---------- */
+  function syncOutBadge() {
+    var el = document.getElementById('cfgOutSync');
+    if (!el || !document.getElementById('cfgTitle')) { return; }
+    var base = window.__wbCfgRemote;
+    if (!base) { el.classList.remove('on'); return; }
+    /* 比的是"本机已保存/已应用的配置"与线上，而不是正在编辑的表单，
+       否则一敲键就同时亮两个徽章，反而说不清是没保存还是没发布 */
+    var d = diffList((window.SiteCfg && window.SiteCfg.get()) || {}, base);
+    if (d.length) {
+      el.textContent = '本机与线上有 ' + d.length + ' 处不同 · 未发布';
+      el.classList.add('on');
+    } else {
+      el.classList.remove('on');
+    }
+  }
+
+  /* ---------- 发布：两步确认（看清差异再提交） ---------- */
+  var _pubPending = false;
+  var _pubTimer = 0;
+
+  function resetPublishConfirm() {
+    _pubPending = false;
+    if (_pubTimer) { window.clearTimeout(_pubTimer); _pubTimer = 0; }
+    var b = document.getElementById('cfgPublish');
+    if (b) { b.textContent = '发布到线上'; }
+    var d = document.getElementById('cfgPubDiff');
+    if (d) { d.hidden = true; d.innerHTML = ''; }
+  }
+
+  function renderDiff(list) {
+    var box = document.getElementById('cfgPubDiff');
+    if (!box) { return; }
+    var html = '<p class="wcfg-diff-t">本次将改动 ' + list.length + ' 项</p><ul>';
+    list.forEach(function (it) {
+      html += '<li><b>' + esc(it.label) + '</b><span class="wcfg-diff-v">' +
+        '<span class="wcfg-diff-f" title="' + esc(it.fromFull) + '">' + esc(it.from) + '</span>' +
+        '<i>→</i><span class="wcfg-diff-t2" title="' + esc(it.toFull) + '">' + esc(it.to) + '</span>' +
+        '</span></li>';
+    });
+    html += '</ul>';
+    box.innerHTML = html;
+    box.hidden = false;
+  }
+
+  function onPublishClick() {
     var msg = document.getElementById('cfgPubMsg');
+    var next = collectForm();
+    if (_pubPending) {
+      resetPublishConfirm();
+      doPublish(next);
+      return;
+    }
+    var diff = diffList(next, window.__wbCfgRemote || {});
+    if (!diff.length) {
+      if (msg) { msg.className = 'wcfg-msg'; msg.textContent = '当前表单与线上配置一致，没有需要发布的改动。'; }
+      return;
+    }
     var patInput = document.getElementById('cfgPat');
     var token = (patInput && patInput.value.trim()) || sessionStorage.getItem(SS_TOKEN) || '';
     if (!token) {
-      if (msg) { msg.textContent = '请先粘贴令牌（本会话内保留）'; }
+      if (msg) { msg.className = 'wcfg-msg err'; msg.textContent = '请先粘贴 GitHub 令牌，再点发布。'; }
+      if (patInput) { patInput.focus(); }
       return;
     }
-    try { sessionStorage.setItem(SS_TOKEN, token); } catch (e) { /* 忽略 */ }
-    if (msg) { msg.textContent = '发布中…'; }
-    var text = JSON.stringify(collectForm(), null, 2) + '\n';
+    renderDiff(diff);
+    _pubPending = true;
+    var b = document.getElementById('cfgPublish');
+    if (b) { b.textContent = '确认发布 · ' + diff.length + ' 项改动'; }
+    if (msg) { msg.className = 'wcfg-msg'; msg.textContent = '核对上面清单后，再点一次按钮提交；10 秒内未确认自动取消。'; }
+    _pubTimer = window.setTimeout(resetPublishConfirm, 10000);
+  }
+
+  function mapPublishError(status, apiMsg) {
+    var m = String(apiMsg || '').replace(/\s+/g, ' ').trim();
+    if (status === 401) { return '令牌无效或已过期（401）：请重新生成 PAT，并确认勾选该仓库的 Contents 读写权限。'; }
+    if (status === 403) { return '令牌权限不足或被限流（403）：需要 Contents: Read and write；若为限流请稍后重试。' + (m ? ' 原始信息：' + m : ''); }
+    if (status === 404) { return '仓库或文件不存在（404）：请确认 ' + REPO + ' 的 ' + BRANCH + ' 分支上存在 ' + CFG_PATH + '，且令牌有权访问该仓库。'; }
+    if (status === 422) { return '提交被拒绝（422）：' + (m || '内容校验未通过，可能是分支保护或文件过大') + '。'; }
+    return '发布失败（HTTP ' + status + '）' + (m ? '：' + m : '') + '。';
+  }
+
+  function putConfig(token, next, retried) {
+    var text = JSON.stringify(next, null, 2) + '\n';
     var apiBase = 'https://api.github.com/repos/' + REPO + '/contents/' + CFG_PATH;
-    fetch(apiBase + '?ref=' + BRANCH + '&_t=' + Date.now(), { cache: 'no-store' })
+    return fetch(apiBase + '?ref=' + BRANCH + '&_t=' + Date.now(), {
+      cache: 'no-store',
+      headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' }
+    })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (cur) {
         var body = {
@@ -389,21 +525,81 @@
         });
       })
       .then(function (resp) {
+        /* 409 = sha 冲突（别处刚提交过），重取一次 sha 再试，避免用户手动处理 */
+        if (resp.status === 409 && !retried) { return putConfig(token, next, true); }
         if (!resp.ok) {
           return resp.json().catch(function () { return {}; }).then(function (err) {
-            throw new Error('HTTP ' + resp.status + (err && err.message ? '：' + err.message : ''));
+            throw new Error(mapPublishError(resp.status, err && err.message));
           });
         }
         return resp.json();
+      });
+  }
+
+  /* 提交后回读线上文件：Pages 有 CDN 延迟，逐次轮询直到读到新值 */
+  function verifyRemote(expected, attempt) {
+    attempt = attempt || 1;
+    var msg = document.getElementById('cfgPubMsg');
+    var url = './data/config.json?_t=' + Date.now() + '_' + attempt;
+    return fetch(url, { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        var same = d &&
+          pick(d, 'site.title') === pick(expected, 'site.title') &&
+          pick(d, 'site.footer') === pick(expected, 'site.footer') &&
+          pick(d, 'announcement.text') === pick(expected, 'announcement.text') &&
+          pick(d, 'announcement.enabled') === pick(expected, 'announcement.enabled') &&
+          pick(d, 'features.qa') === pick(expected, 'features.qa');
+        if (!same) { throw new Error('not-ready'); }
+        if (window.SiteCfg && window.SiteCfg.setRemote) { window.SiteCfg.setRemote(d); }
+        if (msg) { msg.className = 'wcfg-msg ok'; msg.textContent = '✅ 已回读校验：线上文件已更新（第 ' + attempt + ' 次），访客可见。'; }
+        syncOutBadge();
+        toast('线上配置已生效', 'ok');
+        return true;
       })
+      .catch(function () {
+        if (attempt >= 8) {
+          if (msg) {
+            msg.className = 'wcfg-msg';
+            msg.textContent = '已提交成功，但线上还没刷到新文件（Pages 重建通常 1—3 分钟）。稍后刷新本页再看，无需重复发布。';
+          }
+          return false;
+        }
+        if (msg) { msg.className = 'wcfg-msg'; msg.textContent = '已提交，等待 Pages 重建…（' + attempt + '/8）'; }
+        return new Promise(function (res) { window.setTimeout(res, 6000); })
+          .then(function () { return verifyRemote(expected, attempt + 1); });
+      });
+  }
+
+  function doPublish(next) {
+    var msg = document.getElementById('cfgPubMsg');
+    var patInput = document.getElementById('cfgPat');
+    var token = (patInput && patInput.value.trim()) || sessionStorage.getItem(SS_TOKEN) || '';
+    if (!token) {
+      if (msg) { msg.className = 'wcfg-msg err'; msg.textContent = '请先粘贴令牌（本会话内保留）'; }
+      return;
+    }
+    try { sessionStorage.setItem(SS_TOKEN, token); } catch (e) { /* 忽略 */ }
+    if (msg) { msg.className = 'wcfg-msg'; msg.textContent = '正在提交…'; }
+    var btn = document.getElementById('cfgPublish');
+    if (btn) { btn.disabled = true; }
+    putConfig(token, next, false)
       .then(function () {
         markDirty(false);
-        if (msg) { msg.textContent = '✅ 已提交，Pages 自动重建约 1—3 分钟后线上生效'; }
-        toast('站点配置已提交发布', 'ok');
+        /* 已提交即把线上基线切到新值，徽章不会再提示"未发布" */
+        if (window.SiteCfg && window.SiteCfg.setRemote) { window.SiteCfg.setRemote(next); }
+        syncOutBadge();
+        if (msg) { msg.className = 'wcfg-msg'; msg.textContent = '已提交，正在回读线上文件校验…'; }
+        toast('已提交，等待线上生效', 'ok');
+        return verifyRemote(next, 1);
       })
       .catch(function (err) {
-        if (msg) { msg.textContent = '✗ 发布失败：' + err.message; }
-        toast('发布失败：' + err.message, 'err');
+        if (msg) { msg.className = 'wcfg-msg err'; msg.textContent = '✗ ' + err.message; }
+        toast('发布失败：' + err.message.slice(0, 40), 'err');
+      })
+      .then(function () {
+        if (btn) { btn.disabled = false; }
+        resetPublishConfirm();
       });
   }
 
@@ -470,9 +666,14 @@
       bindPanel();
       syncPreview();
       markDirty(false);
+      syncOutBadge();
       if (!host.__cfgWatch) {
         host.__cfgWatch = true;
-        var onEdit = function () { markDirty(true); syncPreview(); };
+        var onEdit = function () {
+          markDirty(true);
+          syncPreview();
+          if (_pubPending) { resetPublishConfirm(); }
+        };
         host.addEventListener('input', onEdit);
         host.addEventListener('change', onEdit);
       }

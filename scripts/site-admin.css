@@ -387,6 +387,89 @@ select.wcfg-in {
 
 .wcfg-lock-row .wcfg-in { flex: 1 1 200px; width: auto; }
 
+/* —— 未发布不一致徽章 —— */
+.wcfg-chip.out {
+  display: none;
+  border-color: rgba(var(--warn-rgba), .32);
+  background: rgba(var(--warn-rgba), .12);
+  color: var(--warn);
+}
+
+.wcfg-chip.out.on { display: inline-flex; }
+
+.wcfg-chip.out::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--warn-fill);
+}
+
+/* —— 发布前差异清单 —— */
+.wcfg-diff {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface-2);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.wcfg-diff[hidden] { display: none !important; }
+
+.wcfg-diff-t {
+  margin: 0 0 6px;
+  font-weight: 600;
+  color: var(--txt-2);
+}
+
+.wcfg-diff ul {
+  margin: 0;
+  padding-left: 16px;
+}
+
+.wcfg-diff li {
+  margin: 8px 0;
+  color: var(--txt-2);
+  word-break: break-word;
+}
+
+.wcfg-diff li:first-of-type { margin-top: 2px; }
+
+/* 标签单独一行：长标题挤在一行会把箭头挤到行首，读起来别扭 */
+.wcfg-diff li b {
+  display: block;
+  margin: 0 0 1px;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: .2px;
+  color: var(--txt-3);
+}
+
+.wcfg-diff-v { display: block; }
+
+.wcfg-diff-f {
+  color: var(--txt-3);
+  text-decoration: line-through;
+}
+
+.wcfg-diff i {
+  margin: 0 5px;
+  font-style: normal;
+  color: var(--txt-3);
+}
+
+.wcfg-diff-t2 {
+  color: var(--blue-2);
+  font-weight: 500;
+}
+
+.wcfg .btn[disabled] {
+  opacity: .55;
+  cursor: default;
+}
+
 /* —— 窄屏兜底 —— */
 @media (max-width: 720px) {
   .wcfg-grid { grid-template-columns: minmax(0, 1fr); }
