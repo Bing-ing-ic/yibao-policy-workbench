@@ -2888,6 +2888,7 @@ html[data-theme="dark"] #boardStrip.kn-top .strip .hd b.kn-hd-title{
 .bt-lead{display:flex;align-items:center;gap:7px;flex:0 0 auto;
   font-size:16px;font-weight:600;color:var(--txt);padding:0 14px 0 8px;white-space:nowrap}
 .bt-lead svg{color:var(--blue);flex:0 0 auto}
+.bt-load{font-size:12.5px;font-weight:400;color:var(--txt-3);margin-left:6px}
 .bt-i{display:flex;align-items:baseline;gap:6px;flex:1 1 0;justify-content:center;
   background:transparent;border:0;border-left:1px solid var(--line);
   padding:4px 10px;border-radius:8px;cursor:pointer;white-space:nowrap;
@@ -3810,7 +3811,7 @@ html[data-theme="dark"] .fl-bar{
     </div>
 
     <footer class="site-footer" id="siteFooter">
-      <span class="ft-b">医保政策工作台</span><span class="ft-sep">·</span><span>政策 <b id="ftPolicyCount">—</b> 条</span><span class="ft-sep">·</span><span>最近同步 <span id="ftSyncTime">—</span></span><span class="ft-sep">·</span><span class="ft-muted">澄江市乡镇卫生院医保经办参考</span>
+      <span class="ft-b">医保政策工作台</span><span class="ft-sep">·</span><span>政策 <b id="ftPolicyCount">—</b><span id="ftUnit"> 条</span></span><span class="ft-sep">·</span><span>最近同步 <span id="ftSyncTime">—</span></span><span class="ft-sep">·</span><span class="ft-muted">澄江市乡镇卫生院医保经办参考</span>
     </footer>
   </main>
 
@@ -5686,7 +5687,8 @@ function renderBoardToday(){
       '<span class="bt-v' + (v && hasData ? '' : ' zero') + '">' + (hasData ? v : '—') + '</span>' +
       '<span class="bt-u">条</span></button>';
   };
-  box.innerHTML = '<div class="bt-lead">' + svg('sub', 16) + '<b>今天要办的事</b></div>' +
+  box.innerHTML = '<div class="bt-lead">' + svg('sub', 16) + '<b>今天要办的事</b>' +
+    (hasData ? '' : '<span class="bt-load">正在加载政策数据…</span>') + '</div>' +
     cell('btWeek', n.week, '本周新增', '近 7 天发布的政策，点击筛选') +
     cell('btYx', n.yx, '其中玉溪', '近 7 天新增中的玉溪市政策，点击筛选') +
     cell('btHigh', n.high, '高影响待办', '高影响政策，点击打开行动清单') +
@@ -14835,14 +14837,17 @@ function radarGotoLevel(lv){
   function wbRenderFooter() {
     try {
       var d = (window.App || {}).data || {};
+      var ps0 = d.policies || [];
       var el = document.getElementById('ftPolicyCount');
-      if (el) { el.textContent = String((d.policies || []).length); }
+      if (el) { el.textContent = ps0.length ? String(ps0.length) : '加载中…'; }
+      var unitEl = document.getElementById('ftUnit');
+      if (unitEl) { unitEl.style.display = ps0.length ? '' : 'none'; }
       var tEl = document.getElementById('ftSyncTime');
       var f = d.freshness || {};
       if (tEl) {
         tEl.textContent = f.lastRun
           ? String(f.lastRun).slice(0, 16).replace('T', ' ')
-          : '暂无记录';
+          : (ps0.length ? '暂无记录' : '正在连接…');
       }
     } catch (e) { /* 忽略 */ }
   }
