@@ -16162,7 +16162,8 @@ function radarGotoLevel(lv){
         tip.textContent = '数据同步 ' + at.slice(5) + ' · ' + n + ' 条';
         tip.setAttribute('title', '政策数据最近巡检：' + at + '，共 ' + n + ' 条');
         window.clearInterval(timer);
-      } else if (tries > 60) {
+      } else if (tries > 200) {
+        /* 线上 Pages 走 CDN，首屏数据可能十几秒才到，别在 15 秒时误判成"没有数据" */
         tip.textContent = '政策数据每日同步更新';
         window.clearInterval(timer);
       }
