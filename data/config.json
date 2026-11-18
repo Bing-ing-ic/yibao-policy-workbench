@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "updatedAt": "2026-11-18T14:30:00+08:00",
+  "note": "站点配置：由「设置 → 网站配置（管理员）」面板生成。security.passwordHash 为 sha256(salt+密码)，初始密码请首次登录后立即修改。",
+  "site": {
+    "title": "医保政策监测台 · 服务于澄江市乡镇卫生院（只读分享版）",
+    "brand": "医保政策工作台",
+    "subtitle": "服务于澄江市乡镇卫生院",
+    "footer": "澄江市乡镇卫生院医保经办参考"
+  },
+  "announcement": {
+    "enabled": false,
+    "style": "info",
+    "text": ""
+  },
+  "features": {
+    "qa": true,
+    "exposure": true
+  },
+  "security": {
+    "salt": "0b194772a23baf68",
+    "passwordHash": "8667e59b6c8e9aabc5419ee2d699f69f52d35d6742e5fce7a26b254230b2353a"
+  }
+}
