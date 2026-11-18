@@ -7520,7 +7520,10 @@ function renderQa(){
         '<div class="qa-cap-note">' +
           (llmReady()
             ? '<span class="tag green">已接入 ' + esc(llmCfg().model) + '</span> 会基于检索到的资料归纳作答，不凭空生成数字。'
-            : '<span class="tag blue">本地归纳已启用</span> 提问后按意图从台账抽取要点，按「玉溪市医保局 → 云南 → 国家」层级成文，每条都标出处；填入接口与 Key 可升级为生成式作答。') +
+            : '<span class="tag blue">本地归纳已启用</span> 提问后按意图从台账抽取要点，按「玉溪市医保局 → 云南 → 国家」层级成文，每条都标出处。' +
+              (window.__WB_RO__
+                ? '本页为只读分享版，不接入任何外部模型，问题不会离开你的浏览器。'
+                : '要生成式作答，可在「设置 → 智能引擎」填自己的 Key（只存本机）。')) +
           (searchReady() ? ' <span class="tag green">联网已开 · ' + esc(searchChannelName()) + '</span>' : ' <span class="tag gray">联网未开</span>') +
           ' · 检索与引用优先玉溪市医保局政策，其次云南省，再国家；每条结论都标出处编号。' +
         '</div>' +
@@ -9562,7 +9565,9 @@ function renderAiQueueBox(){
 }
 
 /* ---------- 大模型直连（OpenAI 兼容接口）---------- */
-var LLM_DEFAULT = { base: 'https://open.bigmodel.cn/api/paas/v4', key: 'e18decd10ad4480e89fef9e9757bf8b8.KotvxzCbdzqDaOIP', model: 'glm-4-flash' };
+/* 默认不内置任何密钥：这一行曾把 Key 明文写进公开站点的 JS——任何人 F12 就能取走、直接烧额度。
+   现在默认走本地检索归纳（零密钥、不外发请求）；要生成式作答请在「设置 → 智能引擎」填自己的 Key，只存本机。 */
+var LLM_DEFAULT = { base: 'https://open.bigmodel.cn/api/paas/v4', key: '', model: 'glm-4-flash' };
 
 function llmCfg(){
   var s = App.data.settings || {};
@@ -9575,10 +9580,9 @@ function llmCfg(){
   }
   if (!s.llm.base) s.llm.base = LLM_DEFAULT.base;
   if (!s.llm.model) s.llm.model = LLM_DEFAULT.model;
-  /* 预置智谱 Key：本机未填过 Key 且端点指向内置智谱时补上内置 Key，
-     使「智能问答 / 单条政策 AI 解读」开箱即用，无需每台设备手填。
-     端点被用户改成别家时不补，避免把 Key 错配到其它接口。 */
-  if (!s.llm.key && s.llm.base === LLM_DEFAULT.base) s.llm.key = LLM_DEFAULT.key;
+  /* 不再自动补内置 Key（站点源码公开，写进去等于公开）。
+     空 Key 即本地检索模式，不产生任何外发请求。
+     用户自己填的 Key 一律尊重、不覆盖。 */
   return s.llm;
 }
 function llmReady(){
@@ -9677,15 +9681,16 @@ function renderLlmSettings(){ /* 只读分享版不渲染：大模型 Key / 接�
       '<input id="llmBase" value="' + esc(c.base) + '" placeholder="https://open.bigmodel.cn/api/paas/v4"></div>' +
     '<div class="grid2">' +
       '<div class="field"><label>模型名</label><input id="llmModel" value="' + esc(c.model) + '" placeholder="glm-4-flash"></div>' +
-      '<div class="field"><label>API Key</label><input id="llmKey" type="password" value="' + esc(c.key) + '" placeholder="已预置智谱 Key，可留空"></div>' +
+      '<div class="field"><label>API Key</label><input id="llmKey" type="password" value="' + esc(c.key) + '" placeholder="留空则只用本地检索归纳"></div>' +
     '</div>' +
     '<div class="small muted" style="margin-top:6px;line-height:1.7">' +
       '密钥只存在本机浏览器，不会写入资料库、也不会上传云端；'
     + '请求由你的浏览器直接发往上面填写的接口。'
     + (hasCloudKey() ? '<div class="small" style="margin-top:6px;color:var(--amber)">'
         + '检测到资料库历史记录里存过密钥，为稳妥起见建议清空下方输入框并重新保存一次。</div>' : '') +
-      '已预置智谱免费方案（glm-4-flash），无需填写即可使用智能问答与单条政策 AI 解读；' +
-      '如要改用其它 OpenAI 兼容接口（DeepSeek、月之暗面、通义等），修改上方三项并保存即可。' +
+      '这里不预置任何共享密钥：站点源码公开，写进去的 Key 等于公开。不填 Key 时问答走本地检索归纳' +
+      '（按「玉溪市 → 云南省 → 国家」层级成文、逐条标出处），单条政策的 AI 解读已随数据预生成，照样能看；' +
+      '要生成式作答，填自己的 OpenAI 兼容 Key 即可（智谱、DeepSeek、月之暗面、通义都行）。' +
     '</div>' +
     '<div class="row small" style="margin-top:10px">' +
       '<button class="btn sm" id="llmTest">测试连接</button>' +
