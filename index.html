@@ -3179,6 +3179,167 @@ html[data-theme="dark"] .fl-bar{
 </style>
 <!-- generated-at: 2026-10-29 06:47:30 -->
 <!-- WB:RO:HEAD:END -->
+<style data-page-node-id="w3aWeekAct" id="wb-batch3a">
+/* ============================================================
+   批次 3A：周报「本周速览 · 传达版」+ 看板「高影响行动清单」
+   只做表现层，不改既有布局尺寸；打印规则全部用 body 上的临时
+   打印态类（wb-print-week / wb-print-hi）收口，避免影响原有打印。
+   ============================================================ */
+
+/* ---------- 1. 周报顶部分段切换 ---------- */
+.rp-seg{display:inline-flex;gap:2px;padding:3px;margin:0 0 14px;border:1px solid var(--line);
+  border-radius:var(--r-pill);background:rgba(var(--ink-rgba),.035);max-width:100%}
+.rp-seg-i{border:0;background:transparent;color:var(--txt-2);font:inherit;font-size:13px;
+  padding:6px 14px;border-radius:var(--r-pill);cursor:pointer;white-space:nowrap;
+  transition:color .16s,background .16s,box-shadow .16s}
+.rp-seg-i:hover{color:var(--txt)}
+.rp-seg-i.on{background:var(--card-solid);color:var(--txt);font-weight:600;
+  box-shadow:0 1px 2px rgba(15,30,51,.10),0 4px 12px -6px rgba(15,30,51,.24)}
+.rp-seg-i:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+@media (max-width:520px){
+  .rp-seg{width:100%}
+  .rp-seg-i{flex:1 1 0;text-align:center;font-size:12.5px;padding:6px 8px}
+}
+
+/* 两态互斥：传达版打开时收起原周报（原内容不动，只是隐藏） */
+#view-report.wk-on .rp-bar{display:none}
+#view-report.wk-on .rp-layout{display:none}
+#view-report:not(.wk-on) #weekWrap{display:none}
+
+/* ---------- 2. 本周速览 · 传达版 ---------- */
+.wk-panel{padding:22px 24px}
+.wk-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 16px}
+.wk-tools .sp{flex:1}
+.wk-hd{margin:0 0 16px;padding:0 0 13px;border-bottom:1px solid var(--line)}
+.wk-t{font-size:19px;font-weight:700;color:var(--txt);letter-spacing:.2px;line-height:1.4}
+.wk-d{margin-top:6px;font-size:12.5px;color:var(--txt-3);line-height:1.6}
+.wk-d b{color:var(--txt-2);font-weight:600}
+.wk-grp{margin:0 0 18px}
+.wk-grp:last-child{margin-bottom:0}
+.wk-grp-hd{display:flex;align-items:center;gap:8px;margin:0 0 6px;flex-wrap:wrap;
+  font-size:13px;font-weight:600;color:var(--txt)}
+.wk-grp-hd .cnt{font-size:11.5px;font-weight:500;color:var(--txt-3)}
+.wk-item{display:flex;gap:14px;padding:10px 0 11px;border-top:1px dashed var(--line-soft)}
+.wk-grp-hd + .wk-item{border-top:0}
+.wk-dt{flex:0 0 86px;padding-top:2px;font-size:12.5px;color:var(--txt-2);font-family:var(--mono);
+  white-space:nowrap;font-variant-numeric:tabular-nums}
+.wk-bd{flex:1;min-width:0}
+.wk-ti{display:block;width:100%;text-align:left;background:transparent;border:0;padding:0;
+  font-size:14px;line-height:1.55;font-weight:600;color:var(--txt);cursor:pointer;transition:color .16s}
+.wk-ti:hover{color:var(--blue)}
+.wk-ti .tt{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.wk-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:5px;
+  font-size:11.5px;color:var(--txt-3)}
+.wk-meta .org{max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wk-sum{margin-top:5px;font-size:12.5px;line-height:1.65;color:var(--txt-2)}
+.wk-sum .muted{color:var(--txt-3)}
+.wk-empty{padding:34px 4px 30px;text-align:center;font-size:13.5px;color:var(--txt-3)}
+
+/* ---------- 3. 高影响行动清单（右侧抽屉） ---------- */
+.hi-mask{align-items:stretch;justify-content:flex-end;padding:0}
+.hi-drawer{width:min(580px,100%);height:100%;max-height:100%;border-radius:0;
+  border-left:1px solid var(--line-strong);display:flex;flex-direction:column;
+  animation:hiIn .2s var(--ease)}
+@keyframes hiIn{from{transform:translateX(26px);opacity:.35}to{transform:none;opacity:1}}
+.hi-drawer .mb{flex:1;min-height:0;overflow-y:auto;padding:0}
+.hi-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 18px;
+  border-bottom:1px solid var(--line);background:rgba(var(--ink-rgba),.022)}
+.hi-tools .sp{flex:1}
+.hi-prog-tx{font-size:12.5px;color:var(--txt-2);white-space:nowrap}
+.hi-prog{height:5px;border-radius:3px;background:rgba(var(--ink-rgba),.09);overflow:hidden;margin:0 18px 0;
+  flex:1 1 90px;min-width:70px}
+.hi-prog i{display:block;height:100%;border-radius:3px;background:var(--blue);
+  transition:width .22s var(--ease)}
+.hi-link{font-size:12px;color:var(--blue);background:none;border:0;padding:0;cursor:pointer;
+  text-decoration:underline;text-underline-offset:3px}
+.hi-row{display:flex;gap:10px;align-items:flex-start;padding:11px 18px;
+  border-bottom:1px solid var(--line-soft)}
+.hi-row:hover{background:rgba(var(--ink-rgba),.022)}
+.hi-pick{flex:0 0 18px;width:18px;height:18px;margin-top:2px;padding:0;border-radius:5px;
+  border:1.5px solid var(--line-strong);background:var(--card-solid);color:#fff;
+  display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.hi-pick svg{opacity:0;transition:opacity .12s}
+.hi-pick.on{background:var(--blue);border-color:var(--blue)}
+.hi-pick.on svg{opacity:1}
+.hi-pick:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.hi-bd{flex:1;min-width:0}
+.hi-l1{display:flex;gap:9px;align-items:baseline}
+.hi-date{flex:0 0 auto;font-size:14px;font-weight:600;color:var(--txt);font-family:var(--mono);
+  letter-spacing:-.01em;white-space:nowrap;font-variant-numeric:tabular-nums}
+.hi-t{flex:1;min-width:0;font-size:13.5px;line-height:1.55;font-weight:500;color:var(--txt);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hi-row.done .hi-t{color:var(--txt-3);text-decoration:line-through}
+.hi-m2{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:5px;
+  font-size:11.5px;color:var(--txt-3)}
+.hi-m2 .org{max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hi-note{padding:10px 18px 14px;border-top:1px solid var(--line);font-size:12.5px;color:var(--txt-3);
+  background:rgba(var(--ink-rgba),.018);line-height:1.6}
+.hi-empty{padding:40px 18px;text-align:center;font-size:13px;color:var(--txt-3)}
+@media (max-width:640px){
+  .hi-drawer{width:100%}
+  .hi-date{font-size:13px}
+}
+
+/* ---------- 4. 打印：本周速览（一页纸） ---------- */
+@media print{
+  body.wb-print-week .rp-seg,
+  body.wb-print-week .rp-bar,
+  body.wb-print-week .rp-layout,
+  body.wb-print-week #reportSide,
+  body.wb-print-week #reportWrap,
+  body.wb-print-week .site-footer,
+  body.wb-print-week .tabbar,
+  body.wb-print-week .filters,
+  body.wb-print-week .btn,
+  body.wb-print-week .no-print{display:none!important}
+  body.wb-print-week #weekWrap{display:block!important;border:0!important;background:#fff!important;
+    box-shadow:none!important;padding:0!important;margin:0!important;max-width:none!important}
+  body.wb-print-week .wk-panel{padding:0!important;border:0!important;background:#fff!important}
+  body.wb-print-week .wk-hd{border-bottom:1px solid #999!important;padding-bottom:8px!important}
+  body.wb-print-week .wk-t{font-size:16pt!important;color:#000!important}
+  body.wb-print-week .wk-d{font-size:9.5pt!important;color:#333!important}
+  body.wb-print-week .wk-grp-hd{font-size:11pt!important;color:#000!important;
+    break-after:avoid;page-break-after:avoid}
+  body.wb-print-week .wk-item{break-inside:avoid;page-break-inside:avoid;border-top:1px solid #ddd!important;
+    display:block!important;padding:6pt 0!important}
+  body.wb-print-week .wk-dt{font-size:9pt!important;color:#333!important;display:inline!important;
+    flex:none!important;margin-right:6pt}
+  body.wb-print-week .wk-ti{font-size:12pt!important;line-height:1.45!important;color:#000!important;
+    display:inline!important;font-weight:600!important}
+  body.wb-print-week .wk-ti .tt{display:inline!important;-webkit-line-clamp:unset!important;overflow:visible!important}
+  body.wb-print-week .wk-meta{display:block!important;margin:2pt 0 0!important;font-size:9pt!important;color:#555!important}
+  body.wb-print-week .wk-sum{display:block!important;font-size:12pt!important;line-height:1.5!important;
+    color:#222!important;margin:3pt 0 0!important}
+  body.wb-print-week .tag{border:0!important;background:none!important;color:#555!important;padding:0 4pt 0 0!important}
+  body.wb-print-week .lv-bg{display:none!important}
+  body.wb-print-week .wk-empty{font-size:12pt!important;color:#333!important;text-align:left!important}
+  body.wb-print-week ul,body.wb-print-week li,body.wb-print-week tr{break-inside:avoid;page-break-inside:avoid}
+}
+
+/* ---------- 5. 打印：高影响清单 ---------- */
+@media print{
+  body.wb-print-hi .app{display:none!important}
+  body.wb-print-hi .mask{display:block!important;position:static!important;inset:auto!important;
+    background:#fff!important;padding:0!important;backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;animation:none!important;z-index:auto!important}
+  body.wb-print-hi .modal.hi-drawer{width:100%!important;max-width:none!important;height:auto!important;
+    max-height:none!important;overflow:visible!important;border:0!important;border-radius:0!important;
+    box-shadow:none!important;background:#fff!important;animation:none!important}
+  body.wb-print-hi .hi-drawer .mh{border-bottom:1px solid #999!important;padding:0 0 6pt!important}
+  body.wb-print-hi .hi-drawer .mh b{font-size:15pt!important;color:#000!important}
+  body.wb-print-hi .hi-tools,body.wb-print-hi .x-btn{display:none!important}
+  body.wb-print-hi .hi-drawer .mb{overflow:visible!important;flex:none!important}
+  body.wb-print-hi .hi-row{break-inside:avoid;page-break-inside:avoid;border-bottom:1px solid #ddd!important;
+    padding:5pt 0!important}
+  body.wb-print-hi .hi-date{font-size:11pt!important;color:#000!important}
+  body.wb-print-hi .hi-t{font-size:12pt!important;line-height:1.45!important;color:#000!important;
+    display:block!important;-webkit-line-clamp:unset!important;overflow:visible!important}
+  body.wb-print-hi .hi-pick{display:none!important}
+  body.wb-print-hi .hi-m2{font-size:9pt!important;color:#555!important}
+  body.wb-print-hi .hi-note{font-size:9pt!important;color:#555!important;border-top:1px solid #999!important}
+  body.wb-print-hi .toast,body.wb-print-hi #toastRoot{display:none!important}
+}
+</style>
 </head>
 <body data-page-node-id="wYbZltbIolyX20jrcYqfor" class="ro">
 
@@ -3376,6 +3537,11 @@ html[data-theme="dark"] .fl-bar{
 
       <!--pnid:eElIzClgBDdUIZmVxHa2TS--><!-- 日报周报 -->
       <section data-page-node-id="QJZC9yRe6d8RFkXYgJ7RcZ" class="view" id="view-report">
+        <!-- 周报顶部分段：默认仍落在「上周变动」，原周报内容一行不动 -->
+        <div class="rp-seg no-print" role="tablist" aria-label="周报视图切换">
+          <button class="rp-seg-i on" type="button" role="tab" aria-selected="true" data-act="wkTab" data-tab="prev">上周变动</button>
+          <button class="rp-seg-i" type="button" role="tab" aria-selected="false" data-act="wkTab" data-tab="week">本周速览 · 传达版</button>
+        </div>
         <div data-page-node-id="31tvDbovjdcc2Z3DD4KqFk" class="rp-bar">
           <select data-page-node-id="G2qpD2NM08xNiylXgQMu2m" class="pick" id="reportType">
             <option data-page-node-id="N4537FLkVldDP84pFmnirH" value="daily"><!--pnid:Zk3Acv5HygCvAxpNIkdp1z-->政策变动日报</option>
@@ -3394,6 +3560,8 @@ html[data-theme="dark"] .fl-bar{
           </div>
           <aside data-page-node-id="3qvx029Dku8KZTGcy9SaqN" class="rp-side" id="reportSide"></aside>
         </div>
+        <!-- 本周速览 · 传达版：与「上周变动」互斥显示，默认不显示（原周报不动） -->
+        <div class="card card-pad wk-panel" id="weekWrap" aria-live="polite"></div>
       </section>
 
       <!--pnid:GpbeAck8LNHLD6GYswA7sy--><!-- 历史归档 -->
@@ -5353,8 +5521,174 @@ function renderBoardToday(){
   box.innerHTML = '<div class="bt-lead">' + svg('sub', 16) + '<b>今天要办的事</b></div>' +
     cell('btWeek', n.week, '本周新增', '近 7 天发布的政策，点击筛选') +
     cell('btYx', n.yx, '其中玉溪', '近 7 天新增中的玉溪市政策，点击筛选') +
-    cell('btHigh', n.high, '高影响待办', '高影响政策，点击筛选') +
+    cell('btHigh', n.high, '高影响待办', '高影响政策，点击打开行动清单') +
     cell('btUnread', n.unread, '未读提醒', '未读提醒，点击进入提醒中心');
+}
+
+/* ============ 高影响行动清单（看板「高影响待办」→ 右侧抽屉） ============
+   165 条高影响政策直接扔进列表等于让人从头扫；这里给一张能逐条勾掉的清单。
+   勾选只写本机 localStorage（yb_hi_done），不进云端台账 —— 台账是共享的，
+   个人的处置进度不该污染它，也不该随换机同步。 */
+var LS_HI_DONE = 'yb_hi_done';
+
+function hiKey(p){ return String((p && (p.rid || p.id)) || ''); }
+
+function loadHiDone(){
+  try {
+    var raw = localStorage.getItem(LS_HI_DONE);
+    var o = raw ? JSON.parse(raw) : {};
+    return (o && typeof o === 'object' && !(o instanceof Array)) ? o : {};
+  } catch (e) { return {}; }
+}
+function saveHiDone(){
+  try { localStorage.setItem(LS_HI_DONE, JSON.stringify(App.ui.hiDone || {})); } catch (e) {}
+}
+/* 按 rid 对账：只保留「仍存在且仍是高影响」的勾选，其余静默清理。
+   数据源为空（示例数据 / 云端尚未落地）时直接跳过，绝不整表清空。 */
+function hiReconcile(){
+  var map = App.ui.hiDone || {};
+  var live = (App.data.policies || []).filter(function(p){
+    return !p.demo && p.impact === '高';
+  });
+  if (!live.length) return;
+  var keep = {};
+  live.forEach(function(p){
+    var k = hiKey(p);
+    if (k && map[k]) keep[k] = map[k];
+  });
+  var before = Object.keys(map).length;
+  App.ui.hiDone = keep;
+  if (Object.keys(keep).length !== before) saveHiDone();
+}
+function hiDoneMap(){
+  if (!App.ui.hiDone) {
+    App.ui.hiDone = loadHiDone();
+    hiReconcile();
+  }
+  return App.ui.hiDone;
+}
+function hiHighPolicies(){
+  return (App.data.policies || []).filter(function(p){ return p.impact === '高'; })
+    .slice().sort(function(a, b){
+      var d = String(b.date || '').localeCompare(String(a.date || ''));
+      if (d) return d;
+      return levelRank(a.level) - levelRank(b.level);
+    });
+}
+
+function closeHiPanel(){
+  var m = document.getElementById('hiMask');
+  if (m && m.parentNode) m.parentNode.removeChild(m);
+}
+
+function hiOpen(){
+  var mask = document.getElementById('hiMask');
+  if (mask) { renderHiPanel(); return; }
+  mask = document.createElement('div');
+  mask.className = 'mask hi-mask';
+  mask.id = 'hiMask';
+  mask.innerHTML =
+    '<div class="modal hi-drawer" role="dialog" aria-modal="true" aria-label="高影响待办清单">' +
+      '<div class="mh">' + svg('star', 18) + '<b id="hiTitle">高影响待办清单</b>' +
+        '<span class="sp" style="flex:1"></span>' +
+        '<button class="x-btn no-print" type="button" data-act="hiClose" aria-label="关闭">' + svg('x', 18) + '</button>' +
+      '</div>' +
+      '<div class="hi-tools no-print" id="hiTools"></div>' +
+      '<div class="mb" id="hiBody"></div>' +
+      '<div class="hi-note">仅本机记录，不进台账；换电脑不同步。</div>' +
+    '</div>';
+  mask.addEventListener('click', function(e){
+    if (e.target === mask) closeHiPanel();
+  });
+  /* ESC 关闭：openModal 的 ESC 监听只在开过普通弹窗后才存在，这里自带一份 */
+  if (!App.ui._hiEsc) {
+    App.ui._hiEsc = 1;
+    document.addEventListener('keydown', function(e){
+      if (e.key !== 'Escape' && e.keyCode !== 27) return;
+      var all = $$('#modalRoot .mask');
+      var top = all[all.length - 1];
+      if (top && top.id === 'hiMask') closeHiPanel();
+    });
+  }
+  $('#modalRoot').appendChild(mask);
+  renderHiPanel();
+}
+
+function renderHiPanel(){
+  var mask = document.getElementById('hiMask');
+  if (!mask) return;
+  var list = hiHighPolicies();
+  var done = hiDoneMap();
+  var onlyOpen = !!App.ui.hiOnlyOpen;
+  var nDone = 0;
+  list.forEach(function(p){ if (done[hiKey(p)]) nDone++; });
+
+  var title = document.getElementById('hiTitle');
+  if (title) title.textContent = '高影响待办清单 · 共 ' + list.length + ' 条';
+
+  var tools = document.getElementById('hiTools');
+  if (tools) {
+    var pct = list.length ? Math.round(100 * nDone / list.length) : 0;
+    tools.innerHTML =
+      '<button class="btn sm' + (onlyOpen ? ' primary' : '') + '" type="button" data-act="hiOnly" ' +
+        'aria-pressed="' + (onlyOpen ? 'true' : 'false') + '">只看未完成</button>' +
+      '<span class="sp"></span>' +
+      '<span class="hi-prog-tx">已完成 <b class="num">' + nDone + '</b> / ' + list.length + '</span>' +
+      '<span class="hi-prog" aria-hidden="true"><i style="width:' + pct + '%"></i></span>' +
+      '<button class="btn sm" type="button" data-act="hiPrint">打印清单</button>' +
+      '<button class="hi-link" type="button" data-act="hiToPolicy">在列表中查看</button>';
+  }
+
+  var body = document.getElementById('hiBody');
+  if (!body) return;
+  var rows = onlyOpen ? list.filter(function(p){ return !done[hiKey(p)]; }) : list;
+  var st = body.scrollTop;
+  if (!rows.length) {
+    body.innerHTML = '<div class="hi-empty">' +
+      (list.length ? '高影响政策已全部完成' : '当前没有高影响政策') + '</div>';
+    return;
+  }
+  body.innerHTML = rows.map(function(p){
+    var k = hiKey(p);
+    var on = !!done[k];
+    return '<div class="hi-row' + (on ? ' done' : '') + '" data-hikey="' + esc(k) + '">' +
+        '<button class="hi-pick' + (on ? ' on' : '') + '" type="button" role="checkbox" aria-checked="' +
+          (on ? 'true' : 'false') + '" data-act="hiToggle" data-id="' + esc(p.id) + '" data-hikey="' + esc(k) +
+          '" title="' + (on ? '取消完成' : '标记完成') + '">' + svg('check', 12, 3) + '</button>' +
+        '<div class="hi-bd">' +
+          '<div class="hi-l1">' +
+            '<span class="hi-date">' + wbDateText(p.date) + '</span>' +
+            '<span class="hi-t" title="' + esc(p.title) + '">' + esc(p.title) + '</span>' +
+          '</div>' +
+          '<div class="hi-m2">' +
+            '<span class="tag ' + lvTagClass(p.level) + '"><span class="lv-bg">' + lvBadge(p.level) + '</span>' +
+              esc(p.level) + '</span>' +
+            (p.org ? '<span class="org" title="' + esc(p.org) + '">' + esc(orgBrief(p.org)) + '</span>' : '') +
+          '</div>' +
+        '</div>' +
+      '</div>';
+  }).join('');
+  body.scrollTop = st;
+}
+
+function hiToggle(id, key){
+  var p = findPolicy(id);
+  var k = key || hiKey(p);
+  if (!k) return;
+  var done = hiDoneMap();
+  if (done[k]) delete done[k];
+  else done[k] = new Date().toISOString();
+  saveHiDone();
+  renderHiPanel();
+}
+/* 对账不依赖面板是否打开：数据每次同步落地后（refreshAll）都对一遍，
+   已消失/已降级的勾选静默清掉，勾选状态才不会跟着脏数据漂移。 */
+function hiSyncMarks(){
+  if (App.ui.hiDone === undefined) App.ui.hiDone = loadHiDone();
+  hiReconcile();
+}
+function renderHiPanelIfOpen(){
+  if (document.getElementById('hiMask')) renderHiPanel();
 }
 
 function renderBoardStrip(){
@@ -7400,6 +7734,164 @@ function reportPrev(type, dateStr){
   return policiesInRange('daily', isoDate(shiftDays(base, -1))).list.length;
 }
 
+/* ============ 本周速览 · 传达版（周报页签） ============
+   口径与看板「本周新增」同源：recentPolicies(7)（近 7 天、排除 1900-01-01 占位）。
+   这一版是拿来「传达」的，只留日期 / 类别 / 标题 / 机构 / 摘要首句；
+   行动建议与 AI 解读刻意不上屏——那两块是模板化文本，贴进群里千篇一律。 */
+var WK_LEVELS = [
+  { lv: '玉溪市', name: '玉溪市', role: '执行' },
+  { lv: '云南省', name: '云南省', role: '参照' },
+  { lv: '国家',   name: '国家',   role: '基线' }
+];
+
+function weekBriefPolicies(){
+  return recentPolicies(7).slice().sort(function(a, b){
+    var lv = levelRank(a.level) - levelRank(b.level);
+    if (lv) return lv;
+    return String(b.date || '').localeCompare(String(a.date || ''));
+  });
+}
+
+/* 摘要首句：按中文句末标点切；切不出或整句过长时按字数截断。入参纯文本，出参纯文本。 */
+function wkFirstSentence(txt, max){
+  var s = String(txt == null ? '' : txt).replace(/\s+/g, ' ').trim();
+  if (!s) return '';
+  var m = s.match(/^[\s\S]*?[。！？!?；;]/);
+  if (m && m[0].length <= (max || 96)) s = m[0];
+  if (max && s.length > max) s = s.slice(0, max) + '…';
+  return s;
+}
+
+function wkDateRange(){ return [recentCutoff(7), todayISO()]; }
+
+/* 打印态类只在本页打印期间挂在 body 上，打印结束立刻摘掉，
+   避免影响「上周变动」原有的打印行为。 */
+function wbPrintWith(cls){
+  var body = document.body;
+  body.classList.add(cls);
+  var done = function(){
+    body.classList.remove(cls);
+    window.removeEventListener('afterprint', done);
+  };
+  window.addEventListener('afterprint', done);
+  try { window.print(); } catch (e) { done(); }
+  /* 部分浏览器不发 afterprint（或被取消），兜底摘掉，免得界面一直停在打印态 */
+  setTimeout(done, 6000);
+}
+
+function wbCopyText(text, okMsg){
+  var ok = function(){ toast(okMsg || '已复制到剪贴板', 'ok'); };
+  var fail = function(){ toast('复制失败，请手动选择文本', 'warn'); };
+  var fallback = function(){
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', 'readonly');
+    ta.style.position = 'fixed'; ta.style.top = '-1000px'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    var done = false;
+    try { done = document.execCommand('copy'); } catch (e) { done = false; }
+    if (ta.parentNode) ta.parentNode.removeChild(ta);
+    if (done) ok(); else fail();
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(ok, fallback);
+  } else fallback();
+}
+
+function weekBriefHtml(){
+  var list = weekBriefPolicies();
+  var rng = wkDateRange();
+  var tools = '<div class="wk-tools no-print">' +
+      '<button class="btn sm primary" type="button" data-act="wkPrint">打印（一页纸）</button>' +
+      '<button class="btn sm" type="button" data-act="wkCopy">复制纯文本</button>' +
+      '<span class="sp"></span>' +
+      '<span class="small muted">玉溪（执行）→ 云南（参照）→ 国家（基线），组内按日期倒序</span>' +
+    '</div>';
+  var head = '<div class="wk-hd">' +
+      '<div class="wk-t">本周政策速览 · 传达版</div>' +
+      '<div class="wk-d"><b>' + esc(rng[0]) + ' 至 ' + esc(rng[1]) + '</b> · 澄江市乡镇卫生院 · 共 <b class="num">' +
+        list.length + '</b> 条（近 7 天新增）</div>' +
+    '</div>';
+  if (!list.length) return tools + head + '<div class="wk-empty">本周暂无新增政策</div>';
+
+  var body = WK_LEVELS.map(function(g){
+    var rows = list.filter(function(p){ return p.level === g.lv; });
+    if (!rows.length) return '';
+    var hd = '<div class="wk-grp-hd">' +
+        '<span class="tag ' + lvTagClass(g.lv) + '"><span class="lv-bg">' + lvBadge(g.lv) + '</span>' + esc(g.name) + '</span>' +
+        '<span class="cnt">' + rows.length + ' 条</span>' +
+      '</div>';
+    var items = rows.map(function(p){
+      var cat = (p.category && p.category !== '其他')
+        ? '<span class="tag outline">' + esc(p.category) + '</span>' : '';
+      var sum = wkFirstSentence(p.summary, 88);
+      return '<div class="wk-item">' +
+          '<div class="wk-dt">' + wbDateText(p.date) + '</div>' +
+          '<div class="wk-bd">' +
+            '<button class="wk-ti" type="button" data-act="expand-goto" data-id="' + esc(p.id) +
+              '" title="' + esc(p.title) + '"><span class="tt">' + esc(p.title) + '</span></button>' +
+            '<div class="wk-meta">' + cat +
+              (p.org ? '<span class="org" title="' + esc(p.org) + '">' + esc(orgBrief(p.org)) + '</span>' : '') +
+            '</div>' +
+            '<div class="wk-sum">' + (sum ? esc(sum) : '<span class="muted">暂无摘要</span>') + '</div>' +
+          '</div>' +
+        '</div>';
+    }).join('');
+    return '<div class="wk-grp">' + hd + items + '</div>';
+  }).join('');
+
+  return tools + head + body;
+}
+
+function weekBriefText(){
+  var list = weekBriefPolicies();
+  var rng = wkDateRange();
+  var out = ['本周政策速览 · 传达版',
+             rng[0] + ' 至 ' + rng[1] + ' · 澄江市乡镇卫生院 · 共 ' + list.length + ' 条'];
+  if (!list.length) { out.push('', '本周暂无新增政策'); return out.join('\n'); }
+  WK_LEVELS.forEach(function(g){
+    var rows = list.filter(function(p){ return p.level === g.lv; });
+    if (!rows.length) return;
+    out.push('', '【' + g.name + '（' + g.role + '）】' + rows.length + ' 条');
+    rows.forEach(function(p){
+      var dt = (String(p.date) === '1900-01-01') ? '日期待核' : String(p.date || '');
+      var cat = (p.category && p.category !== '其他') ? String(p.category) : '';
+      var org = orgBrief(p.org);
+      var sum = wkFirstSentence(p.summary, 88) || '暂无摘要';
+      out.push('- ' + dt + (cat ? ' · ' + cat : '') + ' · ' + String(p.title || '') +
+        (org ? ' —— ' + org : '') + '；' + sum);
+    });
+  });
+  return out.join('\n');
+}
+
+function renderWeekBrief(){
+  var box = $('#weekWrap');
+  if (!box) return;
+  box.innerHTML = weekBriefHtml();
+}
+
+/* 页签态：只切 class 与 aria，不销毁原周报 DOM（原内容一行不动）。
+   未显式选过时一律按「上周变动」算，避免首屏两个页签都不高亮。 */
+function applyRepTab(){
+  var sec = document.getElementById('view-report');
+  if (!sec) return;
+  var cur = App.ui.repTab === 'week' ? 'week' : 'prev';
+  sec.classList.toggle('wk-on', cur === 'week');
+  $$('#view-report .rp-seg-i').forEach(function(b){
+    var on = b.getAttribute('data-tab') === cur;
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+}
+
+function setRepTab(tab){
+  App.ui.repTab = (tab === 'week') ? 'week' : 'prev';
+  applyRepTab();
+  if (App.ui.repTab === 'week') renderWeekBrief();
+}
+
 function renderReportSide(){
   var box = $('#reportSide');
   if (!box) return;
@@ -7517,6 +8009,9 @@ function renderReport(){
   var painted = !!wrap.querySelector('#reportPaper');
   if (!painted && App.ui.view !== 'report') return;   // 没进过这一页就不预先算
   paintReport($('#reportType').value, dt ? (dt.value || todayISO()) : todayISO());
+  /* 页签与数据同拍刷新：停在传达版时，云端数据落地后也能立刻反映出来 */
+  applyRepTab();
+  if (App.ui.repTab === 'week') renderWeekBrief();
 }
 
 /* 历史报告回看：切回那一期，只重绘不重复存档 */
@@ -8107,6 +8602,8 @@ function refreshAll(){
   safe(renderVoiceDock);
   safe(renderRadar);
   safe(renderReport);
+  safe(hiSyncMarks);
+  safe(renderHiPanelIfOpen);
   safe(renderFreshness);
   maybeBackupNudge();
 }
@@ -8433,9 +8930,29 @@ function bindGlobalEvents(){
     } else if (act === 'btYx') {
       gotoPolicyWith({ level: '玉溪市', weekOnly: true });
     } else if (act === 'btHigh') {
-      gotoPolicyWith({ impact: '高' });
+      /* 不再直接跳列表：165 条高影响先给一张可勾选的行动清单 */
+      hiOpen();
     } else if (act === 'btUnread') {
       goSubAlerts();
+    } else if (act === 'hiClose') {
+      closeHiPanel();
+    } else if (act === 'hiToggle') {
+      hiToggle(id, t.getAttribute('data-hikey'));
+    } else if (act === 'hiOnly') {
+      App.ui.hiOnlyOpen = !App.ui.hiOnlyOpen;
+      renderHiPanel();
+    } else if (act === 'hiPrint') {
+      wbPrintWith('wb-print-hi');
+    } else if (act === 'hiToPolicy') {
+      /* 保留原跳转口径：关掉抽屉后带 impact=高 落到政策列表 */
+      closeHiPanel();
+      gotoPolicyWith({ impact: '高' });
+    } else if (act === 'wkTab') {
+      setRepTab(t.getAttribute('data-tab'));
+    } else if (act === 'wkPrint') {
+      wbPrintWith('wb-print-week');
+    } else if (act === 'wkCopy') {
+      wbCopyText(weekBriefText(), '已复制本周速览（纯文本）');
     } else if (act === 'pWeekOff') {
       App.ui.pFilter.weekOnly = false;
       App.ui.pPage = 1;
