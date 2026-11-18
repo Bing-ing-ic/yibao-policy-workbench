@@ -5678,11 +5678,12 @@ function boardTodayCounts(){
 function renderBoardToday(){
   var box = $('#boardToday');
   if (!box) return;
+  var hasData = (App.data.policies || []).length > 0;
   var n = boardTodayCounts();
   var cell = function(act, v, k, tip){
-    return '<button class="bt-i" type="button" data-act="' + act + '" title="' + esc(tip) + '">' +
+    return '<button class="bt-i" type="button" data-act="' + act + '" title="' + esc(tip) + '"' + (hasData ? '' : ' disabled') + '>' +
       '<span class="bt-k">' + esc(k) + '</span>' +
-      '<span class="bt-v' + (v ? '' : ' zero') + '">' + v + '</span>' +
+      '<span class="bt-v' + (v && hasData ? '' : ' zero') + '">' + (hasData ? v : '—') + '</span>' +
       '<span class="bt-u">条</span></button>';
   };
   box.innerHTML = '<div class="bt-lead">' + svg('sub', 16) + '<b>今天要办的事</b></div>' +
