@@ -3528,7 +3528,8 @@ html[data-theme="dark"] .fl-bar{
 </style>
 <link rel="stylesheet" href="./scripts/site-admin.css">
 <style id="wbCfgRoOverrides">/* 只读版豁免：仅放行「网站配置（管理员）」卡片（2026-11-18） */
-.ro #view-settings{display:block!important}
+/* 必须带 .on：否则任何页面底部都会多出一块设置卡片（本次实测在看板/问答页都露出来了） */
+.ro #view-settings.on{display:block!important}
 /* 导航隐藏后 .st-body 会被自动放进 198px 第一列，正文被压成竖排——强制单列 */
 .ro #view-settings .st-layout{grid-template-columns:minmax(0,1fr)!important}
 .ro #settingsBody{grid-column:1/-1;width:100%}
@@ -7321,7 +7322,7 @@ function synthesizeAnswer(q, r){
   }
 
   h += '<div class="syn-note no-speech">本段为 <b>库内原文抽取</b>：只挑与提问相关的句子，不做推断、不补数字，每条都能点开原文核对。'
-     + '若需「结合玉溪经办实际直接给结论」，可到「设置 → 大模型接入」填入接口与 Key（<b>仅存本机、不上传云端</b>），切换为生成式作答。</div>';
+     + '若需「结合玉溪经办实际直接给结论」，可在完整工作台（主版）的「设置 → 大模型接入」填入自己的接口与 Key（<b>仅存本机</b>）。</div>';
   h += '</div>';
   return h;
 }
@@ -7345,7 +7346,7 @@ function localAnswerHtml(q, r, webList, webErr){
         ? ('出处：' + esc(o.source || '监测台账') + (o.url ? ' · <a href="' + esc(o.url) + '" target="_blank" rel="noopener">查看原文</a>' : ''))
         : ('出处：' + SRC_LABEL[o.source] + (o.url ? ' · <a href="' + esc(o.url) + '" target="_blank" rel="noopener">打开链接</a>' : ''));
       return '<div style="padding:9px 0;border-top:1px dashed var(--line)">' +
-        '<div style="font-weight:600;color:#0F1E33">' + (i + 1) + '. ' + esc(o.title) + '</div>' +
+        '<div style="font-weight:600;color:var(--txt)">' + (i + 1) + '. ' + esc(o.title) + '</div>' +
         '<div style="font-size:12px;color:var(--txt-3);margin:2px 0 6px">' + esc(o.org || o.level || '') + ' · ' + esc(o.date || o.year || '') +
           ' · <span class="tag ' + (o.impact === '高' ? 'red' : (o.impact === '中' ? 'amber' : 'gray')) + '">' + esc(o.impact || o.category || '') + '</span></div>' +
         '<div style="font-size:13px;color:var(--txt-2);line-height:1.7">' + esc((o.summary || '（暂无摘要）').slice(0, 260)) + '</div>' +
@@ -7366,7 +7367,7 @@ function citeListHtml(hits){
       ? ('出处：' + esc(o.source || '监测台账') + (o.url ? ' · <a href="' + esc(o.url) + '" target="_blank" rel="noopener">查看原文</a>' : ''))
       : ('出处：' + SRC_LABEL[o.source] + (o.url ? ' · <a href="' + esc(o.url) + '" target="_blank" rel="noopener">打开链接</a>' : ''));
     return '<div style="padding:7px 0;border-top:1px dashed var(--line)">' +
-      '<div style="font-weight:600;color:#0F1E33;font-size:13px">[' + (i + 1) + '] ' + esc(o.title) + '</div>' +
+      '<div style="font-weight:600;color:var(--txt);font-size:13px">[' + (i + 1) + '] ' + esc(o.title) + '</div>' +
       '<cite>' + cite + '</cite></div>';
   }).join('') + '</div>';
 }
