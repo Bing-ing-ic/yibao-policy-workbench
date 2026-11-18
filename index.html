@@ -476,7 +476,7 @@ h2.t::before{content:"";display:inline-block;width:3px;height:13px;border-radius
    把「谁发的、什么时候」移到右侧贴近操作区，行两侧就都有内容承重。 */
 .pi-right{display:flex;align-items:center;gap:10px;flex:0 0 auto;margin-left:auto;padding-left:16px}
 .pi-right .who{display:flex;align-items:center;gap:8px;min-width:0}
-.pi-right .org{font-size:12.5px;color:var(--txt-2);max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pi-right .org{font-size:12.5px;color:var(--txt-3);max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pi-right .date{font-size:12.5px;color:var(--txt-3);font-family:var(--mono);white-space:nowrap}
 /* 脏日期（1900-01-01 兜底）：显式文字「日期待核」，去等宽数字字体，
    不带「数据感」信号，让用户读出「这是待核对占位」而不是「这是真实日期」。 */
@@ -2874,6 +2874,49 @@ html[data-theme="dark"] #boardStrip.kn-top .strip .hd b.kn-hd-title{
 @media (max-width:620px){
   #boardStrip.kn-top .strip .hd .kn-wordmark-text{font-size:17px;letter-spacing:1px}
 }
+
+/* ==========================================================
+   今天要办的事：看板顶部一行摘要（2026-11 信息归位）
+   ------------------------------------------------------------
+   四个数字全部现算，点哪个就带着对应筛选进政策列表。
+   白底、中性深色数字，不用红色 —— 这里是「今天做什么」，
+   不是第三块报警牌。
+   ========================================================== */
+.bt-bar{display:flex;align-items:center;gap:2px;margin:0 0 12px;
+  background:var(--card-solid);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--sh-1);padding:10px 8px;overflow-x:auto}
+.bt-lead{display:flex;align-items:center;gap:7px;flex:0 0 auto;
+  font-size:16px;font-weight:600;color:var(--txt);padding:0 14px 0 8px;white-space:nowrap}
+.bt-lead svg{color:var(--blue);flex:0 0 auto}
+.bt-i{display:flex;align-items:baseline;gap:6px;flex:1 1 0;justify-content:center;
+  background:transparent;border:0;border-left:1px solid var(--line);
+  padding:4px 10px;border-radius:8px;cursor:pointer;white-space:nowrap;
+  font-family:inherit;transition:background .16s var(--ease)}
+.bt-i:hover{background:rgba(var(--ink-rgba),.045)}
+.bt-i:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+.bt-k,.bt-u{font-size:12.5px;color:var(--txt-3);line-height:1.4}
+.bt-v{font-size:20px;font-weight:700;color:var(--txt);line-height:1.1;
+  font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.bt-v.zero{color:var(--txt-3);font-weight:600}
+@media (max-width:760px){
+  .bt-bar{flex-wrap:wrap;overflow:visible;padding:8px}
+  .bt-lead{flex:1 0 100%;padding:2px 8px 8px}
+  .bt-i{flex:1 0 45%;justify-content:center;border-left:0;
+    border-top:1px solid var(--line-soft);padding:9px 6px}
+}
+
+/* 政策列表：近 7 天临时筛选胶囊（可关闭，不占一个下拉位） */
+.pf-week{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 11px;
+  border-radius:var(--r-pill);border:1px solid rgba(var(--blue-rgba),.35);
+  background:rgba(var(--blue-rgba),.08);color:var(--blue-700);
+  font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap}
+.pf-week b{font-size:14px;font-weight:600;opacity:.7}
+.pf-week:hover{background:rgba(var(--blue-rgba),.14)}
+html[data-theme="dark"] .pf-week{color:var(--blue-200)}
+
+/* 高影响卡：日期前置并加粗（中性深色，不用红）；「日期待核」不加粗 */
+.pi-right .date.hi{font-size:14px;font-weight:600;color:var(--txt);letter-spacing:-.01em}
+.pi-right .date.hi .dn{font-size:12.5px;font-weight:400;color:var(--txt-3)}
 </style>
 <!-- 主题防抖：首屏绘制前定色，避免深色模式用户看到一次白闪。 -->
 <script id="wb-v3-pre">
@@ -3187,6 +3230,8 @@ html[data-theme="dark"] .fl-bar{
       <section data-page-node-id="cQiP3EqCzFeneCh2gMbm3r" class="view on" id="view-board">
         <!--pnid:CbL7eRu25iCX7b8O1jSJhU--><!-- ① 态势指挥台：环（结构）+ 流（体量与解读进度）+ 心（感知是否在跑） -->
         <!--pnid:mdEHqRl2Y1ekc9hCgbzdTu--><!-- 状态句：把「系统在跑但没有数据」这件事说清楚 -->
+              <!-- 今天要办的事：首屏四个可点数字，先给结论、再给明细 -->
+              <div class="bt-bar" id="boardToday" aria-label="今天要办的事"></div>
               <div data-page-node-id="FM6ym9yGBc1yyq9c0PyWvF" id="boardStatus"></div>
               <div data-page-node-id="SRMcC1QHM68Or8OfRieSPA" data-sp-bindable="database" data-sp-database-id="h6rLvnHD0OZ9wyiNwJVAAE" id="radarRoot"></div>
         <!--pnid:iNV7wqZQ5AZJOpmWBs74Xa--><!-- ② 指标带：五块仪表读数 -->
@@ -3302,7 +3347,7 @@ html[data-theme="dark"] .fl-bar{
             <div data-page-node-id="eMG6b8xQjtMBTgQd4q7JTA" class="chips" id="subQuick" style="margin-top:10px"></div>
             <p data-page-node-id="5lKUgtwLnwiLfTrsCrQ0BH" class="small muted" style="margin:12px 0 0"><!--pnid:MiwBB1UCOwGYrrZpqe0CBy-->命中订阅词的新政策会在看板「提醒中心」高亮，并区分未读 / 已读。</p>
           </div>
-          <div data-page-node-id="EkfADlIGp2DG0i4oW6gxPr" class="card card-pad">
+          <div data-page-node-id="EkfADlIGp2DG0i4oW6gxPr" class="card card-pad" id="subSec-alert">
             <h2 data-page-node-id="iwPO00o2WPHgJtwdNezaAM" class="t"><!--pnid:WFTECTzR5pkvf62X2O4KCM-->提醒中心</h2>
             <div data-page-node-id="E5tm95UEar0xusidDgMc48" class="row" style="margin-bottom:10px">
               <div data-page-node-id="onCL9JYpFEqASrNGB5gz5p" class="grow small muted" id="alertSummary"><!--pnid:NWg1Rpwg2sV2mZB6TTViLY-->暂无提醒</div>
@@ -3501,11 +3546,11 @@ var ICONS = {
 var VIEWS = [
   { id:'board',    name:'监测看板', icon:'board',    crumb:'今日新增 · 待关注提醒 · 三级优先级分区' },
   { id:'policy',   name:'政策列表', icon:'policy',   crumb:'全文检索 / 增删改 / 采集导入' },
-  { id:'interp',   name:'政策解读', icon:'layers',   crumb:'执行玉溪市医保局政策 · 云南为参照 · 国家为基线' },
+  { id:'interp',   name:'AI 解读', icon:'layers',   crumb:'执行玉溪市医保局政策 · 云南为参照 · 国家为基线' },
   { id:'kb',       name:'知识库',   icon:'kb',       crumb:'云端政策原件库 + IMA 同步 + 本地上传' },
   { id:'qa',       name:'智能问答', icon:'qa',       crumb:'本地归纳成文（玉溪优先）· 接入大模型后升级为生成式' },
   { id:'sub',      name:'订阅管理', icon:'sub',      crumb:'关键词订阅 / 提醒中心 / 监测源' },
-  { id:'report',   name:'日报周报', icon:'report',   crumb:'自动汇总并支持导出' },
+  { id:'report',   name:'周报 · 上周变动', tab:'周报', icon:'report',   crumb:'上周变动汇总 · 支持导出 Word / PDF' },
   { id:'archive',  name:'历史归档', icon:'archive',  crumb:'政策演进时间轴' },
   { id:'settings', name:'设置',     icon:'settings', crumb:'备份 / 示例数据 / 偏好' }
 ];
@@ -4829,6 +4874,18 @@ function needFollow(p){
   return !!p.follow && !p.done;
 }
 
+/* 发布机构机械缩写：单一机关显示全称；多机关（按空格 / 、 / ，切分）显示
+   「首个机关全称 + 等N部门」（N 为真实切分计数）。不做简称映射表：
+   医保机构没有稳定的官方简称，硬编一张表只会制造新的口径。 */
+function orgBrief(org){
+  var s = String(org == null ? '' : org).trim();
+  if (!s) return '';
+  /* 台账里已有「…等8部门」这类人工缩写时原样保留，避免再切一次变成「等3部门」 */
+  if (/等\d+部门$/.test(s)) return s;
+  var parts = s.split(/[\s\u3000、，,]+/).filter(function(x){ return !!x; });
+  return parts.length >= 2 ? (parts[0] + '等' + parts.length + '部门') : s;
+}
+
 function policyCard(p, mode){
   var open = !!App.ui.expanded[p.id];
   var fresh = isFresh(p) && !p.read;
@@ -4847,6 +4904,8 @@ function policyCard(p, mode){
   }).join('');
   var imp = p.impact === '高' ? 'imp-high' : (p.impact === '中' ? 'imp-mid' : 'imp-low');
   var lvTag = lvTagClass(p.level);
+  /* 高影响卡：日期提到元信息首位并加粗（中性深色，不用红），机关名后置 */
+  var hiImp = p.impact === '高';
   /* zone（看板三栏）模式的属地标记：栏宽窄，标签要短。
      县区级政策已归「玉溪市」栏，若不标县区就与市级政策混同——
      这正是 2026-10-26 用户指出的「红塔区/易门县出现在国家栏」同类问题。 */
@@ -4895,8 +4954,9 @@ function policyCard(p, mode){
         '</div>' +
         '<div class="pi-right">' +
           '<span class="who">' +
-            (p.org ? '<span class="org" title="' + esc(p.org) + '">' + esc(p.org) + '</span>' : '') +
-            (p.date ? '<span class="date">' + wbDateText(p.date) + '</span>' : '') +
+            (hiImp && p.date ? '<span class="date hi">' + wbDateText(p.date) + '</span>' : '') +
+            (p.org ? '<span class="org" title="' + esc(p.org) + '">' + esc(orgBrief(p.org)) + '</span>' : '') +
+            (!hiImp && p.date ? '<span class="date">' + wbDateText(p.date) + '</span>' : '') +
           '</span>' +
           '<div class="pi-ops">' + ops + '</div>' +
         '</div>' +
@@ -4985,6 +5045,11 @@ function filterPolicies(list){
     if (f.change === 'yes' && !p.change) return false;
     if (f.change === 'rev' && p.change !== '修订') return false;
     if (f.change === 'gone' && p.change !== '废止') return false;
+    /* 「近7天」临时筛选：只由看板摘要条置位，筛选区显示可关闭的胶囊 */
+    if (f.weekOnly) {
+      var pd = String(p.date || '').slice(0, 10);
+      if (pd === '1900-01-01' || pd < recentCutoff(7)) return false;
+    }
     if (f.kw) {
       var q = f.kw.toLowerCase();
       var hay = (p.title + p.org + p.summary + (p.keywords || []).join('') + p.category).toLowerCase();
@@ -5066,6 +5131,20 @@ function weekPolicies(){
   return App.data.policies.filter(function(p){
     var d = parseDay(p.date);
     return d && d >= st;
+  });
+}
+/* 近 N 天口径（与「本周一至今」区分）：发布日期 >= 今天-N，排除 1900-01-01 占位。
+   看板摘要条的「本周新增」和政策列表的「近7天」临时筛选共用这一处，避免两处口径漂移。 */
+function recentCutoff(days){
+  var d = toDate(new Date());
+  d.setDate(d.getDate() - (days || 7));
+  return isoDate(d);
+}
+function recentPolicies(days){
+  var cut = recentCutoff(days);
+  return (App.data.policies || []).filter(function(p){
+    var d = String(p.date || '').slice(0, 10);
+    return /^\d{4}-\d{2}-\d{2}$/.test(d) && d !== '1900-01-01' && d >= cut;
   });
 }
 function pendingFollow(){
@@ -5245,6 +5324,37 @@ function openStripAll(){
     }).join('') +
     '</div>';
   openModal({ title: '今天要处理 · 全部 ' + items.length + ' 项', icon: 'sub', body: body });
+}
+
+/* ---- 看板顶部：今天要办的事（一行四个可点数字） ----
+   数字全部现算：近 7 天新增 / 其中的玉溪市 / 高影响 / 未读提醒。
+   不新造数据字段，也不写死读数；点数字即带着对应筛选落到政策列表。 */
+function boardTodayCounts(){
+  var week = recentPolicies(7);
+  var ps = App.data.policies || [];
+  return {
+    week: week.length,
+    yx: week.filter(function(p){ return p.level === '玉溪市'; }).length,
+    high: ps.filter(function(p){ return p.impact === '高'; }).length,
+    unread: unreadAlerts().length
+  };
+}
+
+function renderBoardToday(){
+  var box = $('#boardToday');
+  if (!box) return;
+  var n = boardTodayCounts();
+  var cell = function(act, v, k, tip){
+    return '<button class="bt-i" type="button" data-act="' + act + '" title="' + esc(tip) + '">' +
+      '<span class="bt-k">' + esc(k) + '</span>' +
+      '<span class="bt-v' + (v ? '' : ' zero') + '">' + v + '</span>' +
+      '<span class="bt-u">条</span></button>';
+  };
+  box.innerHTML = '<div class="bt-lead">' + svg('sub', 16) + '<b>今天要办的事</b></div>' +
+    cell('btWeek', n.week, '本周新增', '近 7 天发布的政策，点击筛选') +
+    cell('btYx', n.yx, '其中玉溪', '近 7 天新增中的玉溪市政策，点击筛选') +
+    cell('btHigh', n.high, '高影响待办', '高影响政策，点击筛选') +
+    cell('btUnread', n.unread, '未读提醒', '未读提醒，点击进入提醒中心');
 }
 
 function renderBoardStrip(){
@@ -5483,7 +5593,8 @@ function renderBoardStatus(){
   box.innerHTML = html + '</div>';
 }
 
-function renderBoard(){ renderBoardStatus();
+function renderBoard(){ renderBoardToday();
+  renderBoardStatus();
   renderBoardStrip();
   renderBoardStats();
   renderBoardZones();
@@ -5581,7 +5692,7 @@ function emptyState(kind, opts){
   return html + '</div>';
 }
 
-function emptyPolicyFilter(){ return { level:'', cat:'', impact:'', kw:'', read:'', star:'', change:'' }; }
+function emptyPolicyFilter(){ return { level:'', cat:'', impact:'', kw:'', read:'', star:'', change:'', weekOnly:false }; }
 
 function renderPolicyFilters(){
   var f = App.ui.pFilter;
@@ -5601,6 +5712,9 @@ function renderPolicyFilters(){
       '<option value="rev"' + (f.change === 'rev' ? ' selected' : '') + '>仅已修订</option>' +
       '<option value="gone"' + (f.change === 'gone' ? ' selected' : '') + '>仅疑废止</option></select>' +
     '<input id="pfKw" type="search" placeholder="关键词 / 机构 / 标题…" value="' + esc(f.kw) + '">' +
+    (f.weekOnly
+      ? '<button class="pf-week" id="pfWeek" type="button" data-act="pWeekOff" title="取消近 7 天筛选">近 7 天 <b>×</b></button>'
+      : '') +
     '<button class="btn sm" id="pfReset" type="button">重置筛选</button>' +
     '<span class="small muted" id="pfCount"></span>';
   var box = $('#policyFilters');
@@ -5623,7 +5737,9 @@ function renderPolicyFilters(){
   if (rs) rs.addEventListener('click', function(){
     App.ui.pFilter = emptyPolicyFilter();
     App.ui.pPage = 1;
-    renderPolicyView();
+    /* 必须整条重建：近 7 天胶囊是条件渲染的，只同步下拉值清不掉它 */
+    renderPolicyFilters();
+    renderPolicyList();
   });
 }
 
@@ -5639,6 +5755,8 @@ function syncPolicyFilters(){
   if (!box) return;
   if (!box.firstChild || box.getAttribute('data-built') !== '1') { renderPolicyFilters(); return; }
   var f = App.ui.pFilter;
+  /* 近 7 天胶囊是条件渲染的：状态与 DOM 不一致时整条重建，避免「筛选已清空、胶囊还挂着」 */
+  if (!!f.weekOnly !== !!box.querySelector('#pfWeek')) { renderPolicyFilters(); return; }
   setFilterVal('pfLevel', f.level);
   setFilterVal('pfCat', f.cat);
   setFilterVal('pfImpact', f.impact);
@@ -5730,7 +5848,7 @@ function policyEmptyOptsMerge(){
 
 function pFilteredEmptyReason(){
   var f = App.ui.pFilter || {};
-  var hasFilter = f.level || f.cat || f.impact || f.kw || f.read || f.star || f.change;
+  var hasFilter = f.level || f.cat || f.impact || f.kw || f.read || f.star || f.change || f.weekOnly;
   var noData = !App.data.policies || !App.data.policies.length;
   if (noData && hasFilter) return 'empty';
   if (noData) return 'nodata';
@@ -5738,7 +5856,7 @@ function pFilteredEmptyReason(){
 }
 function policyEmptyOpts(){
   var f = App.ui.pFilter || {};
-  var hasFilter = f.level || f.cat || f.impact || f.kw || f.read || f.star || f.change;
+  var hasFilter = f.level || f.cat || f.impact || f.kw || f.read || f.star || f.change || f.weekOnly;
   var noData = !App.data.policies || !App.data.policies.length;
   if (!noData && hasFilter){
     return { title: '这些筛选条件下没有政策',
@@ -5750,7 +5868,7 @@ function policyEmptyOpts(){
 
 function policyEmptyActs(){
   var f = App.ui.pFilter || {};
-  var hasFilter = f.level || f.cat || f.impact || f.kw || f.read || f.star || f.change;
+  var hasFilter = f.level || f.cat || f.impact || f.kw || f.read || f.star || f.change || f.weekOnly;
   var noData = !App.data.policies || !App.data.policies.length;
   if (!noData && hasFilter){
     return [{ act: 'resetFilter', label: '重置筛选' }];
@@ -5782,6 +5900,18 @@ function renderPolicyList(){
 function renderPolicyView(){
   syncPolicyFilters();
   renderPolicyList();
+}
+
+/* 从看板摘要条跳到政策列表：带上指定筛选，整条重建筛选栏（含近 7 天胶囊） */
+function gotoPolicyWith(patch){
+  App.ui.pFilter = emptyPolicyFilter();
+  if (patch) {
+    Object.keys(patch).forEach(function(k){ App.ui.pFilter[k] = patch[k]; });
+  }
+  App.ui.pPage = 1;
+  renderPolicyFilters();
+  renderPolicyList();
+  switchView('policy');
 }
 
 /* ---- 新增 / 编辑弹窗 ---- */
@@ -7889,10 +8019,15 @@ function buildNav(){
   }).join('');
   $('#tabbar').innerHTML = VIEWS.map(function(v){
     return '<button type="button" data-view="' + v.id + '" class="' + (v.id === App.ui.view ? 'on' : '') + '">' +
-      svg(v.icon, 19) + '<span>' + esc(v.name) + '</span></button>';
+      svg(v.icon, 19) + '<span>' + esc(v.tab || v.name) + '</span></button>';
   }).join('');
   $$('[data-view]').forEach(function(btn){
-    btn.addEventListener('click', function(){ switchView(btn.getAttribute('data-view')); });
+    btn.addEventListener('click', function(){
+      var id = btn.getAttribute('data-view');
+      /* 订阅管理带未读角标时，点进来直接落在「提醒中心」，而不是页面顶部 */
+      if (id === 'sub' && unreadAlerts().length) { goSubAlerts(); return; }
+      switchView(id);
+    });
   });
   var cb = $('#collapseBtn');
   if (cb) cb.addEventListener('click', function(){
@@ -7923,6 +8058,22 @@ function switchView(id){
   window.scrollTo(0, 0);
   /* 逐视图的「进入即就绪」钩子：不能让用户点进来先看到一张空卡片 */
   if (id === 'report') safe(renderReport);
+}
+
+/* 未读提醒直达：切到订阅管理后滚到「提醒中心」卡片（#subSec-sub 里右侧那张）。
+   复用页内分段导航的选中态，让 #subNav 的「订阅与提醒」保持高亮。 */
+function goSubAlerts(){
+  switchView('sub');
+  window.setTimeout(function(){
+    var navs = document.querySelectorAll('#subNav .sg-i');
+    for (var i = 0; i < navs.length; i++) {
+      navs[i].classList.toggle('on', navs[i].getAttribute('data-sec') === 'sub');
+    }
+    var el = document.getElementById('subSec-alert');
+    if (!el) return;
+    try { el.scrollIntoView({ behavior:'smooth', block:'center' }); }
+    catch (e) { try { el.scrollIntoView(); } catch (e2) {} }
+  }, 80);
 }
 
 /* ---- 统一提交入口：改数据 → 存本地 → 同步云端 → 统一刷新 ---- */
@@ -8277,6 +8428,19 @@ function bindGlobalEvents(){
     } else if (act === 'kbResetFilter') {
       App.ui.kbFilter = { src:'', cat:'', year:'', kw:'' };
       renderKbView();
+    } else if (act === 'btWeek') {
+      gotoPolicyWith({ weekOnly: true });
+    } else if (act === 'btYx') {
+      gotoPolicyWith({ level: '玉溪市', weekOnly: true });
+    } else if (act === 'btHigh') {
+      gotoPolicyWith({ impact: '高' });
+    } else if (act === 'btUnread') {
+      goSubAlerts();
+    } else if (act === 'pWeekOff') {
+      App.ui.pFilter.weekOnly = false;
+      App.ui.pPage = 1;
+      renderPolicyFilters();
+      renderPolicyList();
     } else if (act === 'newPolicy') {
       policyModal(null);
     } else if (act === 'importCrawl') {
@@ -11188,7 +11352,7 @@ function interpAudit(){
 function ipAuditHtml(){
   var a = interpAudit();
   var rows = [
-    ['政策解读', a.ai, a.tot],
+    ['AI 解读', a.ai, a.tot],
     ['卫生院影响', a.tw, a.tot],
     ['上位依据链', a.yxOk, a.yxTot],
     ['含执行动作', a.act, a.tot]
@@ -11373,13 +11537,13 @@ function ipReadHtml(p){
   }
 
   if (v.ai) {
-    out += '<div class="ip-blk ai" data-blk="ai"><div class="bd-hd">' + svg('spark', 13) + ' 政策解读' + aiBadge() +
+    out += '<div class="ip-blk ai" data-blk="ai"><div class="bd-hd">' + svg('spark', 13) + ' AI 解读' + aiBadge() +
         (v.checked ? '<span class="bd-tag">人工核对 ' + esc(v.checked) + '</span>' : '') +
         '<button class="ai-ask" type="button" data-act="askPolicy" data-id="' + esc(p.id) + '">' +
           AI_DIAMOND + '追问 AI</button></div>' +
       '<div class="bd-tx">' + esc(v.ai) + '</div></div>';
   } else {
-    out += '<div class="ip-blk ai empty" data-blk="ai"><div class="bd-hd">' + svg('spark', 13) + ' 政策解读' +
+    out += '<div class="ip-blk ai empty" data-blk="ai"><div class="bd-hd">' + svg('spark', 13) + ' AI 解读' +
         '<span class="bd-tag">待生成</span>' +
         '<button class="ai-ask" type="button" data-act="ipDeep" data-id="' + esc(p.id) + '">' +
           AI_DIAMOND + 'AI 深度解读</button></div>' +
