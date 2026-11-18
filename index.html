@@ -3339,6 +3339,173 @@ html[data-theme="dark"] .fl-bar{
   body.wb-print-hi .hi-note{font-size:9pt!important;color:#555!important;border-top:1px solid #999!important}
   body.wb-print-hi .toast,body.wb-print-hi #toastRoot{display:none!important}
 }
+
+/* ============================================================
+   批次 3B：退出医保名单核对台 / 迎检依据包
+   ------------------------------------------------------------
+   两个「办事型」面板，共用一套抽屉骨架（对齐 hi-drawer 的手感）。
+   打印沿用页面既有写法：body 上挂临时打印态类（wb-print-xd /
+   wb-print-pk），与 wb-print-hi / wb-print-week 同一套收口方式。
+   ============================================================ */
+.xd-mask{align-items:stretch;justify-content:flex-end;padding:0}
+.xd-drawer{width:min(900px,100%);height:100%;max-height:100%;border-radius:0;
+  border-left:1px solid var(--line-strong);display:flex;flex-direction:column;
+  animation:hiIn .2s var(--ease)}
+.xd-drawer .mb{flex:1;min-height:0;overflow-y:auto;padding:0}
+.xd-filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 18px;
+  border-bottom:1px solid var(--line);background:rgba(var(--ink-rgba),.022)}
+.xd-filters input,.xd-filters select{padding:6px 10px;border-radius:9px;border:1px solid var(--line);
+  background:var(--card-solid);color:var(--txt);font-size:12.5px;outline:none;max-width:100%}
+.xd-filters input{flex:1 1 190px;min-width:140px}
+.xd-filters input:focus,.xd-filters select:focus{border-color:rgba(var(--blue-rgba),.55);
+  box-shadow:0 0 0 3px rgba(var(--blue-rgba),.1)}
+.xd-cnt{font-size:12.5px;color:var(--txt-2);white-space:nowrap;font-variant-numeric:tabular-nums}
+.xd-cnt b{color:var(--txt);font-weight:600}
+.xd-tools{display:flex;gap:6px;align-items:center;margin-left:auto}
+.xd-banner{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:9px 18px;
+  font-size:12.5px;line-height:1.6;border-bottom:1px solid var(--line);
+  background:rgba(var(--ink-rgba),.022);color:var(--txt-2)}
+.xd-banner.warn{background:rgba(201,146,42,.13);color:var(--txt)}
+.xd-banner .bn-t{flex:1;min-width:180px}
+.xd-banner b{font-weight:600;color:var(--txt)}
+.xd-row{padding:11px 18px;border-bottom:1px solid var(--line-soft)}
+.xd-row:hover{background:rgba(var(--ink-rgba),.02)}
+.xd-l1{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.xd-name{font-size:13.5px;font-weight:600;color:var(--txt);line-height:1.5;min-width:0}
+.xd-name.unk{font-weight:500;color:var(--txt-3)}
+.xd-date{margin-left:auto;font-size:12.5px;color:var(--txt-2);font-family:var(--mono);
+  white-space:nowrap;font-variant-numeric:tabular-nums}
+.xd-l2{display:flex;gap:12px;align-items:flex-start;margin-top:5px}
+.xd-title{flex:1;min-width:0;font-size:12.5px;line-height:1.6;color:var(--txt-2);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.xd-src{flex:0 0 auto;font-size:12px;color:var(--blue);text-decoration:underline;
+  text-underline-offset:3px;white-space:nowrap}
+.xd-src.off{color:var(--txt-3);text-decoration:none;cursor:default}
+.xd-note{padding:10px 18px 14px;font-size:12.5px;line-height:1.65;color:var(--txt-3);
+  border-top:1px solid var(--line);background:rgba(var(--ink-rgba),.018)}
+.xd-empty{padding:36px 18px;text-align:center;font-size:13px;color:var(--txt-3);line-height:1.8}
+
+/* 迎检依据包：类别选择 → 分级清单 */
+.pk-step{padding:14px 18px 2px;font-size:12.5px;color:var(--txt-3)}
+.pk-cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:8px;
+  padding:10px 18px 16px}
+.pk-cat{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:10px 12px;border:1px solid var(--line);border-radius:11px;background:var(--card-solid);
+  color:var(--txt);font:inherit;font-size:13px;cursor:pointer;text-align:left;
+  transition:border-color .16s,box-shadow .16s}
+.pk-cat:hover{border-color:rgba(var(--blue-rgba),.5);
+  box-shadow:0 2px 10px -6px rgba(15,30,51,.45)}
+.pk-cat b{font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pk-cat span{font-size:11.5px;color:var(--txt-3);font-variant-numeric:tabular-nums;flex:0 0 auto}
+.pk-cat.more{border-style:dashed;color:var(--txt-2)}
+.pk-hd{padding:14px 18px 10px;border-bottom:1px solid var(--line)}
+.pk-t{font-size:15px;font-weight:700;color:var(--txt);line-height:1.5}
+.pk-sub{margin-top:4px;font-size:12px;color:var(--txt-3);line-height:1.6}
+.pk-grp-hd{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 18px 6px;
+  font-size:12.5px;font-weight:600;color:var(--txt);position:sticky;top:0;
+  background:var(--card-solid);z-index:1;border-bottom:1px solid var(--line-soft)}
+.pk-grp-hd .cnt{font-weight:500;color:var(--txt-3);font-size:11.5px}
+.pk-item{display:flex;gap:12px;padding:8px 18px 9px;border-top:1px dashed var(--line-soft)}
+.pk-grp-hd + .pk-item{border-top:0}
+.pk-dt{flex:0 0 84px;padding-top:2px;font-size:12px;color:var(--txt-2);font-family:var(--mono);
+  white-space:nowrap;font-variant-numeric:tabular-nums}
+.pk-bd{flex:1;min-width:0}
+.pk-ti{font-size:13px;line-height:1.55;font-weight:500;color:var(--txt);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pk-m2{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:3px;
+  font-size:11.5px;color:var(--txt-3)}
+.pk-m2 .org{max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pk-wh{font-family:var(--mono);color:var(--txt-2)}
+.pk-excl{padding:12px 18px 0;font-size:11.5px;color:var(--txt-3)}
+.pk-disc{padding:10px 18px 16px;margin-top:12px;border-top:1px solid var(--line);
+  font-size:12.5px;line-height:1.65;color:var(--txt-3);background:rgba(var(--ink-rgba),.018)}
+@media (max-width:640px){
+  .xd-drawer{width:100%}
+  .xd-date{margin-left:0}
+  .xd-tools{margin-left:0;width:100%}
+  .pk-dt{flex-basis:72px;font-size:11.5px}
+}
+
+/* 打印：核对台 / 依据包（各一页纸，交互控件全部隐藏） */
+@media print{
+  body.wb-print-xd .app,body.wb-print-pk .app{display:none!important}
+  body.wb-print-xd .mask,body.wb-print-pk .mask{display:block!important;position:static!important;
+    inset:auto!important;background:#fff!important;padding:0!important;
+    backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+    animation:none!important;z-index:auto!important}
+  body.wb-print-xd .modal.xd-drawer,body.wb-print-pk .modal.xd-drawer{
+    width:100%!important;max-width:none!important;height:auto!important;max-height:none!important;
+    overflow:visible!important;border:0!important;border-radius:0!important;
+    box-shadow:none!important;background:#fff!important;animation:none!important}
+  body.wb-print-xd .xd-drawer .mh,body.wb-print-pk .xd-drawer .mh{
+    border-bottom:1px solid #999!important;padding:0 0 5pt!important}
+  body.wb-print-xd .xd-drawer .mh b,body.wb-print-pk .xd-drawer .mh b{
+    font-size:14pt!important;color:#000!important}
+  body.wb-print-xd .xd-filters,body.wb-print-xd .x-btn,body.wb-print-xd .xd-tools,
+  body.wb-print-xd .btn,body.wb-print-xd .no-print,
+  body.wb-print-pk .xd-tools,body.wb-print-pk .x-btn,body.wb-print-pk .btn,
+  body.wb-print-pk .no-print,body.wb-print-pk .pk-cats,body.wb-print-pk .pk-step{
+    display:none!important}
+  /* 两个面板有可能同时存在（先进核对台、再开依据包），打印时只出目标那一份 */
+  body.wb-print-xd #pkMask,body.wb-print-pk #xdMask{display:none!important}
+  body.wb-print-xd .xd-drawer .mb,body.wb-print-pk .xd-drawer .mb{
+    overflow:visible!important;flex:none!important}
+  body.wb-print-xd .xd-banner{font-size:8pt!important;padding:0 0 4pt!important;
+    background:#fff!important;border-bottom:1px solid #ccc!important;color:#333!important}
+  /* 核对台必须是「一页纸」：45 条按屏幕的两行式排下来要三页。
+     打印态改成单行式（机构名 · 类别 · 方式 · 日期 ｜ 标题省略号），
+     行高压到 12pt 上下，A4 一页正好装完。 */
+  body.wb-print-xd .xd-row{display:flex!important;align-items:baseline;gap:7pt!important;
+    padding:1.2pt 0!important;border-bottom:1px solid #dcdcdc!important;
+    line-height:1.3!important;break-inside:avoid;page-break-inside:avoid}
+  body.wb-print-xd .xd-l1{flex:0 0 44%!important;min-width:0!important;display:flex!important;
+    gap:4pt!important;align-items:baseline;flex-wrap:nowrap!important;line-height:1.3!important}
+  body.wb-print-xd .xd-name{font-size:8pt!important;line-height:1.3!important;color:#000!important;
+    max-width:74%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  body.wb-print-xd .xd-name.unk{color:#555!important}
+  body.wb-print-xd .xd-l1 .tag{font-size:6.8pt!important;line-height:1.3!important;
+    padding:0 2pt!important;border:0!important;
+    background:none!important;color:#444!important;box-shadow:none!important;white-space:nowrap}
+  body.wb-print-xd .xd-l1 .lv-bg{display:none!important}
+  body.wb-print-xd .xd-date{font-size:7pt!important;line-height:1.3!important;color:#333!important;
+    margin-left:0!important}
+  body.wb-print-xd .xd-l2{margin:0!important;display:block!important;flex:1 1 auto!important;
+    min-width:0!important;overflow:hidden;line-height:1.3!important}
+  body.wb-print-xd .xd-title{font-size:7.4pt!important;line-height:1.3!important;color:#333!important;
+    display:block!important;white-space:nowrap!important;overflow:hidden!important;
+    text-overflow:ellipsis!important;-webkit-line-clamp:unset!important}
+  body.wb-print-xd .xd-src{display:none!important}
+  body.wb-print-xd .xd-note,body.wb-print-pk .pk-disc{font-size:7.6pt!important;color:#444!important;
+    border-top:1px solid #999!important;background:#fff!important;padding:4pt 0 0!important}
+  body.wb-print-pk .pk-hd{padding:0 0 4pt!important;border-bottom:1px solid #999!important}
+  body.wb-print-pk .pk-t{font-size:13pt!important;color:#000!important}
+  body.wb-print-pk .pk-sub{font-size:8pt!important;color:#444!important}
+  /* 依据包：类别多时一页装不下（84 条起），但行必须压紧 —— 屏幕两行式
+     排下来要 8 页，改成「日期 ｜ 标题单行 ｜ 文号·机构」后降到 2 页内。 */
+  body.wb-print-pk .pk-grp-hd{font-size:9pt!important;line-height:1.3!important;color:#000!important;
+    padding:5pt 0 1.5pt!important;background:#fff!important;border-bottom:1px solid #ccc!important;
+    break-after:avoid;page-break-after:avoid}
+  body.wb-print-pk .pk-grp-hd .cnt{font-size:7.4pt!important;color:#555!important}
+  body.wb-print-pk .pk-item{display:flex!important;align-items:baseline;gap:6pt!important;
+    padding:1.2pt 0!important;border-top:0!important;line-height:1.3!important;
+    break-inside:avoid;page-break-inside:avoid}
+  body.wb-print-pk .pk-dt{font-size:6.8pt!important;line-height:1.3!important;color:#333!important;
+    flex:0 0 50pt!important;padding:0!important}
+  body.wb-print-pk .pk-bd{display:flex!important;align-items:baseline;gap:6pt!important;
+    flex:1 1 auto!important;min-width:0!important}
+  body.wb-print-pk .pk-ti{font-size:7.2pt!important;line-height:1.3!important;color:#000!important;
+    flex:1 1 auto!important;min-width:0!important;display:block!important;
+    white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+    -webkit-line-clamp:unset!important}
+  body.wb-print-pk .pk-m2{flex:0 0 34%!important;margin:0!important;justify-content:flex-end!important;
+    flex-wrap:nowrap!important;overflow:hidden!important;font-size:6.6pt!important;
+    line-height:1.3!important;color:#555!important;white-space:nowrap}
+  body.wb-print-pk .pk-m2 .org{max-width:100%}
+  body.wb-print-pk .pk-m2 .xd-src{display:none!important}
+  body.wb-print-pk .pk-excl{font-size:7.2pt!important;color:#555!important;padding:4pt 0 0!important}
+  body.wb-print-xd .toast,body.wb-print-xd #toastRoot,
+  body.wb-print-pk .toast,body.wb-print-pk #toastRoot{display:none!important}
+}
 </style>
 </head>
 <body data-page-node-id="wYbZltbIolyX20jrcYqfor" class="ro">
@@ -6141,7 +6308,14 @@ function policyStatHtml(all){
     '<button class="btn primary sm" type="button" id="btnNewPolicy" data-act="newPolicy">' +
       '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>' +
       '新增政策</button>' +
-    '<button class="btn sm" type="button" id="btnImportCrawl" data-act="importCrawl">导入采集结果</button>';
+    '<button class="btn sm" type="button" id="btnImportCrawl" data-act="importCrawl">导入采集结果</button>' +
+    /* 迎检依据包（批次 3B）：按类别生成三级依据清单。
+       用 data-wb-pack 而不是 data-act —— 只读守卫的写动作清单不涉及它，
+       也不改动既有 data-act 的出现次数（该计数是发布验收的受保护契约）。 */
+    '<button class="btn sm" type="button" id="btnPack" data-wb-pack="1" ' +
+      'title="按类别生成迎检依据清单（玉溪执行 → 云南参照 → 国家基线）">' +
+      '<span style="display:inline-flex;margin-right:5px;vertical-align:-2px">' + svg('layers', 13) + '</span>' +
+      '依据包</button>';
 
   /* 密度图标自绘：内置图标集里没有"列表密度"这组语义，
      用 layers/report 表示舒适/紧凑看不懂。三条粗线 vs 五条细线，一眼可辨。 */
@@ -14429,35 +14603,15 @@ function radarGotoLevel(lv){
   function wbOpenExitList() {
     var list = wbExitList();
     if (!list.length) { return; }
-    function eh(s) {
-      return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
-        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-      });
-    }
-    var nActive = 0, nPassive = 0, nMed = 0, nPharma = 0, nOther = 0;
-    list.forEach(function (p) {
-      var info = wbExitInfo(p);
-      if (info.mode === '主动') { nActive++; } else { nPassive++; }
-      if (info.kind === '医疗机构') { nMed++; }
-      else if (info.kind === '医药机构') { nPharma++; }
-      else { nOther++; }
-    });
-    var head = '<div class="small muted" style="margin-bottom:10px">共 <b class="num">' + list.length +
-      '</b> 条。主动 ' + nActive + ' / 被动 ' + nPassive + '；医疗 ' + nMed +
-      ' / 医药 ' + nPharma + ' / 其他 ' + nOther + '。点击任意一条展开详情。</div>';
-    var rows = list.map(function (p, i) {
-      var info = wbExitInfo(p);
-      return '<div class="rec" style="cursor:pointer" data-wb-ex="' + eh(p.id || '') + '">' +
-        '<span class="num" style="color:var(--txt-3);font-size:12px;flex:0 0 26px">' + (i + 1) + '</span>' +
-        '<span class="nm"><b style="font-weight:500;font-size:13px">【' + eh(info.mode) + '·' +
-        eh(info.kind) + '】' + eh(p.title || '') + '</b>' +
-        '<small>' + eh(p.org || '') + (p.date ? ' · ' + eh(p.date) : '') +
-        (p.level ? ' · ' + eh(p.level) : '') + '</small></span></div>';
-    }).join('');
+    /* 2026-11 升级为「退出医保名单核对台」：原入口不动，点击后交给批次 3B
+       的抽屉（搜索 / 类别·方式·年份筛选 / 打印 / CSV / 核对留痕）。
+       补丁块未加载时退回原来的只读弹窗，入口不会变成死按钮。 */
+    if (typeof window.wbExitDeskOpen === 'function') { window.wbExitDeskOpen(); return; }
     openModal({
       title: '退出医保机构 · 全部 ' + list.length + ' 条',
-      icon: 'logout',
-      body: '<div style="max-height:52vh;overflow-y:auto;margin:0 -6px">' + head + rows + '</div>'
+      icon: 'report',
+      body: '<div class="small muted" style="margin-bottom:10px">共 <b class="num">' + list.length +
+        '</b> 条。核对台脚本未加载，此处仅列条数。</div>'
     });
   }
 
@@ -14467,6 +14621,7 @@ function radarGotoLevel(lv){
     window.wbIsExposure = wbIsExposure;
     window.wbExposureList = wbExposureList;
     window.wbIsExit = wbIsExit;
+    window.wbExitInfo = wbExitInfo;
     window.wbExitList = wbExitList;
     window.wbOpenExitList = wbOpenExitList;
 
@@ -15067,6 +15222,628 @@ function radarGotoLevel(lv){
 <!-- WB:V3:BODY:END -->
 <!-- WB:RO:BODY:START -->
 <!-- 只读守卫：拦截写类 data-act / 上传 / 确认对话，并把 SDK 写方法替换为 no-op。 -->
+<script id="wb-batch3b-js">
+/* ============================================================
+   批次 3B：退出医保名单核对台（板块 C）+ 迎检依据包（板块 D）
+   ------------------------------------------------------------
+   纯前端「办事型」面板：数据只来自 App.data.policies 与本机
+   localStorage，不联网、不写共享台账。
+   入口都挂在既有模块上，不新增侧边栏项：
+     · 核对台 ← 看板「退出医保机构」原弹窗（wbOpenExitList 转交）
+     · 依据包 ← 政策列表工具条新增的「依据包」按钮（data-wb-pack）
+   打印沿用页面既有写法：body 挂临时打印态类（wb-print-xd / wb-print-pk），
+   与 wb-print-hi / wb-print-week 同一套收口方式。
+   ============================================================ */
+(function () {
+  if (window.__WB_BATCH3B__) { return; }
+  window.__WB_BATCH3B__ = 1;
+
+  var LS_EXIT_CHECKED = 'yb_exit_checked';
+  var DISC_EXIT = '退出标记由标题语义识别生成，可能存在漏判/误判，请以发文机关公告原文为准。';
+  var DISC_PACK = '依据链按系统已收录政策生成，仅供迎检备查；现行有效性以最新文件为准。';
+  var PK_LEVELS = [
+    { level: '玉溪市', label: '执行', role: '玉溪市（执行）' },
+    { level: '云南省', label: '参照', role: '云南省（参照）' },
+    { level: '国家', label: '基线', role: '国家（基线）' }
+  ];
+
+  var XD = { kw: '', kind: '', mode: '', year: '', sha: '', shaState: 0 };
+  var PK = { cat: '' };
+
+  /* ---------- 取数 ---------- */
+  function P() {
+    var d = (window.App && window.App.data) || {};
+    return Array.isArray(d.policies) ? d.policies : [];
+  }
+  function listExit() {
+    if (typeof window.wbExitList === 'function') {
+      try { return window.wbExitList() || []; } catch (e) { /* 回退到字段判定 */ }
+    }
+    return P().filter(function (p) { return p && p['退出医保标记'] === '是'; });
+  }
+  function infoOf(p) {
+    if (typeof window.wbExitInfo === 'function') {
+      try {
+        var o = window.wbExitInfo(p);
+        if (o && (o.mode === '主动' || o.mode === '被动')) { return o; }
+      } catch (e) { /* 回退 */ }
+    }
+    var t = String((p && p.title) || '');
+    var mode = (p && p['退出方式']) || (/主动|申请|自愿/.test(t) ? '主动' : '被动');
+    var kind = (p && p['机构类别']) || '';
+    if (kind !== '医疗机构' && kind !== '医药机构') { kind = '其他'; }
+    return { mode: mode === '主动' ? '主动' : '被动', kind: kind };
+  }
+
+  /* 日期口径与全站一致：1900-01-01 是占位值，展示「日期待核」。 */
+  function plainDate(d) {
+    var s = String(d == null ? '' : d);
+    return (!s || s === '1900-01-01') ? '日期待核' : s;
+  }
+  function yearOf(p) {
+    var s = String((p && p.date) || '');
+    return (s.length >= 4 && s !== '1900-01-01') ? s.slice(0, 4) : '日期待核';
+  }
+  function dateKey(p) {
+    var s = String((p && p.date) || '');
+    return (!s || s === '1900-01-01') ? '' : s;
+  }
+  function byDateDesc(a, b) {
+    var x = dateKey(a), y = dateKey(b);
+    if (x === y) { return 0; }
+    if (!x) { return 1; }     /* 日期待核沉底 */
+    if (!y) { return -1; }
+    return x < y ? 1 : -1;
+  }
+  function fmtTime(iso) {
+    var s = String(iso || '');
+    var d = new Date(s);
+    if (isNaN(d.getTime())) { return s.slice(0, 16).replace('T', ' '); }
+    return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()) +
+      ' ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+  }
+  function fmtNow() { return fmtTime(new Date().toISOString()); }
+  function tagOfLevel(lv) {
+    return lv === '玉溪市' ? 'lv-main' : (lv === '云南省' ? 'lv-sub' : 'lv-lead');
+  }
+
+  /* ---------- 机构名：从标题语义抽，抽不到就明示未列明 ----------
+     退出类公告的标题有三种常见句式：
+       ①「X 与 A 中止…」 ②「X 关于解除 A 医保…」 ③「X 关于 A 主动申请中止…」
+     只认这三种显式句式；标题只写「部分医药机构 / 定点零售药店」这类集合名词时，
+     不推测具体机构，统一标「未列明具体机构」，避免把集合词当机构名。 */
+  var XD_GENERIC = /^(部分|定点|一批|多家|相关|各|辖区|以下)/;
+  var XD_COLLECTIVE = /(医药机构|零售药店|医疗机构)$/;
+
+  function orgNameOf(p) {
+    var t = String((p && p.title) || '');
+    var pats = [
+      /与\s*(.{2,40}?)\s*(?:中止|终止|解除|暂停|退出|取消)/,
+      /(?:中止|终止|解除|暂停|取消)\s*(?:定点)?\s*(.{2,40}?)\s*(?:医疗保障|医保)/,
+      /关于\s*(.{2,40}?)\s*(?:主动申请)?\s*(?:中止|终止|解除|暂停)/,
+      /(.{2,40}?)\s*等\s*\d+\s*家/
+    ];
+    for (var i = 0; i < pats.length; i++) {
+      var m = t.match(pats[i]);
+      if (!m) { continue; }
+      var c = String(m[1] || '')
+        .replace(/^[的与和及\s]+/, '')
+        .replace(/[，,。；;、\s]+$/, '')
+        .replace(/等(医药机构|医疗机构|零售药店|零售药房)$/, '');
+      if (c.length < 3) { continue; }
+      if (/[/／（）()]/.test(c)) { continue; }
+      if (XD_GENERIC.test(c) || XD_COLLECTIVE.test(c)) { continue; }
+      return { name: c, named: true };
+    }
+    return { name: '未列明具体机构', named: false };
+  }
+
+  function srcLink(p) {
+    var url = String((p && p.url) || '');
+    if (/^https?:\/\//i.test(url)) {
+      return '<a class="xd-src" href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">查看原文</a>';
+    }
+    return '<span class="xd-src off" title="系统未收录该条原文链接">原文暂缺</span>';
+  }
+
+  /* ==========================================================
+     板块 C：退出医保名单核对台
+     ========================================================== */
+  function closeXDesk() {
+    var m = document.getElementById('xdMask');
+    if (m && m.parentNode) { m.parentNode.removeChild(m); }
+  }
+
+  function checkedRec() {
+    try {
+      var o = JSON.parse(localStorage.getItem(LS_EXIT_CHECKED) || 'null');
+      return (o && typeof o === 'object' && o.sha) ? o : null;
+    } catch (e) { return null; }
+  }
+
+  /* 数据版本：优先取 data/state.json 的 meta.sha256（与发布验收同源）。
+     静态站点在 file:// 下取不到文件，退化为「本地数据指纹」，
+     只影响「是否变过」的判断，不对外声称是发布哈希。 */
+  function fingerprint() {
+    var rows = P();
+    var lv = {}, last = '';
+    rows.forEach(function (p) {
+      lv[p.level] = (lv[p.level] || 0) + 1;
+      var d = dateKey(p);
+      if (d && d > last) { last = d; }
+    });
+    var s = rows.length + '|' + (lv['玉溪市'] || 0) + '|' + (lv['云南省'] || 0) + '|' +
+      (lv['国家'] || 0) + '|' + last;
+    var h = 2166136261;
+    for (var i = 0; i < s.length; i++) {
+      h ^= s.charCodeAt(i);
+      h = (h * 16777619) >>> 0;
+    }
+    return 'fp-' + h.toString(16);
+  }
+
+  function loadSha() {
+    if (XD.shaState) { return; }
+    XD.shaState = 1;
+    var settle = function (sha) {
+      XD.sha = sha || fingerprint();
+      XD.shaState = 2;
+      renderBanner();
+    };
+    try {
+      if (!window.fetch) { settle(''); return; }
+      window.fetch('./data/state.json', { cache: 'no-cache' })
+        .then(function (r) {
+          if (!r || !r.ok) { throw new Error('fetch'); }
+          return r.json();
+        })
+        .then(function (j) {
+          var sha = (j && j.meta && j.meta.sha256) ? String(j.meta.sha256) : '';
+          settle(sha);
+        })
+        .catch(function () { settle(''); });
+    } catch (e) { settle(''); }
+  }
+
+  function renderBanner() {
+    var box = document.getElementById('xdBanner');
+    if (!box) { return; }
+    var rec = checkedRec();
+    var same = !!(rec && XD.sha && rec.sha === XD.sha);
+    box.className = 'xd-banner' + (rec && !same ? ' warn' : '');
+    var txt = '';
+    if (!XD.sha) {
+      txt = '<span class="bn-t">正在校验数据版本…</span>';
+    } else if (!rec) {
+      txt = '<span class="bn-t">尚未核对。核对后可留痕，数据更新会提示重新核对。</span>';
+    } else if (same) {
+      txt = '<span class="bn-t">已于 <b>' + esc(fmtTime(rec.at)) + '</b> 核对，数据未更新。</span>';
+    } else {
+      var at = new Date(String(rec.at || ''));
+      var days = isNaN(at.getTime()) ? 0 : Math.max(0, dayDiff(new Date(), at));
+      txt = '<span class="bn-t"><b>数据已更新</b>（' +
+        (days > 0 ? days + ' 天前核对过' : '今天核对过') + '），建议重新核对。</span>';
+    }
+    box.innerHTML = txt +
+      '<button class="btn sm no-print" type="button" data-xd-check="1"' +
+        (XD.sha ? '' : ' disabled') + '>我已核对</button>';
+  }
+
+  function xdRows() {
+    var kw = String(XD.kw || '').replace(/\s+/g, '').toLowerCase();
+    return listExit().filter(function (p) {
+      var inf = infoOf(p);
+      if (XD.kind && inf.kind !== XD.kind) { return false; }
+      if (XD.mode && inf.mode !== XD.mode) { return false; }
+      if (XD.year && yearOf(p) !== XD.year) { return false; }
+      if (kw) {
+        var nm = orgNameOf(p).name;
+        var hay = (nm + String(p.title || '') + String(p.org || '')).replace(/\s+/g, '').toLowerCase();
+        if (hay.indexOf(kw) < 0) { return false; }
+      }
+      return true;
+    }).sort(byDateDesc);
+  }
+
+  function rowHtml(p) {
+    var inf = infoOf(p);
+    var nm = orgNameOf(p);
+    return '<div class="xd-row">' +
+      '<div class="xd-l1">' +
+        '<span class="xd-name' + (nm.named ? '' : ' unk') + '" title="' +
+          esc(nm.named ? nm.name : '原文标题未列明具体机构名称，请查原文') + '">' + esc(nm.name) + '</span>' +
+        '<span class="tag gray">' + esc(inf.kind) + '</span>' +
+        '<span class="tag ' + (inf.mode === '主动' ? 'blue' : 'amber') + '">' + esc(inf.mode) + '</span>' +
+        '<span class="xd-date">' + wbDateText(p.date) + '</span>' +
+      '</div>' +
+      '<div class="xd-l2">' +
+        '<span class="xd-title" title="' + esc(p.title) + '">' + esc(p.title) + '</span>' +
+        srcLink(p) +
+      '</div>' +
+    '</div>';
+  }
+
+  function renderList() {
+    var all = listExit(), rows = xdRows();
+    var cnt = document.getElementById('xdCnt');
+    if (cnt) {
+      cnt.innerHTML = '共 <b>' + all.length + '</b> 条，当前筛选 <b>' + rows.length + '</b> 条';
+    }
+    var body = document.getElementById('xdBody');
+    if (!body) { return; }
+    body.innerHTML = rows.length
+      ? rows.map(rowHtml).join('')
+      : '<div class="xd-empty">没有符合条件的记录。<br>可放宽年份或类别筛选后重试。</div>';
+  }
+
+  function yearOpts() {
+    var seen = {}, years = [], hasUndef = false;
+    listExit().forEach(function (p) {
+      var y = yearOf(p);
+      if (y === '日期待核') { hasUndef = true; return; }
+      if (!seen[y]) { seen[y] = 1; years.push(y); }
+    });
+    years.sort(function (a, b) { return a < b ? 1 : -1; });
+    var html = '<option value="">全部年份</option>';
+    years.forEach(function (y) { html += '<option value="' + esc(y) + '">' + esc(y) + ' 年</option>'; });
+    if (hasUndef) { html += '<option value="日期待核">日期待核</option>'; }
+    return html;
+  }
+
+  function openXDesk() {
+    if (document.getElementById('xdMask')) { renderList(); return; }
+    var mask = document.createElement('div');
+    mask.className = 'mask xd-mask';
+    mask.id = 'xdMask';
+    mask.innerHTML =
+      '<div class="modal xd-drawer" role="dialog" aria-modal="true" aria-label="退出医保名单核对台">' +
+        '<div class="mh">' + svg('report', 18) + '<b>退出医保名单核对台</b>' +
+          '<span class="sp" style="flex:1"></span>' +
+          '<button class="x-btn" type="button" data-xd-close="1" aria-label="关闭">' + svg('x', 18) + '</button>' +
+        '</div>' +
+        '<div class="xd-banner" id="xdBanner"></div>' +
+        '<div class="xd-filters">' +
+          '<input id="xdKw" type="search" placeholder="搜索机构名 / 来源标题…" value="' + esc(XD.kw) + '">' +
+          '<select id="xdKind">' +
+            '<option value="">全部机构类别</option>' +
+            '<option value="医药机构"' + (XD.kind === '医药机构' ? ' selected' : '') + '>医药机构</option>' +
+            '<option value="医疗机构"' + (XD.kind === '医疗机构' ? ' selected' : '') + '>医疗机构</option>' +
+            '<option value="其他"' + (XD.kind === '其他' ? ' selected' : '') + '>其他</option>' +
+          '</select>' +
+          '<select id="xdMode">' +
+            '<option value="">全部退出方式</option>' +
+            '<option value="主动"' + (XD.mode === '主动' ? ' selected' : '') + '>主动</option>' +
+            '<option value="被动"' + (XD.mode === '被动' ? ' selected' : '') + '>被动</option>' +
+          '</select>' +
+          '<select id="xdYear">' + yearOpts() + '</select>' +
+          '<span class="xd-cnt" id="xdCnt"></span>' +
+          '<span class="xd-tools">' +
+            '<button class="btn sm" type="button" data-xd-print="1">打印</button>' +
+            '<button class="btn sm" type="button" data-xd-csv="1">导出 CSV</button>' +
+          '</span>' +
+        '</div>' +
+        '<div class="mb" id="xdBody"></div>' +
+        '<div class="xd-note">' + esc(DISC_EXIT) + '</div>' +
+      '</div>';
+    document.getElementById('modalRoot').appendChild(mask);
+
+    var ySel = mask.querySelector('#xdYear');
+    if (ySel && XD.year) { ySel.value = XD.year; }
+
+    mask.addEventListener('click', function (e) {
+      var t = e.target;
+      if (t === mask) { closeXDesk(); return; }
+      var el;
+      if ((el = t.closest && t.closest('[data-xd-close]'))) { closeXDesk(); return; }
+      if ((el = t.closest && t.closest('[data-xd-check]'))) { doCheck(); return; }
+      if ((el = t.closest && t.closest('[data-xd-print]'))) { doPrint('wb-print-xd'); return; }
+      if ((el = t.closest && t.closest('[data-xd-csv]'))) { doCsv(); return; }
+    });
+
+    var kw = mask.querySelector('#xdKw');
+    if (kw) {
+      kw.addEventListener('input', function (ev) {
+        if (ev && (ev.isComposing || ev.keyCode === 229)) { return; }
+        XD.kw = kw.value;
+        renderList();
+      });
+    }
+    var kb = mask.querySelector('#xdKind');
+    if (kb) { kb.addEventListener('change', function () { XD.kind = kb.value; renderList(); }); }
+    var mb = mask.querySelector('#xdMode');
+    if (mb) { mb.addEventListener('change', function () { XD.mode = mb.value; renderList(); }); }
+    if (ySel) { ySel.addEventListener('change', function () { XD.year = ySel.value; renderList(); }); }
+
+    renderList();
+    renderBanner();
+    loadSha();
+  }
+
+  function doCheck() {
+    if (!XD.sha) { toast('数据版本校验中，请稍后再试', 'warn'); return; }
+    try {
+      localStorage.setItem(LS_EXIT_CHECKED, JSON.stringify({ sha: XD.sha, at: new Date().toISOString() }));
+    } catch (e) { toast('本机存储不可用，核对状态未能保存', 'warn'); return; }
+    renderBanner();
+    toast('已记录本次核对', 'ok');
+  }
+
+  function doCsv() {
+    var rows = xdRows();
+    if (!rows.length) { toast('当前筛选没有记录可导出', 'warn'); return; }
+    var head = ['机构名', '机构类别', '退出方式', '日期', '来源标题', '原文链接', '行政层级', '发布机构'];
+    var body = rows.map(function (p) {
+      var inf = infoOf(p);
+      return [orgNameOf(p).name, inf.kind, inf.mode, plainDate(p.date), p.title,
+        p.url || '', p.level || '', p.org || ''];
+    });
+    var csv = [head].concat(body).map(function (r) {
+      return r.map(function (c) {
+        return '"' + String(c == null ? '' : c).replace(/"/g, '""') + '"';
+      }).join(',');
+    }).join('\r\n');
+    downloadText('退出医保名单核对_' + todayISO() + '.csv', '\ufeff' + csv, 'text/csv;charset=utf-8');
+    toast('已导出当前筛选 ' + rows.length + ' 条', 'ok');
+  }
+
+  function doPrint(cls) {
+    if (typeof window.wbPrintWith === 'function') { window.wbPrintWith(cls); return; }
+    try { window.print(); } catch (e) { /* 忽略 */ }
+  }
+
+  /* ==========================================================
+     板块 D：迎检依据包
+     ========================================================== */
+  function closePack() {
+    var m = document.getElementById('pkMask');
+    if (m && m.parentNode) { m.parentNode.removeChild(m); }
+  }
+
+  /* 类别只列「实际有数据」的：计数现算，按条数降序；「其他」固定排最后
+     （它不是一个业务类别，只是兜底桶，混在中间会误导人）。 */
+  function catStats() {
+    var map = {}, order = [], cats = window.CATS || [];
+    P().forEach(function (p) {
+      var c = String(p.category || '其他');
+      if (!map[c]) { map[c] = 0; order.push(c); }
+      map[c]++;
+    });
+    var arr = order.map(function (c) { return { cat: c, n: map[c] }; });
+    arr.sort(function (a, b) {
+      if (a.cat === '其他') { return 1; }
+      if (b.cat === '其他') { return -1; }
+      if (a.n !== b.n) { return b.n - a.n; }
+      return cats.indexOf(a.cat) - cats.indexOf(b.cat);
+    });
+    return arr;
+  }
+
+  /* 文号：只从标题里取显式「机关代字〔年〕号」，取不到就留空 ——
+     不从 AI 解读里补，避免把二手转述当发文信息。 */
+  function wenhaoOf(p) {
+    var t = String((p && p.title) || '');
+    var m = t.match(/([\u4e00-\u9fa5]{2,10}〔\d{4}〕\s*第?\s*\d+\s*号)/);
+    return m ? m[1].replace(/\s+/g, '') : '';
+  }
+
+  function packData(cat) {
+    var rows = P().filter(function (p) { return String(p.category || '其他') === cat; });
+    var excluded = rows.filter(function (p) {
+      return p.change === '失效' || p.change === '替代';
+    });
+    var keep = rows.filter(function (p) {
+      return !(p.change === '失效' || p.change === '替代');
+    });
+    var groups = PK_LEVELS.map(function (g) {
+      return {
+        level: g.level, label: g.label, role: g.role,
+        items: keep.filter(function (p) { return p.level === g.level; }).sort(byDateDesc)
+      };
+    }).filter(function (g) { return g.items.length > 0; });
+    return { cat: cat, total: keep.length, groups: groups, excluded: excluded.length };
+  }
+
+  function packItemHtml(p) {
+    var wh = wenhaoOf(p);
+    return '<div class="pk-item">' +
+      '<div class="pk-dt">' + wbDateText(p.date) + '</div>' +
+      '<div class="pk-bd">' +
+        '<div class="pk-ti" title="' + esc(p.title) + '">' + esc(p.title) + '</div>' +
+        '<div class="pk-m2">' +
+          (wh ? '<span class="pk-wh">' + esc(wh) + '</span>' : '') +
+          (p.org ? '<span class="org" title="' + esc(p.org) + '">' + esc(orgBrief(p.org)) + '</span>' : '') +
+          srcLink(p) +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function renderCats() {
+    var body = document.getElementById('pkBody');
+    if (!body) { return; }
+    var st = catStats();
+    var total = P().length;
+    body.innerHTML =
+      '<div class="pk-step">第一步 · 选择类别（只列有数据的类别，共 ' + total + ' 条政策）</div>' +
+      '<div class="pk-cats">' +
+        st.map(function (o) {
+          return '<button class="pk-cat' + (o.cat === '其他' ? ' more' : '') + '" type="button" ' +
+            'data-pk-cat="' + esc(o.cat) + '"><b>' + esc(o.cat) + '</b><span>' + o.n + ' 条</span></button>';
+        }).join('') +
+      '</div>' +
+      '<div class="pk-disc">' + esc(DISC_PACK) + '</div>';
+  }
+
+  function renderPack(cat) {
+    var body = document.getElementById('pkBody');
+    if (!body) { return; }
+    var d = packData(cat);
+    var html =
+      '<div class="pk-hd">' +
+        '<div class="pk-t">迎检依据包 · ' + esc(cat) + '</div>' +
+        '<div class="pk-sub">共 <b>' + d.total + '</b> 条 · 玉溪执行 ' +
+          countOf(d, '玉溪市') + ' / 云南参照 ' + countOf(d, '云南省') +
+          ' / 国家基线 ' + countOf(d, '国家') + ' · 生成于 ' + esc(fmtNow()) + '</div>' +
+      '</div>';
+    if (!d.total) {
+      html += '<div class="xd-empty">该类别下没有可用的现行文件。</div>';
+    } else {
+      d.groups.forEach(function (g) {
+        html += '<div class="pk-grp">' +
+          '<div class="pk-grp-hd"><span class="tag ' + tagOfLevel(g.level) + '">' +
+            '<span class="lv-bg">' + esc(g.label) + '</span>' + esc(g.role) + '</span>' +
+            '<span class="cnt">' + g.items.length + ' 条</span></div>' +
+          g.items.map(packItemHtml).join('') +
+        '</div>';
+      });
+    }
+    if (d.excluded) {
+      html += '<div class="pk-excl">已排除 ' + d.excluded + ' 条失效/被替代文件。</div>';
+    }
+    html += '<div class="pk-disc">' + esc(DISC_PACK) + '</div>';
+    body.innerHTML = html;
+    body.scrollTop = 0;
+  }
+
+  function countOf(d, level) {
+    var n = 0;
+    d.groups.forEach(function (g) { if (g.level === level) { n = g.items.length; } });
+    return n;
+  }
+
+  function packPlainText(cat) {
+    var d = packData(cat);
+    var lines = [];
+    lines.push('迎检依据包 · ' + cat);
+    lines.push('生成时间：' + fmtNow() + ' · 共 ' + d.total + ' 条');
+    lines.push('依据链：玉溪市（执行）→ 云南省（参照）→ 国家（基线）');
+    lines.push('');
+    var cn = '一二三四五';
+    d.groups.forEach(function (g, i) {
+      lines.push('【' + (cn.charAt(i) || (i + 1)) + '】' + g.role + ' · ' + g.items.length + ' 条');
+      g.items.forEach(function (p, j) {
+        lines.push((j + 1) + '. ' + plainDate(p.date) + '  ' + String(p.title || ''));
+        var meta = [];
+        var wh = wenhaoOf(p);
+        if (wh) { meta.push(wh); }
+        if (p.org) { meta.push(orgBrief(p.org)); }
+        meta.push(p.url ? p.url : '原文暂缺');
+        lines.push('   ' + meta.join(' · '));
+      });
+      lines.push('');
+    });
+    if (d.excluded) { lines.push('已排除 ' + d.excluded + ' 条失效/被替代文件。'); }
+    lines.push('说明：' + DISC_PACK);
+    return lines.join('\n');
+  }
+
+  function openPack() {
+    if (document.getElementById('pkMask')) { PK.cat ? renderPack(PK.cat) : renderCats(); return; }
+    var mask = document.createElement('div');
+    mask.className = 'mask xd-mask';
+    mask.id = 'pkMask';
+    mask.innerHTML =
+      '<div class="modal xd-drawer" role="dialog" aria-modal="true" aria-label="迎检依据包">' +
+        '<div class="mh">' + svg('layers', 18) + '<b>迎检依据包</b>' +
+          '<span class="sp" style="flex:1"></span>' +
+          '<button class="x-btn" type="button" data-pk-close="1" aria-label="关闭">' + svg('x', 18) + '</button>' +
+        '</div>' +
+        '<div class="xd-filters">' +
+          '<span class="xd-cnt" id="pkCrumb">按类别生成三级依据清单</span>' +
+          '<span class="xd-tools">' +
+            '<button class="btn sm" type="button" data-pk-back="1" style="display:none">重选类别</button>' +
+            '<button class="btn sm" type="button" data-pk-copy="1" style="display:none">复制纯文本</button>' +
+            '<button class="btn sm" type="button" data-pk-print="1" style="display:none">打印清单</button>' +
+          '</span>' +
+        '</div>' +
+        '<div class="mb" id="pkBody"></div>' +
+      '</div>';
+    document.getElementById('modalRoot').appendChild(mask);
+
+    mask.addEventListener('click', function (e) {
+      var t = e.target;
+      if (t === mask) { closePack(); return; }
+      var el;
+      if ((el = t.closest && t.closest('[data-pk-close]'))) { closePack(); return; }
+      if ((el = t.closest && t.closest('[data-pk-cat]'))) {
+        PK.cat = el.getAttribute('data-pk-cat');
+        switchPackStep(true);
+        renderPack(PK.cat);
+        return;
+      }
+      if ((el = t.closest && t.closest('[data-pk-back]'))) {
+        PK.cat = '';
+        switchPackStep(false);
+        renderCats();
+        return;
+      }
+      if ((el = t.closest && t.closest('[data-pk-print]'))) { doPrint('wb-print-pk'); return; }
+      if ((el = t.closest && t.closest('[data-pk-copy]'))) {
+        if (!PK.cat) { return; }
+        if (typeof window.wbCopyText === 'function') {
+          window.wbCopyText(packPlainText(PK.cat), '已复制依据清单');
+        }
+        return;
+      }
+    });
+
+    switchPackStep(!!PK.cat);
+    if (PK.cat) { renderPack(PK.cat); } else { renderCats(); }
+  }
+
+  function switchPackStep(on) {
+    ['[data-pk-back]', '[data-pk-copy]', '[data-pk-print]'].forEach(function (sel) {
+      var b = document.querySelector('#pkMask ' + sel);
+      if (b) { b.style.display = on ? '' : 'none'; }
+    });
+    var c = document.getElementById('pkCrumb');
+    if (c) {
+      c.innerHTML = on
+        ? '类别：<b>' + esc(PK.cat) + '</b> · 依据链 玉溪执行 → 云南参照 → 国家基线'
+        : '按类别生成三级依据清单';
+    }
+  }
+
+  /* ---------- 事件挂载 ---------- */
+  function bind() {
+    /* 依据包入口：工具条是重渲染的，用捕获阶段委托，避免每次重绑。
+       自定义 data-wb-pack 不参与页面自身的 data-act 分发。 */
+    document.addEventListener('click', function (e) {
+      var t = e.target;
+      var el = t && t.closest ? t.closest('[data-wb-pack]') : null;
+      if (!el) { return; }
+      e.preventDefault();
+      e.stopPropagation();
+      openPack();
+    }, true);
+
+    if (!window.__wbDeskEsc) {
+      window.__wbDeskEsc = 1;
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape' && e.keyCode !== 27) { return; }
+        var all = document.querySelectorAll('#modalRoot .mask');
+        var top = all[all.length - 1];
+        if (!top) { return; }
+        if (top.id === 'xdMask') { closeXDesk(); }
+        else if (top.id === 'pkMask') { closePack(); }
+        else { return; }
+        /* 只关最上层这一个：openModal 的 ESC 监听也绑在 document 上，
+           不拦住会连带把下面那层一起关掉。 */
+        e.preventDefault();
+        e.stopPropagation();
+      }, true);
+    }
+  }
+
+  window.wbExitDeskOpen = openXDesk;
+  window.wbPackOpen = openPack;
+  window.wbPackData = packData;
+  window.wbExitRows = xdRows;
+
+  bind();
+}());
+</script>
+
 <script id="wb-ro-js">
 /* ============================================================
    只读分享版守卫（ro.js）
