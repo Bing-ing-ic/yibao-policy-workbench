@@ -988,7 +988,7 @@ h2.t::before{content:"";display:inline-block;width:3px;height:13px;border-radius
 
 /* toast */
 .toasts{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:120;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
-.toast{padding:10px 16px;border-radius:var(--radius-sm);background:rgba(14,23,35,0.97);border:1px solid var(--line-strong);box-shadow:var(--shadow-lift);font-size:13px;animation:fadeIn .2s var(--ease)}
+.toast{padding:10px 16px;border-radius:var(--radius-sm);background:rgba(14,23,35,0.97);border:1px solid var(--line-strong);box-shadow:var(--shadow-lift);font-size:13px;color:#EEF3FA;animation:fadeIn .2s var(--ease)}
 .toast.ok{border-color:rgba(var(--ok-rgba), 0.42)}
 .toast.err{border-color:rgba(var(--err-rgba), 0.45)}
 .toast.warn{border-color:rgba(var(--warn-rgba), 0.45)}
@@ -3509,8 +3509,12 @@ html[data-theme="dark"] .fl-bar{
   body.wb-print-pk .toast,body.wb-print-pk #toastRoot{display:none!important}
 }
 </style>
+<link rel="stylesheet" href="./scripts/site-admin.css">
 <style id="wbCfgRoOverrides">/* 只读版豁免：仅放行「网站配置（管理员）」卡片（2026-11-18） */
 .ro #view-settings{display:block!important}
+/* 导航隐藏后 .st-body 会被自动放进 198px 第一列，正文被压成竖排——强制单列 */
+.ro #view-settings .st-layout{grid-template-columns:minmax(0,1fr)!important}
+.ro #settingsBody{grid-column:1/-1;width:100%}
 .ro #settingsNav{display:none!important}
 .ro #view-settings .st-sec:not(#stSec-sitecfg){display:none!important}
 .ro #stSec-sitecfg input,.ro #stSec-sitecfg textarea,.ro #stSec-sitecfg select,
@@ -8808,6 +8812,8 @@ function renderQaStats(){}
 
 /* 备份提醒：按「上次提醒时的数据量 + 时间」节流，避免每次打开都弹同一句 */
 function maybeBackupNudge(){
+  /* 只读分享版没有导出功能，提醒访客「去设置导出备份」是误导，直接不弹（2026-11-18） */
+  if (document.body && document.body.classList.contains('ro')) { return; }
   var n = App.data.policies.length;
   if (n < 30) return;
   var s = App.data.settings || {};
@@ -9414,7 +9420,10 @@ function boot(){
   try {
     if (localStorage.getItem('yibao_wb_ver_toast') === '1') {
       localStorage.removeItem('yibao_wb_ver_toast');
-      setTimeout(function(){ toast('工作台已更新到 v60（接入免费云端语音 · 视觉与移动端升级）'); }, 600);
+      /* 版本更新日志只对工作台管理员有意义，分享版访客不需要知道内部版本号 */
+      if (!(document.body && document.body.classList.contains('ro'))) {
+        setTimeout(function(){ toast('工作台已更新到 v60（接入免费云端语音 · 视觉与移动端升级）'); }, 600);
+      }
     }
   } catch (e) {}
 

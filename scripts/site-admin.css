@@ -1,0 +1,407 @@
+/* 医保政策监测台 · 网站配置面板样式（2026-11-18 重做）
+   作用域：.wcfg 内部，避免污染页面其它区域。
+   要点：面板自身必须能自适应窄容器 —— 断言 grid 用 auto-fit + minmax，
+   禁止任何固定 px 宽度把汉字挤成竖排。 */
+
+.wcfg {
+  font-size: 13px;
+  color: var(--txt);
+  min-width: 0;
+}
+
+/* —— 面板顶部状态条 —— */
+.wcfg-hd {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 0 0 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.wcfg-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: .2px;
+  border: 1px solid rgba(var(--blue-rgba), .28);
+  background: rgba(var(--blue-rgba), .10);
+  color: var(--blue-2);
+}
+
+.wcfg-chip i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ok-fill);
+  box-shadow: 0 0 0 3px rgba(14, 144, 120, .16);
+}
+
+.wcfg-dirty {
+  display: none;
+  align-items: center;
+  gap: 5px;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  border: 1px solid rgba(var(--warn-rgba), .3);
+  background: rgba(var(--warn-rgba), .12);
+  color: var(--warn);
+}
+
+.wcfg-dirty.on { display: inline-flex; }
+
+.wcfg-dirty::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--warn-fill);
+}
+
+.wcfg-lead {
+  font-size: 12px;
+  color: var(--txt-3);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* —— 分区 —— */
+.wcfg-sec {
+  padding-top: 16px;
+  margin-top: 16px;
+  border-top: 1px dashed var(--line);
+  min-width: 0;
+}
+
+.wcfg-sec.first {
+  padding-top: 0;
+  margin-top: 0;
+  border-top: 0;
+}
+
+.wcfg-st {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--txt-2);
+  letter-spacing: .3px;
+}
+
+.wcfg-st::before {
+  content: "";
+  flex: 0 0 3px;
+  width: 3px;
+  height: 13px;
+  border-radius: 2px;
+  background: var(--grad-main);
+}
+
+.wcfg-st em {
+  margin-left: auto;
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--txt-3);
+  opacity: .85;
+}
+
+/* —— 表单栅格：窄容器自动落成单列 —— */
+.wcfg-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 14px 18px;
+  min-width: 0;
+}
+
+.wcfg-grid.one { grid-template-columns: minmax(0, 1fr); }
+
+.wcfg-f { min-width: 0; }
+
+.wcfg-lb {
+  display: block;
+  margin: 0 0 5px;
+  font-size: 12px;
+  color: var(--txt-2);
+  font-weight: 500;
+  line-height: 1.55;
+  word-break: break-word;
+}
+
+.wcfg-lb b {
+  color: var(--err);
+  font-weight: 600;
+  margin-left: 2px;
+}
+
+.wcfg-in {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 11px;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--txt);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  transition: border-color .15s, box-shadow .15s, background .15s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.wcfg-in:hover { border-color: var(--line-strong); }
+
+.wcfg-in:focus {
+  outline: none;
+  border-color: var(--blue-400);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px rgba(var(--blue-rgba), .14);
+}
+
+textarea.wcfg-in {
+  resize: vertical;
+  min-height: 78px;
+}
+
+select.wcfg-in {
+  background-image: linear-gradient(45deg, transparent 50%, var(--txt-3) 50%),
+                    linear-gradient(135deg, var(--txt-3) 50%, transparent 50%);
+  background-position: calc(100% - 16px) 51%, calc(100% - 11px) 51%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 30px;
+}
+
+.wcfg-hint {
+  margin: 5px 0 0;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--txt-3);
+}
+
+/* —— 开关行 —— */
+.wcfg-sw {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 10px 12px;
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  background: rgba(var(--ink-rgba), .022);
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+  min-width: 0;
+}
+
+.wcfg-sw:hover {
+  border-color: rgba(var(--blue-rgba), .3);
+  background: rgba(var(--blue-rgba), .05);
+}
+
+.wcfg-sw input {
+  margin: 2px 0 0;
+  flex: 0 0 auto;
+}
+
+.wcfg-sw-t {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--txt);
+  line-height: 1.5;
+}
+
+.wcfg-sw-d {
+  display: block;
+  margin-top: 2px;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--txt-3);
+}
+
+/* —— 公告快捷模板 —— */
+.wcfg-tpl {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 0 0 6px;
+}
+
+.wcfg-tpl-b {
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 5px 10px;
+  border-radius: 7px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--txt-2);
+  cursor: pointer;
+  transition: border-color .15s, background .15s, color .15s;
+}
+
+.wcfg-tpl-b:hover {
+  border-color: rgba(var(--blue-rgba), .40);
+  background: rgba(var(--blue-rgba), .07);
+  color: var(--blue-2);
+}
+
+.wcfg-tpl-b:active { transform: translateY(.5px); }
+
+/* —— 公告实时预览 —— */
+.wcfg-pv {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-top: 12px;
+  padding: 9px 12px;
+  border-radius: 9px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--txt);
+  border: 1px solid var(--line);
+  background: rgba(var(--ink-rgba), .03);
+}
+
+.wcfg-pv::before {
+  content: "预览";
+  flex: 0 0 auto;
+  font-size: 10.5px;
+  letter-spacing: 1px;
+  color: var(--txt-3);
+  border-right: 1px solid var(--line);
+  padding-right: 9px;
+  line-height: 1.9;
+}
+
+.wcfg-pv.info {
+  background: rgba(var(--blue-rgba), .08);
+  border-color: rgba(var(--blue-rgba), .26);
+}
+
+.wcfg-pv.warn {
+  background: rgba(var(--warn-rgba), .10);
+  border-color: rgba(var(--warn-rgba), .28);
+}
+
+.wcfg-pv.alert {
+  background: rgba(var(--err-rgba), .09);
+  border-color: rgba(var(--err-rgba), .26);
+}
+
+.wcfg-pv.off {
+  opacity: .55;
+}
+
+.wcfg-pv span {
+  min-width: 0;
+  word-break: break-word;
+}
+
+/* —— 操作条 —— */
+.wcfg-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.wcfg-bar .wcfg-hint { margin: 0; flex: 1 1 200px; }
+
+/* —— 发布 / 改密 —— */
+.wcfg-box {
+  padding: 13px 14px;
+  border: 1px dashed rgba(var(--blue-rgba), .34);
+  border-radius: 11px;
+  background: rgba(var(--blue-rgba), .04);
+}
+
+.wcfg-box .wcfg-grid { gap: 12px 14px; }
+
+.wcfg-btn-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 11px;
+}
+
+.wcfg-msg {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--txt-3);
+  min-height: 18px;
+  word-break: break-word;
+}
+
+.wcfg-msg.ok { color: var(--ok); }
+.wcfg-msg.err { color: var(--err); }
+
+/* —— 密码门槛 —— */
+.wcfg-lock {
+  max-width: 460px;
+  min-width: 0;
+}
+
+.wcfg-lock-ic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  color: var(--blue-2);
+  background: rgba(var(--blue-rgba), .10);
+  border: 1px solid rgba(var(--blue-rgba), .22);
+}
+
+.wcfg-lock h3 {
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--txt);
+}
+
+.wcfg-lock-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.wcfg-lock-row .wcfg-in { flex: 1 1 200px; width: auto; }
+
+/* —— 窄屏兜底 —— */
+@media (max-width: 720px) {
+  .wcfg-grid { grid-template-columns: minmax(0, 1fr); }
+  .wcfg-lock { max-width: none; }
+}
+
+/* —— 暗色主题微调 —— */
+html[data-theme="dark"] .wcfg-sw {
+  background: rgba(var(--ink-rgba), .06);
+}
+
+html[data-theme="dark"] .wcfg-in {
+  background: rgba(var(--ink-rgba), .08);
+}
+
+html[data-theme="dark"] .wcfg-in:focus {
+  background: rgba(var(--ink-rgba), .12);
+}

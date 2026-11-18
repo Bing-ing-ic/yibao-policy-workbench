@@ -87,10 +87,12 @@
     if (badge && site.subtitle) { badge.textContent = site.subtitle; }
   }
 
+  /* 横幅配色：浅底 + 左侧色条。原先 info 用 --blue-50 几乎与页面同色，
+     远看像没生效，改为带透明度的蓝底并加左色条（2026-11-18）。 */
   var ANN_STYLES = {
-    info:   { bg: 'var(--blue-50)',    bd: 'var(--blue-100)',    fg: 'var(--blue-2)' },
-    warn:   { bg: 'rgba(184,119,10,0.10)', bd: 'rgba(184,119,10,0.35)', fg: 'var(--amber)' },
-    alert:  { bg: 'var(--red-dim)',    bd: 'rgba(212,42,79,0.35)', fg: 'var(--err)' }
+    info:   { bg: 'rgba(46,107,224,0.10)',  bd: 'rgba(46,107,224,0.26)',  fg: 'var(--blue-2)' },
+    warn:   { bg: 'rgba(184,119,10,0.12)',  bd: 'rgba(184,119,10,0.32)',  fg: 'var(--amber)' },
+    alert:  { bg: 'rgba(212,42,79,0.10)',   bd: 'rgba(212,42,79,0.30)',   fg: 'var(--err)' }
   };
 
   function ensureAnnouncement() {
@@ -113,7 +115,7 @@
     }
     old.setAttribute('style',
       'display:flex;align-items:center;gap:9px;margin:10px 17px 0;padding:9px 14px;border-radius:10px;' +
-      'font-size:13px;line-height:1.6;background:' + st.bg + ';border:1px solid ' + st.bd + ';color:' + st.fg);
+      'font-size:13px;line-height:1.6;background:' + st.bg + ';border:1px solid ' + st.bd + ';border-left-width:3px;color:' + st.fg);
     old.innerHTML = '<b style="flex:0 0 auto;letter-spacing:.5px">公告</b><span style="flex:1">' + esc(ann.text) + '</span>';
     return true;
   }
