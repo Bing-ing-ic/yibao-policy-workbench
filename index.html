@@ -9519,13 +9519,23 @@ function renderAiQueueBox(){
 }
 
 /* ---------- 大模型直连（OpenAI 兼容接口）---------- */
-var LLM_DEFAULT = { base: 'https://api.deepseek.com/v1', key: '', model: 'deepseek-chat' };
+var LLM_DEFAULT = { base: 'https://open.bigmodel.cn/api/paas/v4', key: 'e18decd10ad4480e89fef9e9757bf8b8.KotvxzCbdzqDaOIP', model: 'glm-4-flash' };
 
 function llmCfg(){
   var s = App.data.settings || {};
   if (!s.llm || typeof s.llm !== 'object') s.llm = Object.assign({}, LLM_DEFAULT);
+  /* 老访客本机存的是旧默认（deepseek + 空 key），自动迁移到预置的智谱方案；
+     用户自己填过 key 的情况一律尊重、不覆盖。 */
+  if (/deepseek\.com/i.test(s.llm.base || '') && !s.llm.key) {
+    s.llm.base = LLM_DEFAULT.base;
+    s.llm.model = LLM_DEFAULT.model;
+  }
   if (!s.llm.base) s.llm.base = LLM_DEFAULT.base;
   if (!s.llm.model) s.llm.model = LLM_DEFAULT.model;
+  /* 预置智谱 Key：本机未填过 Key 且端点指向内置智谱时补上内置 Key，
+     使「智能问答 / 单条政策 AI 解读」开箱即用，无需每台设备手填。
+     端点被用户改成别家时不补，避免把 Key 错配到其它接口。 */
+  if (!s.llm.key && s.llm.base === LLM_DEFAULT.base) s.llm.key = LLM_DEFAULT.key;
   return s.llm;
 }
 function llmReady(){
@@ -9621,17 +9631,18 @@ function renderLlmSettings(){ /* 只读分享版不渲染：大模型 Key / 接�
     : '<span class="tag gray">未接入（问答将使用本地检索，不做生成）</span>';
   box.innerHTML =
     '<div class="field"><label>接口地址（OpenAI 兼容）' + st + '</label>' +
-      '<input id="llmBase" value="' + esc(c.base) + '" placeholder="https://api.deepseek.com/v1"></div>' +
+      '<input id="llmBase" value="' + esc(c.base) + '" placeholder="https://open.bigmodel.cn/api/paas/v4"></div>' +
     '<div class="grid2">' +
-      '<div class="field"><label>模型名</label><input id="llmModel" value="' + esc(c.model) + '" placeholder="deepseek-chat"></div>' +
-      '<div class="field"><label>API Key</label><input id="llmKey" type="password" value="' + esc(c.key) + '" placeholder="sk-…"></div>' +
+      '<div class="field"><label>模型名</label><input id="llmModel" value="' + esc(c.model) + '" placeholder="glm-4-flash"></div>' +
+      '<div class="field"><label>API Key</label><input id="llmKey" type="password" value="' + esc(c.key) + '" placeholder="已预置智谱 Key，可留空"></div>' +
     '</div>' +
     '<div class="small muted" style="margin-top:6px;line-height:1.7">' +
       '密钥只存在本机浏览器，不会写入资料库、也不会上传云端；'
     + '请求由你的浏览器直接发往上面填写的接口。'
     + (hasCloudKey() ? '<div class="small" style="margin-top:6px;color:var(--amber)">'
         + '检测到资料库历史记录里存过密钥，为稳妥起见建议清空下方输入框并重新保存一次。</div>' : '') +
-      '国内可直连：DeepSeek、智谱、月之暗面、通义等 OpenAI 兼容接口。' +
+      '已预置智谱免费方案（glm-4-flash），无需填写即可使用智能问答与单条政策 AI 解读；' +
+      '如要改用其它 OpenAI 兼容接口（DeepSeek、月之暗面、通义等），修改上方三项并保存即可。' +
     '</div>' +
     '<div class="row small" style="margin-top:10px">' +
       '<button class="btn sm" id="llmTest">测试连接</button>' +
