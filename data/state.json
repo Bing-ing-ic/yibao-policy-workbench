@@ -3,26 +3,26 @@
     "schemaVersion": "1.0",
     "sourceTable": "h6rLvnHD0OZ9wyiNwJVAAE",
     "sourceName": "工作台状态与知识库",
-    "generatedAt": "2026-11-24T08:42:17+08:00",
+    "generatedAt": "2026-11-25T08:39:08+08:00",
     "rowCount": 3,
-    "sha256": "1d1f1566fbe03b5a879121029bb2864a51e9b0cd15d320113660844ca6ca6ec0",
+    "sha256": "fa46452d0849a3b939da0683ed5a1576fd7794d8fca20cc3ccbfab47022c5ab5",
     "pageSizeDefault": 200
   },
   "rows": [
     {
       "_id": "freshness",
       "状态键": "freshness",
-      "内容": "{\"lastCheckedAt\": \"2026-11-24T08:42:17+08:00\", \"nextCheckAt\": \"2026-11-25T08:30:00+08:00\", \"source\": \"registry.jsonl 每日08:30自动化\", \"note\": \"准实时同步，非实时推送\"}"
+      "内容": "{\"lastCheckedAt\": \"2026-11-25T08:39:08+08:00\", \"nextCheckAt\": \"2026-11-26T08:30:00+08:00\", \"source\": \"registry.jsonl 每日08:30自动化\", \"note\": \"准实时同步，非实时推送\"}"
     },
     {
       "_id": "counts",
       "状态键": "counts",
-      "内容": "{\"policies\": 672, \"kb\": 672, \"byLevel\": {\"玉溪市\": 61, \"云南省\": 545, \"国家\": 66}, \"byImpact\": {\"高\": 166, \"中\": 266, \"低\": 240}}"
+      "内容": "{\"policies\": 673, \"kb\": 673, \"byLevel\": {\"玉溪市\": 61, \"云南省\": 546, \"国家\": 66}, \"byImpact\": {\"高\": 166, \"中\": 267, \"低\": 240}}"
     },
     {
       "_id": "syncMeta",
       "状态键": "syncMeta",
-      "内容": "{\"generatedAt\": \"2026-11-24T08:42:17+08:00\", \"sourceRevision\": \"2b930243cc6b\", \"sha256\": \"2b930243cc6bfd8429b07969037069b77ed3ff833a5f41250e526372c1436947\", \"enrichSha\": \"db9704672ef6f537172f64bbff152028f283bf3e7c1e57157fb83cb05fbc3d36\", \"note\": \"由 build_pages_data.py 生成，请勿手工编辑\"}"
+      "内容": "{\"generatedAt\": \"2026-11-25T08:39:08+08:00\", \"sourceRevision\": \"b9577c89394f\", \"sha256\": \"b9577c89394f45e4122f3851c0fca8af7fca7444fa8dbcd7bd00a61e06c48e91\", \"enrichSha\": \"be9f8748adbd37fe6a095d00c5595ddb0ff3b5f6c90618d8eceb9eac912925cf\", \"note\": \"由 build_pages_data.py 生成，请勿手工编辑\"}"
     }
   ]
 }
